@@ -1,4 +1,17 @@
-<h1 class="title" [ngClass]="{ 'text-orange-600': isCheck,'': !isCheck  }">Arquetipo Angular 17 Standalone</h1>
-<div class="card flex justify-content-center">
-  <p-button label="Check" icon="pi pi-check" (onClick)="isCheck = !isCheck"></p-button>
+<!-- eslint-disable prettier/prettier -->
+<div class="layout-container">
+  <header class="layout-header">
+    <h1>Hackathon App</h1>
+    <nav>
+      <!-- <a href="#" class="nav-link">Home</a>
+      <a href="#" class="nav-link">Vacancies</a>
+      <a href="#" class="nav-link">Contact</a> -->
+    </nav>
+  </header>
+  <main class="layout-content">
+    <router-outlet></router-outlet>
+  </main>
+  <footer class="layout-footer">
+    <p>© 2024 Hackathon Project. All rights reserved.</p>
+  </footer>
 </div>

@@ -1,0 +1,15 @@
+<!-- eslint-disable prettier/prettier -->
+<div class="vacancies">
+  <h2>Listado de vacantes disponibles</h2>
+  <div class="vacancy-cards">
+    <p-card
+      *ngFor="let vacancy of vacancies"
+      header="{{ vacancy.title }}"
+      class="vacancy-card"
+    >
+      <p><strong>Experience:</strong> {{ vacancy.experience }}</p>
+      <p><strong>Location:</strong> {{ vacancy.location }}</p>
+      <button pButton type="button" label="Apply" class="p-button-success"></button>
+    </p-card>
+  </div>
+</div>
