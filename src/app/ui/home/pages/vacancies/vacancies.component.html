@@ -52,8 +52,8 @@
     </p-card>
   </div> -->
 
-  <div class="vacancy-cards">
-    <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card">
+  <div class="vacancy-cards grid">
+    <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card col-12">
       <h3>{{ vacancy.titulo }}</h3>
       <p><strong>Experiencia:</strong> {{ vacancy.experiencia }}</p>
       <p><strong>Ubicación:</strong> {{ vacancy.ubicacion }}</p>
