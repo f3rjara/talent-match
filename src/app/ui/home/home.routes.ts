@@ -9,6 +9,11 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: 'vacancies', component: VacanciesComponent },
+      {
+        path: '**',
+        redirectTo: 'vacancies',
+        pathMatch: 'full',
+      },
     ],
   },
 ];

@@ -11,4 +11,8 @@ export const routes: Routes = [
     path: 'home',
     loadChildren: () => import('./ui/home/home.routes').then((home) => home.routes),
   },
+  {
+    path: 'candidate',
+    loadChildren: () => import('./ui/candidate/candidate.routes').then((candidate) => candidate.routes),
+  },
 ];
