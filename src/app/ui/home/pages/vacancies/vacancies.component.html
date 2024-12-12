@@ -55,9 +55,9 @@
   <div class="vacancy-cards">
     <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card">
       <h3>{{ vacancy.titulo }}</h3>
-      <p>Experiencia: {{ vacancy.experiencia }}</p>
-      <p>Ubicación: {{ vacancy.ubicacion }}</p>
-      <p>Disponibilidad: {{ vacancy.disponibilidad }}</p>
+      <p><strong>Experiencia:</strong> {{ vacancy.experiencia }}</p>
+      <p><strong>Ubicación:</strong> {{ vacancy.ubicacion }}</p>
+      <p><strong>Disponibilidad:</strong> {{ vacancy.disponibilidad }}</p>
       <button
         pButton
         type="button"

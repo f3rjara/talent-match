@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-trailing-spaces */
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { TableModule } from 'primeng/table';
@@ -7,6 +9,7 @@ import { TagModule } from 'primeng/tag';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
 
 interface Column {
   field: string;
@@ -16,32 +19,45 @@ interface Column {
 @Component({
   selector: 'app-applications',
   standalone: true,
-  imports: [CommonModule, TableModule, TagModule, ButtonModule, RatingModule, FormsModule, CardModule],
+  imports: [CommonModule, TableModule, TagModule, ButtonModule, RatingModule, FormsModule, CardModule, DialogModule],
   templateUrl: './applications.component.html',
   styleUrl: './applications.component.scss',
 })
 export class ApplicationsComponent implements OnInit {
   titulo: string | null = null;
   candidates = [
-    { nombre: 'Juan Pérez', telefono: '123-456-7890' },
-    { nombre: 'Ana Gómez', telefono: '987-654-3210' },
-    { nombre: 'Carlos Rodríguez', telefono: '456-789-1234' },
-  ];
-  products = [
     {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
+      id: 1,
+      name: 'Holguer Andrade',
+      phone: '315 474 3845',
+      email: 'holguer@gmail.com',
+      score: 'Altamente calificado'
     },
+    {
+      id: 2,
+      name: 'Fernando Jaramillo',
+      phone: '315 656 1234',
+      email: 'fernando@gmail.com',
+      score: 'Altamente calificado'
+    },
+    {
+      id: 3,
+      name: 'Elkyn Enriquez',
+      phone: '312 876 8927',
+      email: 'elkyn@gmail.com',
+      score: 'Parcialmente calificado'
+    },
+    {
+      id: 4,
+      name: 'Luis Narvaez',
+      phone: '310 675 9182',
+      email: 'luis@gmail.com',
+      score: 'No calificado'
+    }
   ];
   cols!: Column[];
+  modalVisible = false;
+  selectedCandidate: any = null;
 
   constructor(private route: ActivatedRoute) {}
 
@@ -51,10 +67,30 @@ export class ApplicationsComponent implements OnInit {
     });
 
     this.cols = [
-      { field: 'code', header: 'Code' },
-      { field: 'candidate', header: 'Candidato' },
-      { field: 'telephone', header: 'Teléfono' },
+      { field: 'id', header: 'Code' },
+      { field: 'name', header: 'Candidato' },
+      { field: 'phone', header: 'Teléfono' },
+      { field: 'email', header: 'Email' },
+      { field: 'score', header: 'Observación' },
       { field: 'actions', header: 'Acciones' },
     ];
+  }
+
+  getScoreClass(score: string): string {
+    switch (score) {
+      case 'Altamente calificado':
+        return 'score-high';
+      case 'Parcialmente calificado':
+        return 'score-medium';
+      case 'No calificado':
+        return 'score-low';
+      default:
+        return '';
+    }
+  }
+
+  viewCandidateDetails(candidate: any): void {
+    this.selectedCandidate = candidate;
+    this.modalVisible = true;
   }
 }
