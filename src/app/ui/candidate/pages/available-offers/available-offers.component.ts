@@ -18,6 +18,44 @@ export class AvailableOffersComponent implements OnInit {
 
   availablOffers: any = [];
 
+  avaliableOffersMock = [
+    {
+      id: 1,
+      titulo: 'Frontend Developer',
+      experiencia: '3+ years',
+      ubicacion: 'Remote',
+      disponibilidad: 'inmediato',
+    },
+    {
+      id: 2,
+      titulo: 'Backend Developer',
+      experiencia: '4+ years',
+      ubicacion: 'On-site',
+      disponibilidad: 'inmediato',
+    },
+    {
+      id: 3,
+      titulo: 'UI/UX Designer',
+      experiencia: '2+ years',
+      ubicacion: 'Hybrid',
+      disponibilidad: 'inmediato',
+    },
+    {
+      id: 4,
+      titulo: 'DevOps Engineer',
+      experiencia: '5+ years',
+      ubicacion: 'Remote',
+      disponibilidad: 'inmediato',
+    },
+    {
+      id: 5,
+      titulo: 'Data Scientist',
+      experiencia: '3+ years',
+      ubicacion: 'Remote',
+      disponibilidad: 'inmediato',
+    },
+  ];
+
   ngOnInit(): void {
     this.getVacancies();
   }
@@ -30,18 +68,11 @@ export class AvailableOffersComponent implements OnInit {
   getVacancies() {
     this._vacancyService.getVacancy().subscribe({
       next: (response) => {
-        console.log('response:', response);
         this.availablOffers = response;
       },
       error: (error) => {
         console.log('error get:', error);
-        this.availablOffers = [
-          { id: 1, title: 'Frontend Developer', experience: '3+ years', location: 'Remote' },
-          { id: 2, title: 'Backend Developer', experience: '4+ years', location: 'On-site' },
-          { id: 3, title: 'UI/UX Designer', experience: '2+ years', location: 'Hybrid' },
-          { id: 4, title: 'DevOps Engineer', experience: '5+ years', location: 'Remote' },
-          { id: 5, title: 'Data Scientist', experience: '3+ years', location: 'Remote' },
-        ];
+        this.availablOffers = this.avaliableOffersMock;
       },
     });
   }

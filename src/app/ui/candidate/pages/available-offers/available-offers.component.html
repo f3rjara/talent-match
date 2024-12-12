@@ -3,16 +3,17 @@
   <div class="jobOffer-cards grid gap-2 justify-content-center">
     <p-card
       *ngFor="let jobOffer of availablOffers"
-      header="{{ jobOffer.title }}"
+      header="{{ jobOffer.titulo }}"
       class="jobOffer-card col-12 md:col-6 lg:col-3">
-      <p><strong>Experience:</strong> {{ jobOffer.experience }}</p>
-      <p><strong>Location:</strong> {{ jobOffer.location }}</p>
+      <p><strong>Experience:</strong> {{ jobOffer.experiencia }}</p>
+      <p><strong>Location:</strong> {{ jobOffer.ubicacion }}</p>
+      <p><strong>Disponibilidad:</strong> {{ jobOffer.disponibilidad }}</p>
       <button
         pButton
         type="button"
         label="Aplicar a oferta"
         class="p-button-success"
-        (click)="gotoInitAplication(jobOffer.id, jobOffer.title)"></button>
+        (click)="gotoInitAplication(jobOffer.id, jobOffer.titulo)"></button>
     </p-card>
   </div>
 </div>
