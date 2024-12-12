@@ -7,7 +7,12 @@
       class="jobOffer-card col-12 md:col-6 lg:col-3">
       <p><strong>Experience:</strong> {{ jobOffer.experience }}</p>
       <p><strong>Location:</strong> {{ jobOffer.location }}</p>
-      <button pButton type="button" label="Apply" class="p-button-success" (click)="gotoInitAplication()"></button>
+      <button
+        pButton
+        type="button"
+        label="Aplicar a oferta"
+        class="p-button-success"
+        (click)="gotoInitAplication(jobOffer.id, jobOffer.title)"></button>
     </p-card>
   </div>
 </div>
