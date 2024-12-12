@@ -11,6 +11,11 @@ export const routes: Routes = [
     children: [
       { path: 'vacancies', component: VacanciesComponent },
       { path: 'applications', component: ApplicationsComponent },
+      {
+        path: '**',
+        redirectTo: 'vacancies',
+        pathMatch: 'full',
+      },
     ],
   },
 ];

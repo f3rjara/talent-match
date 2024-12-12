@@ -1,0 +1,13 @@
+<div class="vacancies">
+  <h2 class="text-center mb-5">Listado de ofertas laborales disponibles</h2>
+  <div class="jobOffer-cards grid gap-2 justify-content-center">
+    <p-card
+      *ngFor="let jobOffer of availablOffers"
+      header="{{ jobOffer.title }}"
+      class="jobOffer-card col-12 md:col-6 lg:col-3">
+      <p><strong>Experience:</strong> {{ jobOffer.experience }}</p>
+      <p><strong>Location:</strong> {{ jobOffer.location }}</p>
+      <button pButton type="button" label="Apply" class="p-button-success" (click)="gotoInitAplication()"></button>
+    </p-card>
+  </div>
+</div>

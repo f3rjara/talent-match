@@ -1,0 +1,17 @@
+<div class="layout-content grid">
+  <div class="image col md:col-6">image</div>
+  <div class="container col md:col-6">
+    <div class="application">
+      <h2>si ya tienes creado un CV en Nuestra web?</h2>
+      <div class="flex gap-2">
+        <input type="text" pInputText [(ngModel)]="documnet" placeholder="Digita tu documneto" />
+        <p-button label="Aplicar a la oferta" />
+      </div>
+    </div>
+    <div class="chatboot">
+      <p-divider />
+      <p>Crear tu CV nunca ha sido mas facil.. ahora desde cualquier lugar con nuestro ChatBoot</p>
+      <p-button label="Crear tu SV con nuestro ChatBoot" severity="success" (onClick)="goToChatboot()" />
+    </div>
+  </div>
+</div>
