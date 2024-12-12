@@ -1,15 +1,93 @@
 <!-- eslint-disable prettier/prettier -->
 <div class="vacancies">
-  <h2>Listado de vacantes disponibles</h2>
-  <div class="vacancy-cards">
+  <div class="flex justify-content-between align-items-center">
+    <h2>Mis ofertas laborales</h2>
+    <button pButton type="button" label="Add Vacancy" class="p-button-primary" (click)="openModal()"></button>
+  </div>
+
+  <div class="filters grid gap-4">
+    <div class="filter-item col lg:col-2">
+      <label for="experienciaFilter">Experiencia:</label>
+      <p-dropdown
+        id="experienciaFilter"
+        [options]="experienciaOptions"
+        [(ngModel)]="filters.experiencia"
+        placeholder="Todas"
+        (onChange)="applyFilters()">
+      </p-dropdown>
+    </div>
+    <div class="filter-item col lg:col-2">
+      <label for="ubicacionFilter">Ubicación:</label>
+      <p-dropdown
+        id="ubicacionFilter"
+        [options]="ubicacionOptions"
+        [(ngModel)]="filters.ubicacion"
+        placeholder="Todas"
+        (onChange)="applyFilters()">
+      </p-dropdown>
+    </div>
+    <div class="filter-item col lg:col-2">
+      <label for="disponibilidadFilter">Disponibilidad:</label>
+      <p-dropdown
+        id="disponibilidadFilter"
+        [options]="disponibilidadOptions"
+        [(ngModel)]="filters.disponibilidad"
+        placeholder="Todas"
+        (onChange)="applyFilters()">
+      </p-dropdown>
+    </div>
+  </div>
+
+
+  <!-- <div class="vacancy-cards">
     <p-card
-      *ngFor="let vacancy of vacancies"
-      header="{{ vacancy.title }}"
+      *ngFor="let vacancy of filteredVacancies"
+      header="{{ vacancy.titulo }}"
       class="vacancy-card"
     >
-      <p><strong>Experience:</strong> {{ vacancy.experience }}</p>
-      <p><strong>Location:</strong> {{ vacancy.location }}</p>
+      <p><strong>Experiencia:</strong> {{ vacancy.experiencia }}</p>
+      <p><strong>Ubicación:</strong> {{ vacancy.ubicacion }}</p>
+      <p><strong>Disponibilidad:</strong> {{ vacancy.disponibilidad }}</p>
       <button pButton type="button" label="Apply" class="p-button-success"></button>
     </p-card>
+  </div> -->
+
+  <div class="vacancy-cards">
+    <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card">
+      <h3>{{ vacancy.titulo }}</h3>
+      <p>Experiencia: {{ vacancy.experiencia }}</p>
+      <p>Ubicación: {{ vacancy.ubicacion }}</p>
+      <p>Disponibilidad: {{ vacancy.disponibilidad }}</p>
+      <button
+        pButton
+        type="button"
+        label="Ver Detalle"
+        class="p-button-sm p-button-outlined"
+        (click)="navigateToCandidates(vacancy)"
+      >
+      </button>
+    </div>
   </div>
+
+  <!-- Modal -->
+  <p-dialog header="Add Vacancy" [(visible)]="modalVisible" [closable]="true" [style]="{ width: '50vw' }">
+    <div class="modal-content">
+      <p>
+        Habla los detalles de la vacante en el siguiente formato:
+        "<strong>Titulo</strong>, experiencia <strong>3 años</strong>, ubicacion <strong>remoto</strong>"
+      </p>
+
+      <p>
+        <strong>Ejemplo:</strong> enfermero experiencia 5 años ubicación pasto disponibilidad inmediata
+      </p>
+
+      <button pButton type="button" label="Start Recording" (click)="startRecording()" class="p-button-success" [disabled]="isRecording"></button>
+
+      <button pButton type="button" label="Stop Recording" (click)="stopRecording()" class="p-button-danger" *ngIf="isRecording"></button>
+
+      <p *ngIf="transcription">You said: "{{ transcription }}"</p>
+
+      <button pButton type="button" label="Save Vacancy" (click)="saveVacancy()" class="p-button-primary" [disabled]="!transcription"></button>
+    </div>
+  </p-dialog>
 </div>
