@@ -10,7 +10,7 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: 'available-offers', component: AvailableOffersComponent },
-      { path: 'init-aplication', component: InitAplicationComponent },
+      { path: 'init-aplication/:vancancieId', component: InitAplicationComponent },
       {
         path: '**',
         redirectTo: 'available-offers',

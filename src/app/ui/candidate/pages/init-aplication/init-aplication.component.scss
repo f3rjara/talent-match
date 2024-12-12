@@ -1,8 +1,21 @@
 :host {
   display: block;
   overflow: hidden;
+
+  h1{
+    color: #6429CD;
+  }
+
   .left {
     background: #942eb6;
     background: radial-gradient(at left top, #942eb6, #4c5ce4);
+  }
+
+  .image {
+    min-height: 95vh;
+    img {
+      height: 100%;
+      object-fit: cover;
+    }
   }
 }
