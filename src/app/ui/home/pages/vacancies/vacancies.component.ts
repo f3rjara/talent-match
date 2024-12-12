@@ -2,13 +2,14 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable no-console */
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
+import { VacancyService } from './services/vacancy.service';
 
 @Component({
   selector: 'app-vacancies',
@@ -17,14 +18,15 @@ import { DropdownModule } from 'primeng/dropdown';
   templateUrl: './vacancies.component.html',
   styleUrl: './vacancies.component.scss',
 })
-export class VacanciesComponent {
-  vacancies = [
+export class VacanciesComponent implements OnInit {
+  vacancies: any;
+  /*vacancies = [
     { titulo: 'Frontend Developer', experiencia: '3+ años', ubicacion: 'Remoto', disponibilidad: 'Inmediata' },
     { titulo: 'Backend Developer', experiencia: '4+ años', ubicacion: 'Presencial', disponibilidad: '15 días' },
     { titulo: 'UI/UX Designer', experiencia: '2+ años', ubicacion: 'Híbrido', disponibilidad: '1 mes' },
     { titulo: 'DevOps Engineer', experiencia: '5+ años', ubicacion: 'Remoto', disponibilidad: 'Inmediata' },
     { titulo: 'Data Scientist', experiencia: '3+ años', ubicacion: 'Remoto', disponibilidad: '15 días' },
-  ];
+  ];*/
   modalVisible = false;
   isRecording = false;
   transcription = '';
@@ -34,7 +36,8 @@ export class VacanciesComponent {
     ubicacion: '',
     disponibilidad: '',
   };
-  filteredVacancies = [...this.vacancies];
+  filteredVacancies: any
+  //filteredVacancies = [...this.vacancies];
   experienciaOptions = [
     { label: 'Todas', value: '' },
     { label: '3+ años', value: '3+ años' },
@@ -54,7 +57,23 @@ export class VacanciesComponent {
     { label: '1 mes', value: '1 mes' },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private vacancyService: VacancyService) {}
+
+  ngOnInit(): void {
+    this.getVacancies();
+  }
+
+  getVacancies() {
+    this.vacancyService.getVacancy().subscribe({
+      next: (response) => {
+        console.log('response:', response);
+        this.vacancies = response;
+        this.filteredVacancies = [...this.vacancies];
+      }, error: (error) => {
+        console.log('error:', error);
+      }
+    });
+  }
 
   openModal() {
     this.modalVisible = true;
@@ -99,7 +118,7 @@ export class VacanciesComponent {
   }
 
   applyFilters() {
-    this.filteredVacancies = this.vacancies.filter((vacancy) => {
+    this.filteredVacancies = this.vacancies.filter((vacancy: any) => {
       const matchesExperiencia = this.filters.experiencia
         ? vacancy.experiencia === this.filters.experiencia
         : true;
@@ -161,8 +180,20 @@ export class VacanciesComponent {
     };
 
     // Agregar la nueva vacante al array
-    this.vacancies.push(newVacancy);
-    this.closeModal();
+    // this.vacancies.push(newVacancy);
+    // this.closeModal();
+    this.createVacancy(newVacancy);
+  }
+
+  createVacancy(vacancy: any) {
+    this.vacancyService.createVacancy(vacancy).subscribe({
+      next: (result) => {
+        this.getVacancies();
+        this.closeModal();
+      }, error: (error) => {
+        console.log('error:', error);
+      }
+    })
   }
 
   // Capitalizar palabras (primera letra en mayúscula)
