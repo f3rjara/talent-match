@@ -2,7 +2,7 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable no-console */
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -57,7 +57,7 @@ export class VacanciesComponent implements OnInit {
     { label: '1 mes', value: '1 mes' },
   ];
 
-  constructor(private router: Router, private vacancyService: VacancyService) {}
+  constructor(private router: Router, private vacancyService: VacancyService, private ngZone: NgZone) {}
 
   ngOnInit(): void {
     this.getVacancies();
@@ -70,7 +70,7 @@ export class VacanciesComponent implements OnInit {
         this.vacancies = response;
         this.filteredVacancies = [...this.vacancies];
       }, error: (error) => {
-        console.log('error:', error);
+        console.log('error get:', error);
       }
     });
   }
@@ -92,7 +92,10 @@ export class VacanciesComponent implements OnInit {
       this.recognition.continuous = false;
 
       this.recognition.onresult = (event: any) => {
-        this.transcription = event.results[0][0].transcript;
+        this.ngZone.run(() => {
+          this.transcription = event.results[0][0].transcript;
+          console.log('Transcripción capturada:', this.transcription);
+        });
       };
 
       this.recognition.onerror = (event: any) => {
@@ -102,6 +105,10 @@ export class VacanciesComponent implements OnInit {
 
       this.recognition.onend = () => {
         this.isRecording = false;
+        if (!this.transcription) {
+          console.warn('No se capturó ninguna transcripción.');
+          alert('No se pudo capturar ninguna transcripción. Inténtalo de nuevo.');
+        }
       };
 
       this.recognition.start();
@@ -113,6 +120,7 @@ export class VacanciesComponent implements OnInit {
   stopRecording() {
     if (this.recognition) {
       this.recognition.stop();
+      console.log('Grabación detenida.');
       this.isRecording = false;
     }
   }
@@ -131,7 +139,6 @@ export class VacanciesComponent implements OnInit {
 
       return matchesExperiencia && matchesUbicacion && matchesDisponibilidad;
     });
-    console.log('Filtro: ', this.filteredVacancies);
   }
 
   saveVacancy() {
@@ -145,15 +152,15 @@ export class VacanciesComponent implements OnInit {
 
     // Extraer experiencia (buscar "experiencia X años")
     const experienciaMatch = lowerCaseTranscription.match(/experiencia (\d+\+? años?)/i);
-    const experiencia = experienciaMatch ? experienciaMatch[1].trim() : 'Por definir';
+    const experiencia = experienciaMatch ? experienciaMatch[1].trim() : '';
 
     // Extraer ubicación (buscar "ubicación palabra")
     const ubicacionMatch = lowerCaseTranscription.match(/ubicación ([a-záéíóúñ]+)/i);
-    const ubicacion = ubicacionMatch ? this.capitalize(ubicacionMatch[1].trim()) : 'Desconocida';
+    const ubicacion = ubicacionMatch ? this.capitalize(ubicacionMatch[1].trim()) : '';
 
     // Extraer disponibilidad (buscar "disponibilidad X")
     const disponibilidadMatch = lowerCaseTranscription.match(/disponibilidad ([\w\s]+)/i);
-    const disponibilidad = disponibilidadMatch ? this.capitalize(disponibilidadMatch[1].trim()) : 'No especificada';
+    const disponibilidad = disponibilidadMatch ? this.capitalize(disponibilidadMatch[1].trim()) : '';
 
     // Extraer título (todo antes de "experiencia", "ubicación" o "disponibilidad")
     const tituloEndIndex = Math.min(
@@ -191,7 +198,7 @@ export class VacanciesComponent implements OnInit {
         this.getVacancies();
         this.closeModal();
       }, error: (error) => {
-        console.log('error:', error);
+        console.log('error post:', error);
       }
     })
   }
