@@ -20,13 +20,13 @@ import { VacancyService } from './services/vacancy.service';
 })
 export class VacanciesComponent implements OnInit {
   vacancies: any;
-  /*vacancies = [
+  vacanciesMock = [
     { titulo: 'Frontend Developer', experiencia: '3+ años', ubicacion: 'Remoto', disponibilidad: 'Inmediata' },
     { titulo: 'Backend Developer', experiencia: '4+ años', ubicacion: 'Presencial', disponibilidad: '15 días' },
     { titulo: 'UI/UX Designer', experiencia: '2+ años', ubicacion: 'Híbrido', disponibilidad: '1 mes' },
     { titulo: 'DevOps Engineer', experiencia: '5+ años', ubicacion: 'Remoto', disponibilidad: 'Inmediata' },
     { titulo: 'Data Scientist', experiencia: '3+ años', ubicacion: 'Remoto', disponibilidad: '15 días' },
-  ];*/
+  ];
   modalVisible = false;
   isRecording = false;
   transcription = '';
@@ -68,9 +68,10 @@ export class VacanciesComponent implements OnInit {
       next: (response) => {
         console.log('response:', response);
         this.vacancies = response;
-        this.filteredVacancies = [...this.vacancies];
       }, error: (error) => {
         console.log('error get:', error);
+        this.vacancies = this.vacanciesMock;
+        this.filteredVacancies = [...this.vacancies];
       }
     });
   }
