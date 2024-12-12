@@ -1,0 +1,8 @@
+:host {
+  display: block;
+  overflow: hidden;
+  .left {
+    background: #942eb6;
+    background: radial-gradient(at left top, #942eb6, #4c5ce4);
+  }
+}
