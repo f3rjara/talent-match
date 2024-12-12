@@ -2,7 +2,7 @@
 <div class="vacancies">
   <div class="flex justify-content-between align-items-center">
     <h2>Mis ofertas laborales</h2>
-    <button pButton type="button" label="Add Vacancy" class="p-button-primary" (click)="openModal()"></button>
+    <button pButton type="button" label="Agregar vacante" class="p-button-primary" (click)="openModal()"></button>
   </div>
 
   <div class="filters grid gap-4">
@@ -70,24 +70,24 @@
   </div>
 
   <!-- Modal -->
-  <p-dialog header="Add Vacancy" [(visible)]="modalVisible" [closable]="true" [style]="{ width: '50vw' }">
+  <p-dialog header="Crear una vacante" [(visible)]="modalVisible" (onHide)="closeModal()" [closable]="true" [style]="{ width: '50vw' }">
     <div class="modal-content">
       <p>
         Habla los detalles de la vacante en el siguiente formato:
-        "<strong>Titulo</strong>, experiencia <strong>3 años</strong>, ubicacion <strong>remoto</strong>"
+        "<strong>Titulo</strong>, experiencia <strong>3 años</strong>, ubicacion <strong>remoto</strong>", disponibilidad <strong>inmediata</strong>
       </p>
 
       <p>
         <strong>Ejemplo:</strong> enfermero experiencia 5 años ubicación pasto disponibilidad inmediata
       </p>
 
-      <button pButton type="button" label="Start Recording" (click)="startRecording()" class="p-button-success" [disabled]="isRecording"></button>
+      <button pButton type="button" label="Iniciar grabación" (click)="startRecording()" class="p-button-success" [disabled]="isRecording"></button>
 
-      <button pButton type="button" label="Stop Recording" (click)="stopRecording()" class="p-button-danger" *ngIf="isRecording"></button>
+      <button pButton type="button" label="Detener grabación" (click)="stopRecording()" class="p-button-danger" *ngIf="isRecording"></button>
 
-      <p *ngIf="transcription">You said: "{{ transcription }}"</p>
+      <p *ngIf="transcription"><strong>Transcripción: </strong>"{{ transcription }}"</p>
 
-      <button pButton type="button" label="Save Vacancy" (click)="saveVacancy()" class="p-button-primary" [disabled]="!transcription"></button>
+      <button pButton type="button" label="Guardar vacante" (click)="saveVacancy()" class="p-button-primary" [disabled]="!transcription"></button>
     </div>
   </p-dialog>
 </div>
