@@ -13,7 +13,7 @@
   }
 
   .vacancy-card {
-    flex: 1 1 calc(33.333% - 20px); // Ajusta a 3 cards por fila
+    //flex: 1 1 calc(33.333% - 20px); // Ajusta a 3 cards por fila
     max-width: 300px;
     border: 1px solid #ccc;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -66,18 +66,18 @@
   margin-bottom: 8px;
 }
 
-.vacancies-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-}
+// .vacancies-list {
+//   display: flex;
+//   flex-wrap: wrap;
+//   gap: 16px;
+// }
 
 .vacancy-card {
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 16px;
   border-radius: 8px;
-  width: calc(33.333% - 16px);
+  //width: calc(33.333% - 16px);
   background-color: #fff;
 }
 
