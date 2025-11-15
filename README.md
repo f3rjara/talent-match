@@ -9,7 +9,7 @@
 
   <img src="https://cdn.freebiesupply.com/logos/large/2x/jest-logo-png-transparent.png" alt="jest-logo" width="100px" height="100px"/>
 
-  <img src="https://seeklogo.com/images/P/prettier-logo-D5C5197E37-seeklogo.com.png" alt="prettier-logo" width="92px" height="92px"/>
+  <img src="https://raw.githubusercontent.com/prettier/prettier-logo/refs/heads/master/images/prettier-icon-dark.svg" alt="prettier-logo" width="92px" height="102px"/>
 
   <br>
   <br>
