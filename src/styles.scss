@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 @use './src/assets/scss/global' as global;
-@use "primeng/resources/primeng.css";
-@use "primeng/resources/themes/lara-light-blue/theme.css";
-@use "primeicons/primeicons.css";
 @use 'primeflex/primeflex.scss';
+
+@import "primeicons/primeicons.css";
