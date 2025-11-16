@@ -1,6 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable max-lines-per-function */
-/* eslint-disable no-console */
 import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -69,11 +66,9 @@ export class VacanciesComponent implements OnInit {
   getVacancies() {
     this.vacancyService.getVacancy().subscribe({
       next: (response) => {
-        console.log('response:', response);
         this.vacancies = response;
       },
       error: (error) => {
-        console.log('error get:', error);
         this.vacancies = this.vacanciesMock;
         this.filteredVacancies = [...this.vacancies];
       },
@@ -99,19 +94,16 @@ export class VacanciesComponent implements OnInit {
       this.recognition.onresult = (event: any) => {
         this.ngZone.run(() => {
           this.transcription = event.results[0][0].transcript;
-          console.log('Transcripción capturada:', this.transcription);
         });
       };
 
       this.recognition.onerror = (event: any) => {
-        console.error('Error al reconocer la grabación:', event.error);
         this.isRecording = false;
       };
 
       this.recognition.onend = () => {
         this.isRecording = false;
         if (!this.transcription) {
-          console.warn('No se capturó ninguna transcripción.');
           alert('No se pudo capturar ninguna transcripción. Inténtalo de nuevo.');
         }
       };
@@ -125,7 +117,6 @@ export class VacanciesComponent implements OnInit {
   stopRecording() {
     if (this.recognition) {
       this.recognition.stop();
-      console.log('Grabación detenida.');
       this.isRecording = false;
     }
   }
@@ -163,7 +154,6 @@ export class VacanciesComponent implements OnInit {
     const disponibilidadMatch = lowerCaseTranscription.match(/disponibilidad ([\w\s]+)/i);
     const disponibilidad = disponibilidadMatch ? this.capitalize(disponibilidadMatch[1].trim()) : '';
 
-    // Extraer título (todo antes de "experiencia", "ubicación" o "disponibilidad")
     const tituloEndIndex = Math.min(
       ...['experiencia', 'ubicación', 'disponibilidad']
         .map((key) => lowerCaseTranscription.indexOf(key))
@@ -198,9 +188,6 @@ export class VacanciesComponent implements OnInit {
       next: (result) => {
         this.getVacancies();
         this.closeModal();
-      },
-      error: (error) => {
-        console.log('error post:', error);
       },
     });
   }
