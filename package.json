@@ -66,5 +66,8 @@
     "prettier-eslint": "^16.1.2",
     "ts-node": "^10.9.1",
     "typescript": "~5.8.3"
+  },
+  "overrides": {
+    "js-yaml": "^4.1.1"
   }
 }
