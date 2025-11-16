@@ -3,9 +3,8 @@ import { RouterModule } from '@angular/router';
 import { PrimeNGConfig } from 'primeng/api';
 @Component({
   selector: 'app-root',
-  template: '<router-outlet></router-outlet>',
+  template: '<router-outlet />',
   imports: [RouterModule],
-  standalone: true,
 })
 export class AppComponent implements OnInit {
   private readonly _primengConfig: PrimeNGConfig = inject(PrimeNGConfig);

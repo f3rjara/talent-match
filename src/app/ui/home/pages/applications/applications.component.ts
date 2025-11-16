@@ -18,7 +18,6 @@ interface Column {
 
 @Component({
   selector: 'app-applications',
-  standalone: true,
   imports: [CommonModule, TableModule, TagModule, ButtonModule, RatingModule, FormsModule, CardModule, DialogModule],
   templateUrl: './applications.component.html',
   styleUrl: './applications.component.scss',
@@ -31,29 +30,29 @@ export class ApplicationsComponent implements OnInit {
       name: 'Holguer Andrade',
       phone: '315 474 3845',
       email: 'holguer@gmail.com',
-      score: 'Altamente calificado'
+      score: 'Altamente calificado',
     },
     {
       id: 2,
       name: 'Fernando Jaramillo',
       phone: '315 656 1234',
       email: 'fernando@gmail.com',
-      score: 'Altamente calificado'
+      score: 'Altamente calificado',
     },
     {
       id: 3,
       name: 'Elkyn Enriquez',
       phone: '312 876 8927',
       email: 'elkyn@gmail.com',
-      score: 'Parcialmente calificado'
+      score: 'Parcialmente calificado',
     },
     {
       id: 4,
       name: 'Luis Narvaez',
       phone: '310 675 9182',
       email: 'luis@gmail.com',
-      score: 'No calificado'
-    }
+      score: 'No calificado',
+    },
   ];
   cols!: Column[];
   modalVisible = false;

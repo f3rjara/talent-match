@@ -13,7 +13,6 @@ import { VacancyService } from './services/vacancy.service';
 
 @Component({
   selector: 'app-vacancies',
-  standalone: true,
   imports: [CommonModule, FormsModule, ButtonModule, CardModule, DialogModule, DropdownModule],
   templateUrl: './vacancies.component.html',
   styleUrl: './vacancies.component.scss',
@@ -36,7 +35,7 @@ export class VacanciesComponent implements OnInit {
     ubicacion: '',
     disponibilidad: '',
   };
-  filteredVacancies: any
+  filteredVacancies: any;
   //filteredVacancies = [...this.vacancies];
   experienciaOptions = [
     { label: 'Todas', value: '' },
@@ -57,7 +56,11 @@ export class VacanciesComponent implements OnInit {
     { label: '1 mes', value: '1 mes' },
   ];
 
-  constructor(private router: Router, private vacancyService: VacancyService, private ngZone: NgZone) {}
+  constructor(
+    private router: Router,
+    private vacancyService: VacancyService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     this.getVacancies();
@@ -68,11 +71,12 @@ export class VacanciesComponent implements OnInit {
       next: (response) => {
         console.log('response:', response);
         this.vacancies = response;
-      }, error: (error) => {
+      },
+      error: (error) => {
         console.log('error get:', error);
         this.vacancies = this.vacanciesMock;
         this.filteredVacancies = [...this.vacancies];
-      }
+      },
     });
   }
 
@@ -128,12 +132,8 @@ export class VacanciesComponent implements OnInit {
 
   applyFilters() {
     this.filteredVacancies = this.vacancies.filter((vacancy: any) => {
-      const matchesExperiencia = this.filters.experiencia
-        ? vacancy.experiencia === this.filters.experiencia
-        : true;
-      const matchesUbicacion = this.filters.ubicacion
-        ? vacancy.ubicacion === this.filters.ubicacion
-        : true;
+      const matchesExperiencia = this.filters.experiencia ? vacancy.experiencia === this.filters.experiencia : true;
+      const matchesUbicacion = this.filters.ubicacion ? vacancy.ubicacion === this.filters.ubicacion : true;
       const matchesDisponibilidad = this.filters.disponibilidad
         ? vacancy.disponibilidad === this.filters.disponibilidad
         : true;
@@ -198,10 +198,11 @@ export class VacanciesComponent implements OnInit {
       next: (result) => {
         this.getVacancies();
         this.closeModal();
-      }, error: (error) => {
+      },
+      error: (error) => {
         console.log('error post:', error);
-      }
-    })
+      },
+    });
   }
 
   // Capitalizar palabras (primera letra en mayúscula)
