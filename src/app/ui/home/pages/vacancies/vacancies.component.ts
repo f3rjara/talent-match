@@ -68,6 +68,7 @@ export class VacanciesComponent implements OnInit {
       next: (response) => {
         console.log('response:', response);
         this.vacancies = response;
+        this.filteredVacancies = [...this.vacancies];
       }, error: (error) => {
         console.log('error get:', error);
         this.vacancies = this.vacanciesMock;
@@ -199,6 +200,8 @@ export class VacanciesComponent implements OnInit {
         this.getVacancies();
         this.closeModal();
       }, error: (error) => {
+        this.vacancies.push(vacancy);
+        this.closeModal();
         console.log('error post:', error);
       }
     })
