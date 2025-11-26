@@ -7,7 +7,6 @@ import { VacancyService } from './services/vacancy.service';
 
 @Component({
   selector: 'app-available-offers',
-  standalone: true,
   imports: [CommonModule, ButtonModule, CardModule],
   templateUrl: './available-offers.component.html',
   styleUrl: './available-offers.component.scss',

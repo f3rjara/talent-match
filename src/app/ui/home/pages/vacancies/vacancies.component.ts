@@ -1,6 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable max-lines-per-function */
-/* eslint-disable no-console */
 import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +10,6 @@ import { VacancyService } from './services/vacancy.service';
 
 @Component({
   selector: 'app-vacancies',
-  standalone: true,
   imports: [CommonModule, FormsModule, ButtonModule, CardModule, DialogModule, DropdownModule],
   templateUrl: './vacancies.component.html',
   styleUrl: './vacancies.component.scss',
@@ -36,7 +32,7 @@ export class VacanciesComponent implements OnInit {
     ubicacion: '',
     disponibilidad: '',
   };
-  filteredVacancies: any
+  filteredVacancies: any;
   //filteredVacancies = [...this.vacancies];
   experienciaOptions = [
     { label: 'Todas', value: '' },
@@ -57,7 +53,11 @@ export class VacanciesComponent implements OnInit {
     { label: '1 mes', value: '1 mes' },
   ];
 
-  constructor(private router: Router, private vacancyService: VacancyService, private ngZone: NgZone) {}
+  constructor(
+    private router: Router,
+    private vacancyService: VacancyService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     this.getVacancies();
@@ -66,13 +66,12 @@ export class VacanciesComponent implements OnInit {
   getVacancies() {
     this.vacancyService.getVacancy().subscribe({
       next: (response) => {
-        console.log('response:', response);
         this.vacancies = response;
-      }, error: (error) => {
-        console.log('error get:', error);
+      },
+      error: (error) => {
         this.vacancies = this.vacanciesMock;
         this.filteredVacancies = [...this.vacancies];
-      }
+      },
     });
   }
 
@@ -95,19 +94,16 @@ export class VacanciesComponent implements OnInit {
       this.recognition.onresult = (event: any) => {
         this.ngZone.run(() => {
           this.transcription = event.results[0][0].transcript;
-          console.log('Transcripción capturada:', this.transcription);
         });
       };
 
       this.recognition.onerror = (event: any) => {
-        console.error('Error al reconocer la grabación:', event.error);
         this.isRecording = false;
       };
 
       this.recognition.onend = () => {
         this.isRecording = false;
         if (!this.transcription) {
-          console.warn('No se capturó ninguna transcripción.');
           alert('No se pudo capturar ninguna transcripción. Inténtalo de nuevo.');
         }
       };
@@ -121,19 +117,14 @@ export class VacanciesComponent implements OnInit {
   stopRecording() {
     if (this.recognition) {
       this.recognition.stop();
-      console.log('Grabación detenida.');
       this.isRecording = false;
     }
   }
 
   applyFilters() {
     this.filteredVacancies = this.vacancies.filter((vacancy: any) => {
-      const matchesExperiencia = this.filters.experiencia
-        ? vacancy.experiencia === this.filters.experiencia
-        : true;
-      const matchesUbicacion = this.filters.ubicacion
-        ? vacancy.ubicacion === this.filters.ubicacion
-        : true;
+      const matchesExperiencia = this.filters.experiencia ? vacancy.experiencia === this.filters.experiencia : true;
+      const matchesUbicacion = this.filters.ubicacion ? vacancy.ubicacion === this.filters.ubicacion : true;
       const matchesDisponibilidad = this.filters.disponibilidad
         ? vacancy.disponibilidad === this.filters.disponibilidad
         : true;
@@ -163,7 +154,6 @@ export class VacanciesComponent implements OnInit {
     const disponibilidadMatch = lowerCaseTranscription.match(/disponibilidad ([\w\s]+)/i);
     const disponibilidad = disponibilidadMatch ? this.capitalize(disponibilidadMatch[1].trim()) : '';
 
-    // Extraer título (todo antes de "experiencia", "ubicación" o "disponibilidad")
     const tituloEndIndex = Math.min(
       ...['experiencia', 'ubicación', 'disponibilidad']
         .map((key) => lowerCaseTranscription.indexOf(key))
@@ -198,10 +188,8 @@ export class VacanciesComponent implements OnInit {
       next: (result) => {
         this.getVacancies();
         this.closeModal();
-      }, error: (error) => {
-        console.log('error post:', error);
-      }
-    })
+      },
+    });
   }
 
   // Capitalizar palabras (primera letra en mayúscula)

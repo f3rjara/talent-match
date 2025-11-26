@@ -7,7 +7,6 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-init-aplication',
-  standalone: true,
   imports: [InputTextModule, FormsModule, DividerModule, ButtonModule],
   templateUrl: './init-aplication.component.html',
   styleUrl: './init-aplication.component.scss',

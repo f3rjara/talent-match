@@ -6,14 +6,8 @@ import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-layout',
-  standalone: true,
-  imports: [
-    ButtonModule,
-    RouterOutlet
-  ],
+  imports: [ButtonModule, RouterOutlet],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent {
-
-}
+export class LayoutComponent {}
