@@ -4,7 +4,6 @@ html, body {
   margin: 0;
   padding: 0;
   position: relative;
-  font-family: _vars.$font-primary;
 }
 
 .container {
@@ -12,7 +11,6 @@ html, body {
   margin: 0 auto;
 }
 
-.mx-1 {
-  margin-left: 1rem;
-  margin-right: 1rem;
+.custom-bg {
+  background: _vars.$primary_purple;
 }

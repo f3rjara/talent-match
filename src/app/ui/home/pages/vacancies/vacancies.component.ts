@@ -12,7 +12,7 @@ import { VacancyService } from './services/vacancy.service';
   selector: 'app-vacancies',
   imports: [CommonModule, FormsModule, ButtonModule, CardModule, DialogModule, DropdownModule],
   templateUrl: './vacancies.component.html',
-  styleUrl: './vacancies.component.scss',
+  styleUrls: ['./vacancies.component.scss'],
 })
 export class VacanciesComponent implements OnInit {
   vacancies: any;

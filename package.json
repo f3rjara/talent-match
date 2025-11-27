@@ -1,6 +1,7 @@
 {
   "name": "flow-match-work",
   "version": "0.0.2",
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
@@ -28,9 +29,13 @@
     "@angular/router": "^19.2.15",
     "@primeng/themes": "^19.1.4",
     "@primeuix/themes": "^1.2.5",
+    "@tailwindcss/postcss": "^4.1.17",
+    "postcss": "^8.5.6",
     "primeicons": "^7.0.0",
     "primeng": "^19.0.4",
     "rxjs": "~7.8.1",
+    "tailwindcss": "^4.1.17",
+    "tailwindcss-primeui": "^0.6.1",
     "tslib": "^2.6.2",
     "zone.js": "~0.15.1"
   },
