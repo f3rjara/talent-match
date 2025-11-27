@@ -7,12 +7,10 @@
     "visualstudioexptteam.vscodeintellicode",
     "visualstudioexptteam.intellicode-api-usage-examples",
     "firsttris.vscode-jest-runner",
-    "sonarsource.sonarlint-vscode",
     "editorconfig.editorconfig",
     "cyrilletuzi.angular-schematics",
     "vivaxy.vscode-conventional-commits",
     "usernamehw.errorlens",
-    "wallabyjs.console-ninja",
     "christian-kohler.path-intellisense"
   ]
 }
