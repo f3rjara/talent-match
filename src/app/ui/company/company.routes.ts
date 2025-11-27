@@ -9,11 +9,11 @@ export const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'vacancies', component: VacanciesComponent },
-      { path: 'applications', component: ApplicationsComponent },
+      { path: 'mis-vacantes', component: VacanciesComponent },
+      { path: 'postulaciones', component: ApplicationsComponent },
       {
         path: '**',
-        redirectTo: 'vacancies',
+        redirectTo: 'mis-vacantes',
         pathMatch: 'full',
       },
     ],
