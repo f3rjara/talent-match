@@ -9,11 +9,11 @@ export const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'available-offers', component: AvailableOffersComponent },
-      { path: 'init-aplication/:vancancieId', component: InitAplicationComponent },
+      { path: 'vacantes', component: AvailableOffersComponent },
+      { path: 'aplicar/:vancancieId', component: InitAplicationComponent },
       {
         path: '**',
-        redirectTo: 'available-offers',
+        redirectTo: 'vacantes',
         pathMatch: 'full',
       },
     ],

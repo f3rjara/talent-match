@@ -4,15 +4,15 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'empresa',
     pathMatch: 'full',
   },
   {
-    path: 'home',
-    loadChildren: () => import('./ui/home/home.routes').then((home) => home.routes),
+    path: 'empresa',
+    loadChildren: () => import('./ui/company/company.routes').then((company) => company.routes),
   },
   {
-    path: 'candidate',
+    path: 'candidato',
     loadChildren: () => import('./ui/candidate/candidate.routes').then((candidate) => candidate.routes),
   },
 ];
