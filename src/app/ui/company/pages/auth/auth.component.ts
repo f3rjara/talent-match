@@ -26,13 +26,15 @@ export class AuthComponent {
   passCompany: string | undefined;
   loading: boolean = false;
 
+  private readonly REDIRECT_DELAY = 2500;
+
   load() {
     this.loading = true;
 
     setTimeout(() => {
       this.loading = false;
       this._cdr.markForCheck();
-      this._router.navigate(['/empresa/gestion/q']);
-    }, 2500);
+      this._router.navigate(['/empresa/gestion/mis-vacantes']);
+    }, this.REDIRECT_DELAY);
   }
 }
