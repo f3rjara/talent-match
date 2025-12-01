@@ -1,10 +1,11 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 import { FlowMatchPreset } from './theme.config';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 /**
  * Configuración de la aplicación, Opciones de configuración para bootstrapApplication en main.ts. providers: Proveedores de servicios para la aplicación.
@@ -16,7 +17,7 @@ import { FlowMatchPreset } from './theme.config';
 export const AppConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimations(),
     providePrimeNG({
       ripple: true,

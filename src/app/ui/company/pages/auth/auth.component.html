@@ -6,27 +6,51 @@
   <div class="content-center px-8">
     <div class="mb-4 p-8">
       <p-card header="Ingresar">
-        <p-floatlabel class="mt-8">
-          <p-inputnumber id="nit_company_lable" [(ngModel)]="nitCompany" autocomplete="off" class="w-full" />
-          <label for="nit_company_lable">Nit Empresa</label>
-        </p-floatlabel>
+        <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+          <p-floatlabel class="mt-8">
+            <input
+              pInputText
+              id="email_company_label"
+              formControlName="email"
+              autocomplete="email"
+              class="w-full"
+              [class.ng-invalid]="isFieldInvalid('email')"
+              [class.ng-dirty]="isFieldInvalid('email')" />
+            <label for="email_company_label">Email Empresa</label>
+          </p-floatlabel>
+          @if (isFieldInvalid('email')) {
+            <small class="text-red-500 block mt-1">{{ getFieldError('email') }}</small>
+          }
 
-        <p-floatlabel class="my-8">
-          <p-password
-            [(ngModel)]="passCompany"
-            inputId="pass_company"
-            autocomplete="off"
-            class="p-password-component"
-            promptLabel="Ingrese su contraseña"
-            weakLabel="Débil"
-            mediumLabel="Medio"
-            strongLabel="Fuerte" />
-          <label for="pass_company">Contraseña</label>
-        </p-floatlabel>
+          <p-floatlabel class="mt-8">
+            <p-password
+              formControlName="password"
+              inputId="pass_company"
+              autocomplete="current-password"
+              class="p-input-component"
+              [class.ng-invalid]="isFieldInvalid('password')"
+              [class.ng-dirty]="isFieldInvalid('password')"
+              [feedback]="false" />
+            <label for="pass_company">Contraseña</label>
+          </p-floatlabel>
+          @if (isFieldInvalid('password')) {
+            <small class="text-red-500 block mt-1">{{ getFieldError('password') }}</small>
+          }
 
-        <div class="card flex justify-center">
-          <p-button label="Iniciar sesión" icon="pi pi-check" [loading]="loading" (onClick)="load()" />
-        </div>
+          @if (errorMessage) {
+            <p-message severity="error" [text]="errorMessage" styleClass="w-full my-4" />
+          }
+
+          <div class="card flex justify-center mt-6">
+            <p-button
+              label="Iniciar sesión"
+              icon="pi pi-check"
+              [loading]="loading"
+              [disabled]="authForm.invalid || loading"
+              type="submit"
+              styleClass="w-full" />
+          </div>
+        </form>
       </p-card>
     </div>
   </div>
