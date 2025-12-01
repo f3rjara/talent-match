@@ -3,8 +3,8 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
 import { routes } from './app.routes';
+import { FlowMatchPreset } from './theme.config';
 
 /**
  * Configuración de la aplicación, Opciones de configuración para bootstrapApplication en main.ts. providers: Proveedores de servicios para la aplicación.
@@ -21,7 +21,7 @@ export const AppConfig: ApplicationConfig = {
     providePrimeNG({
       ripple: true,
       theme: {
-        preset: Aura,
+        preset: FlowMatchPreset,
         options: {
           darkModeSelector: '.dark-mode',
           cssLayer: {
