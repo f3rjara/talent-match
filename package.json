@@ -30,6 +30,7 @@
     "@primeng/themes": "^19.1.4",
     "@primeuix/themes": "^1.2.5",
     "@tailwindcss/postcss": "^4.1.17",
+    "angularx-qrcode": "^19.0.0",
     "postcss": "^8.5.6",
     "primeicons": "^7.0.0",
     "primeng": "^19.0.4",

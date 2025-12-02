@@ -3,6 +3,7 @@ import { LayoutComponent } from './pages/layout/layout.component';
 import { VacanciesComponent } from './pages/vacancies/vacancies.component';
 import { ApplicationsComponent } from './pages/applications/applications.component';
 import { AuthComponent } from './pages/auth/auth.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 export const routes: Routes = [
   {
@@ -16,6 +17,7 @@ export const routes: Routes = [
     children: [
       { path: 'mis-vacantes', component: VacanciesComponent },
       { path: 'postulaciones', component: ApplicationsComponent },
+      { path: 'perfil', component: ProfileComponent },
       {
         path: '**',
         redirectTo: 'mis-vacantes',
