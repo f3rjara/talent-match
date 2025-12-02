@@ -270,57 +270,92 @@ export class VacanciesComponent implements OnInit {
       return;
     }
 
-    // Convertir la transcripción a minúsculas para un análisis consistente
     const lowerCaseTranscription = this.transcription.toLowerCase();
-    console.log(lowerCaseTranscription);
+    console.log('📝 Transcripción recibida:', lowerCaseTranscription);
 
-    // Extraer experiencia (buscar "experiencia X años")
-    const experienciaMatch = lowerCaseTranscription.match(/experiencia (\d+\+? años?)/i);
-    const experiencia = experienciaMatch ? experienciaMatch[1].trim() : '';
-
-    // Extraer ubicación (buscar "ubicación palabra")
-    const ubicacionMatch = lowerCaseTranscription.match(/ubicación ([a-záéíóúñ]+)/i);
-    const ubicacion = ubicacionMatch ? this.capitalize(ubicacionMatch[1].trim()) : '';
-
-    // Extraer disponibilidad (buscar "disponibilidad X")
-    const disponibilidadMatch = lowerCaseTranscription.match(/disponibilidad ([\w\s]+)/i);
-    const disponibilidad = disponibilidadMatch ? this.capitalize(disponibilidadMatch[1].trim()) : '';
-
+    // Lista de todas las palabras clave
+    const keywords = ['experiencia', 'ubicación', 'ubicacion', 'disponibilidad', 'descripción', 'descripcion', 'skills', 'habilidades'];
+    
+    // Extraer título (todo antes de la primera palabra clave)
     const tituloEndIndex = Math.min(
-      ...['experiencia', 'ubicación', 'disponibilidad']
+      ...keywords
         .map((key) => lowerCaseTranscription.indexOf(key))
         .filter((index) => index > -1)
     );
-    const titulo = tituloEndIndex > 0 ? this.capitalize(lowerCaseTranscription.slice(0, tituloEndIndex).trim()) : '';
+    const titulo = tituloEndIndex > 0 
+      ? this.capitalize(lowerCaseTranscription.slice(0, tituloEndIndex).trim()) 
+      : this.capitalize(lowerCaseTranscription.trim());
 
-    // Validar que las propiedades se hayan capturado correctamente
-    if (!titulo || !experiencia || !ubicacion || !disponibilidad) {
+    // Validar título obligatorio
+    if (!titulo) {
       this.messageService.add({
         severity: 'warn',
-        summary: 'Formato incorrecto',
-        detail: 'Por favor, hable en el formato: "Título experiencia X años ubicación Y disponibilidad Z".',
+        summary: 'Título requerido',
+        detail: 'Por favor, menciona al menos el título del cargo.',
         life: 5000
       });
       return;
     }
 
-    // Crear el objeto de la nueva vacante con el esquema nuevo
+    // Extraer campos opcionales con regex mejorado
+    const experiencia = this.extractField(lowerCaseTranscription, /experiencia\s+([^,]+?)(?=\s+(?:ubicaci[oó]n|disponibilidad|descripci[oó]n|skills|habilidades)|$)/i) || '';
+    const ubicacion = this.extractField(lowerCaseTranscription, /ubicaci[oó]n\s+([^,]+?)(?=\s+(?:experiencia|disponibilidad|descripci[oó]n|skills|habilidades)|$)/i) || '';
+    const disponibilidad = this.extractField(lowerCaseTranscription, /disponibilidad\s+([^,]+?)(?=\s+(?:experiencia|ubicaci[oó]n|descripci[oó]n|skills|habilidades)|$)/i) || '';
+    const descripcion = this.extractField(lowerCaseTranscription, /descripci[oó]n\s+([^,]+?)(?=\s+(?:experiencia|ubicaci[oó]n|disponibilidad|skills|habilidades)|$)/i) || '';
+    
+    // Extraer skills (separadas por espacios, no por comas)
+    const skillsMatch = lowerCaseTranscription.match(/(skills|habilidades):?\s+(.+?)(?=\s+(?:experiencia|ubicaci[oó]n|disponibilidad|descripci[oó]n)|$)/i);
+    const skillsText = skillsMatch ? skillsMatch[2].trim() : '';
+    const skillsArray = skillsText ? skillsText.split(/\s+/).map(s => s.trim()).filter(s => s) : [];
+
+    // Crear objeto de vacante
     const newVacancy: any = {
       title: titulo,
       experienceRequired: experiencia,
       location: ubicacion,
       availability: disponibilidad,
-      description: `Vacante para ${titulo} con ${experiencia} de experiencia.`,
+      description: descripcion || `Vacante para ${titulo}.`,
       status: 'draft',
       matchingCriteria: {
-        technicalSkills: { required: [], preferred: [], weight: 0.4 },
+        technicalSkills: { 
+          required: skillsArray, 
+          preferred: [], 
+          weight: 0.4 
+        },
         behavioralCompetencies: { required: [], weight: 0.3 },
         cognitiveSkills: { required: [], weight: 0.3 }
       }
     };
 
-    // Agregar la nueva vacante al array
+    // Preparar lista de campos capturados para el toast
+    const capturedFields = ['Título'];
+    if (experiencia) capturedFields.push('Experiencia');
+    if (ubicacion) capturedFields.push('Ubicación');
+    if (disponibilidad) capturedFields.push('Disponibilidad');
+    if (descripcion) capturedFields.push('Descripción');
+    if (skillsArray.length > 0) capturedFields.push(`${skillsArray.length} Skills`);
+
+    console.log('✅ Campos detectados:', capturedFields);
+
+    // Mostrar toast informativo
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Campos detectados',
+      detail: capturedFields.join(', '),
+      life: 3000
+    });
+
+    // Crear la vacante
     this.createVacancy(newVacancy);
+  }
+
+  // Método auxiliar para extraer campos con regex
+  private extractField(text: string, regex: RegExp): string {
+    const match = text.match(regex);
+    if (match && match[1]) {
+      return this.capitalize(match[1].trim());
+    }
+    return '';
   }
 
   createVacancy(vacancy: any) {
