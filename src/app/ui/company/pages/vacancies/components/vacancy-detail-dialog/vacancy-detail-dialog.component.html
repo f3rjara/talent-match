@@ -1,0 +1,139 @@
+<p-dialog
+  [(visible)]="isVisible"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="vacancy-detail-dialog"
+  [header]="vacancy?.title || 'Detalle de Vacante'"
+  (onHide)="closeDialog()">
+  <div class="detail-content" *ngIf="vacancy">
+    <p-tabView>
+      <!-- Tab: Información General -->
+      <p-tabPanel header="Información General">
+        <div class="info-section">
+          <div class="info-row">
+            <span class="label">Título:</span>
+            <span class="value">{{ vacancy.title || 'Sin título' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Estado:</span>
+            <span class="status-badge" [ngClass]="'status-' + (vacancy.status || 'draft')">
+              {{ getStatusLabel(vacancy.status) }}
+            </span>
+          </div>
+          <div class="info-row" *ngIf="vacancy.experienceRequired">
+            <span class="label">Experiencia Requerida:</span>
+            <span class="value">{{ vacancy.experienceRequired }}</span>
+          </div>
+          <div class="info-row" *ngIf="vacancy.location">
+            <span class="label">Ubicación:</span>
+            <span class="value">{{ vacancy.location }}</span>
+          </div>
+          <div class="info-row" *ngIf="vacancy.availability">
+            <span class="label">Disponibilidad:</span>
+            <span class="value">{{ vacancy.availability }}</span>
+          </div>
+          <div class="info-row full-width" *ngIf="vacancy.description">
+            <span class="label">Descripción:</span>
+            <p class="value description">{{ vacancy.description }}</p>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab: Habilidades Técnicas -->
+      <p-tabPanel header="Habilidades Técnicas" *ngIf="vacancy.matchingCriteria?.technicalSkills">
+        <div class="skills-section">
+          <div class="skill-group" *ngIf="vacancy.matchingCriteria.technicalSkills.required?.length">
+            <h4>Requeridas</h4>
+            <div class="chips-container">
+              <p-chip
+                *ngFor="let skill of vacancy.matchingCriteria.technicalSkills.required"
+                [label]="skill"
+                styleClass="skill-chip required">
+              </p-chip>
+            </div>
+          </div>
+
+          <div class="skill-group" *ngIf="vacancy.matchingCriteria.technicalSkills.preferred?.length">
+            <h4>Preferidas</h4>
+            <div class="chips-container">
+              <p-chip
+                *ngFor="let skill of vacancy.matchingCriteria.technicalSkills.preferred"
+                [label]="skill"
+                styleClass="skill-chip preferred">
+              </p-chip>
+            </div>
+          </div>
+
+          <div class="weight-badge" *ngIf="vacancy.matchingCriteria.technicalSkills.weight">
+            Peso: {{ vacancy.matchingCriteria.technicalSkills.weight * 100 | number: '1.0-0' }}%
+          </div>
+
+          <p
+            *ngIf="
+              !vacancy.matchingCriteria.technicalSkills.required?.length &&
+              !vacancy.matchingCriteria.technicalSkills.preferred?.length
+            "
+            class="no-data">
+            No se han definido habilidades técnicas.
+          </p>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab: Competencias Conductuales -->
+      <p-tabPanel header="Competencias Conductuales" *ngIf="vacancy.matchingCriteria?.behavioralCompetencies">
+        <div class="skills-section">
+          <div class="skill-group" *ngIf="vacancy.matchingCriteria.behavioralCompetencies.required?.length">
+            <h4>Requeridas</h4>
+            <div class="chips-container">
+              <p-chip
+                *ngFor="let competency of vacancy.matchingCriteria.behavioralCompetencies.required"
+                [label]="competency"
+                styleClass="skill-chip behavioral">
+              </p-chip>
+            </div>
+          </div>
+
+          <div class="weight-badge" *ngIf="vacancy.matchingCriteria.behavioralCompetencies.weight">
+            Peso: {{ vacancy.matchingCriteria.behavioralCompetencies.weight * 100 | number: '1.0-0' }}%
+          </div>
+
+          <p *ngIf="!vacancy.matchingCriteria.behavioralCompetencies.required?.length" class="no-data">
+            No se han definido competencias conductuales.
+          </p>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab: Habilidades Cognitivas -->
+      <p-tabPanel header="Habilidades Cognitivas" *ngIf="vacancy.matchingCriteria?.cognitiveSkills">
+        <div class="skills-section">
+          <div class="skill-group" *ngIf="vacancy.matchingCriteria.cognitiveSkills.required?.length">
+            <h4>Requeridas</h4>
+            <div class="chips-container">
+              <p-chip
+                *ngFor="let skill of vacancy.matchingCriteria.cognitiveSkills.required"
+                [label]="skill"
+                styleClass="skill-chip cognitive">
+              </p-chip>
+            </div>
+          </div>
+
+          <div class="weight-badge" *ngIf="vacancy.matchingCriteria.cognitiveSkills.weight">
+            Peso: {{ vacancy.matchingCriteria.cognitiveSkills.weight * 100 | number: '1.0-0' }}%
+          </div>
+
+          <p *ngIf="!vacancy.matchingCriteria.cognitiveSkills.required?.length" class="no-data">
+            No se han definido habilidades cognitivas.
+          </p>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <p-button label="Cerrar" icon="pi pi-times" (onClick)="closeDialog()" styleClass="p-button-text"> </p-button>
+    </div>
+  </ng-template>
+</p-dialog>

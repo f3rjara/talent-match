@@ -2,26 +2,120 @@ import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { VacancyService } from './services/vacancy.service';
+import { VacancyFormComponent } from './components/vacancy-form/vacancy-form.component';
+import { VacancyDetailDialogComponent } from './components/vacancy-detail-dialog/vacancy-detail-dialog.component';
+import { Vacancy } from './models/vacancy.interface';
 
 @Component({
   selector: 'app-vacancies',
-  imports: [CommonModule, FormsModule, ButtonModule, CardModule, DialogModule, DropdownModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonModule,
+    CardModule,
+    DialogModule,
+    DropdownModule,
+    VacancyFormComponent,
+    VacancyDetailDialogComponent,
+    ToastModule,
+    ConfirmDialogModule
+  ],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './vacancies.component.html',
   styleUrls: ['./vacancies.component.scss'],
+  animations: [
+    trigger('fadeOut', [
+      state('visible', style({ opacity: 1, transform: 'translateX(0)' })),
+      state('hidden', style({ opacity: 0, transform: 'translateX(-100px)' })),
+      transition('visible => hidden', animate('300ms ease-out'))
+    ])
+  ]
 })
 export class VacanciesComponent implements OnInit {
   vacancies: any;
-  vacanciesMock = [
-    { titulo: 'Frontend Developer', experiencia: '3+ años', ubicacion: 'Remoto', disponibilidad: 'Inmediata' },
-    { titulo: 'Backend Developer', experiencia: '4+ años', ubicacion: 'Presencial', disponibilidad: '15 días' },
-    { titulo: 'UI/UX Designer', experiencia: '2+ años', ubicacion: 'Híbrido', disponibilidad: '1 mes' },
-    { titulo: 'DevOps Engineer', experiencia: '5+ años', ubicacion: 'Remoto', disponibilidad: 'Inmediata' },
-    { titulo: 'Data Scientist', experiencia: '3+ años', ubicacion: 'Remoto', disponibilidad: '15 días' },
+  vacanciesMock: Vacancy[] = [
+    {
+      id: 'mock-1',
+      title: "Senior Software Engineer",
+      experienceRequired: "5 years in software development",
+      location: "Remote / Pasto, Nariño",
+      availability: "Full-time, immediate start",
+      description: "Buscamos un Ingeniero de Software Senior con amplia experiencia en desarrollo web full-stack. El candidato ideal tendrá sólidos conocimientos en JavaScript/TypeScript, frameworks modernos como React y Node.js, y experiencia liderando equipos técnicos.",
+      matchingCriteria: {
+        technicalSkills: {
+          required: ["JavaScript", "TypeScript", "Node.js", "Git"],
+          preferred: ["React", "NestJS", "MongoDB", "Docker", "AWS"],
+          weight: 0.4
+        },
+        behavioralCompetencies: {
+          required: ["Leadership", "Communication", "Teamwork", "Problem Solving"],
+          weight: 0.3
+        },
+        cognitiveSkills: {
+          required: ["Problem Solving", "Analytical Thinking", "Creativity", "Critical Thinking"],
+          weight: 0.3
+        }
+      },
+      status: "published"
+    },
+    {
+      id: 'mock-2',
+      title: "Practicante de Contabilidad",
+      experienceRequired: "Estudiante de últimos semestres de Contaduría Pública",
+      location: "Pasto, Nariño",
+      availability: "Tiempo completo (prácticas universitarias)",
+      description: "Buscamos un estudiante de Contaduría Pública en últimos semestres para realizar prácticas profesionales en nuestro departamento contable. El practicante apoyará en conciliaciones bancarias, depuración de cuentas y preparación de informes financieros.",
+      matchingCriteria: {
+        technicalSkills: {
+          required: ["Contabilidad general", "Manejo de Excel", "Normativa NIIF"],
+          preferred: ["Manejo de software contable", "Análisis financiero", "Power BI"],
+          weight: 0.4
+        },
+        behavioralCompetencies: {
+          required: ["Responsabilidad", "Orden y precisión", "Integridad", "Proactividad"],
+          weight: 0.3
+        },
+        cognitiveSkills: {
+          required: ["Pensamiento numérico", "Atención al detalle", "Capacidad analítica", "Organización"],
+          weight: 0.3
+        }
+      },
+      status: "published"
+    },
+    {
+      id: 'mock-3',
+      title: "Diseñador UX/UI",
+      experienceRequired: "3+ años en diseño de interfaces",
+      location: "Híbrido - Pasto, Nariño",
+      availability: "Tiempo completo",
+      description: "Buscamos un Diseñador UX/UI creativo y orientado al usuario para nuestro equipo de producto. Serás responsable de diseñar experiencias intuitivas y atractivas para nuestras aplicaciones web y móviles.",
+      matchingCriteria: {
+        technicalSkills: {
+          required: ["Figma", "Adobe XD", "Prototipado", "Design Systems"],
+          preferred: ["HTML/CSS", "After Effects", "Illustrator"],
+          weight: 0.4
+        },
+        behavioralCompetencies: {
+          required: ["Creatividad", "Comunicación", "Empatía", "Colaboración"],
+          weight: 0.3
+        },
+        cognitiveSkills: {
+          required: ["Pensamiento visual", "Resolución de problemas", "Atención al detalle"],
+          weight: 0.3
+        }
+      },
+      status: "draft"
+    }
   ];
   modalVisible = false;
   isRecording = false;
@@ -33,7 +127,6 @@ export class VacanciesComponent implements OnInit {
     disponibilidad: '',
   };
   filteredVacancies: any;
-  //filteredVacancies = [...this.vacancies];
   experienciaOptions = [
     { label: 'Todas', value: '' },
     { label: '3+ años', value: '3+ años' },
@@ -53,14 +146,42 @@ export class VacanciesComponent implements OnInit {
     { label: '1 mes', value: '1 mes' },
   ];
 
+  // Propiedades para el formulario de edición
+  editingVacancy: Vacancy | null = null;
+  showEditModal: boolean = false;
+
+  // Propiedades para el diálogo de detalles
+  selectedVacancy: Vacancy | null = null;
+  showDetailDialog: boolean = false;
+
+  // Propiedades para el sistema undo/deshacer
+  deletedVacancy: Vacancy | null = null;
+  deletedVacancyIndex: number = -1;
+  undoTimeout: any = null;
+
+  // Estado de animación para cada vacante
+  vacancyStates: Map<string, string> = new Map();
+
   constructor(
     private router: Router,
     private vacancyService: VacancyService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
+    console.log('🚀 ngOnInit - Inicializando componente de vacantes');
     this.getVacancies();
+  }
+
+  // Getters para contador de vacantes
+  get totalVacancies(): number {
+    return this.vacancies ? this.vacancies.length : 0;
+  }
+
+  get filteredVacanciesCount(): number {
+    return this.filteredVacancies ? this.filteredVacancies.length : 0;
   }
 
   getVacancies() {
@@ -68,10 +189,19 @@ export class VacanciesComponent implements OnInit {
       next: (response) => {
         this.vacancies = response;
         this.filteredVacancies = [...this.vacancies];
+        console.log('✅ Vacantes cargadas desde API:', this.vacancies);
+        console.log('✅ Vacantes filtradas:', this.filteredVacancies);
       },
       error: (error) => {
+        console.warn('⚠️ Error al cargar vacantes desde API, usando mock data:', error);
         this.vacancies = this.vacanciesMock;
+        // Asegurar que tengan IDs
+        this.vacancies.forEach((v: any, index: number) => {
+          if (!v.id) v.id = `mock-${index}`;
+        });
         this.filteredVacancies = [...this.vacancies];
+        console.log('✅ Vacantes mock cargadas:', this.vacancies);
+        console.log('✅ Total de vacantes:', this.vacancies.length);
       },
     });
   }
@@ -142,6 +272,7 @@ export class VacanciesComponent implements OnInit {
 
     // Convertir la transcripción a minúsculas para un análisis consistente
     const lowerCaseTranscription = this.transcription.toLowerCase();
+    console.log(lowerCaseTranscription);
 
     // Extraer experiencia (buscar "experiencia X años")
     const experienciaMatch = lowerCaseTranscription.match(/experiencia (\d+\+? años?)/i);
@@ -164,35 +295,70 @@ export class VacanciesComponent implements OnInit {
 
     // Validar que las propiedades se hayan capturado correctamente
     if (!titulo || !experiencia || !ubicacion || !disponibilidad) {
-      alert(
-        'No se pudieron identificar todas las propiedades. Por favor, hable en el formato: "Título experiencia X años ubicación Y disponibilidad Z".'
-      );
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Formato incorrecto',
+        detail: 'Por favor, hable en el formato: "Título experiencia X años ubicación Y disponibilidad Z".',
+        life: 5000
+      });
       return;
     }
 
-    // Crear el objeto de la nueva vacante
-    const newVacancy = {
-      titulo,
-      experiencia,
-      ubicacion,
-      disponibilidad,
+    // Crear el objeto de la nueva vacante con el esquema nuevo
+    const newVacancy: any = {
+      title: titulo,
+      experienceRequired: experiencia,
+      location: ubicacion,
+      availability: disponibilidad,
+      description: `Vacante para ${titulo} con ${experiencia} de experiencia.`,
+      status: 'draft',
+      matchingCriteria: {
+        technicalSkills: { required: [], preferred: [], weight: 0.4 },
+        behavioralCompetencies: { required: [], weight: 0.3 },
+        cognitiveSkills: { required: [], weight: 0.3 }
+      }
     };
 
     // Agregar la nueva vacante al array
-    // this.vacancies.push(newVacancy);
-    // this.closeModal();
     this.createVacancy(newVacancy);
   }
 
   createVacancy(vacancy: any) {
     this.vacancyService.createVacancy(vacancy).subscribe({
-      next: (result) => {
-        this.getVacancies();
+      next: (_result: any) => {
+        console.log('✅ Respuesta de creación (Voz) desde API:', _result);
+        
+        // Si la API devuelve el objeto con ID, usarlo.
+        // Si no, usar el objeto local con un ID temporal.
+        const createdVacancy = (_result && _result.id) ? _result : { ...vacancy, id: 'voice-' + Date.now() };
+        
+        this.vacancies.push(createdVacancy);
+        this.vacancies = [...this.vacancies]; // Forzar cambio de referencia
+        this.filteredVacancies = [...this.vacancies];
+        
         this.closeModal();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Vacante creada',
+          detail: `La vacante "${vacancy.title}" ha sido creada exitosamente.`,
+          life: 3000
+        });
       },
-      error: (error) => {
-        this.vacancies.push(vacancy);
+      error: (_error: any) => {
+        // Fallback local
+        const createdVacancy = { ...vacancy, id: 'voice-local-' + Date.now() };
+        
+        this.vacancies.push(createdVacancy);
+        this.vacancies = [...this.vacancies];
+        this.filteredVacancies = [...this.vacancies];
+        
         this.closeModal();
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Vacante agregada localmente',
+          detail: `La vacante "${vacancy.title}" ha sido agregada (sin conexión).`,
+          life: 3000
+        });
       },
     });
   }
@@ -204,5 +370,225 @@ export class VacanciesComponent implements OnInit {
 
   navigateToCandidates(vacancy: any): void {
     this.router.navigate(['/home/applications'], { queryParams: { titulo: vacancy.titulo } });
+  }
+
+  // Métodos para visualización de detalles
+  viewVacancyDetail(vacancy: Vacancy): void {
+    this.selectedVacancy = vacancy;
+    this.showDetailDialog = true;
+  }
+
+  closeDetailDialog(): void {
+    this.showDetailDialog = false;
+    this.selectedVacancy = null;
+  }
+
+  // Métodos para edición de vacantes
+  editVacancy(vacancy: any): void {
+    this.editingVacancy = { ...vacancy };
+    this.showEditModal = true;
+  }
+
+  handleSaveVacancy(updatedVacancy: Vacancy): void {
+    console.log('📝 handleSaveVacancy llamado con:', updatedVacancy);
+    
+    if (updatedVacancy.id) {
+      // Editando vacante existente
+      console.log('✏️ Editando vacante existente con ID:', updatedVacancy.id);
+      this.vacancyService.updateVacancy(updatedVacancy.id!, updatedVacancy).subscribe({
+        next: (_response: any) => {
+          const index = this.vacancies.findIndex((v: any) => v.id === updatedVacancy.id);
+          if (index !== -1) {
+            this.vacancies[index] = updatedVacancy;
+            this.filteredVacancies = [...this.vacancies];
+            console.log('✅ Vacante actualizada en índice:', index);
+            console.log('✅ Array de vacantes después de actualizar:', this.vacancies);
+          }
+          this.closeEditModal();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: `La vacante "${updatedVacancy.title}" ha sido actualizada correctamente.`,
+            life: 3000
+          });
+        },
+        error: (_error: any) => {
+          console.warn('⚠️ Error al actualizar en API, actualizando localmente');
+          const index = this.vacancies.findIndex((v: any) => v.id === updatedVacancy.id);
+          if (index !== -1) {
+            this.vacancies[index] = updatedVacancy;
+            this.filteredVacancies = [...this.vacancies];
+          }
+          this.closeEditModal();
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Actualización local',
+            detail: `La vacante "${updatedVacancy.title}" ha sido actualizada localmente (sin conexión).`,
+            life: 3000
+          });
+        },
+      });
+    } else {
+      // Creando nueva vacante
+      console.log('➕ Creando nueva vacante');
+      console.log('📊 Estado antes de agregar - Total vacantes:', this.vacancies?.length || 0);
+      
+      this.vacancyService.createVacancy(updatedVacancy).subscribe({
+        next: (_response: any) => {
+          console.log('✅ Respuesta de creación desde API:', _response);
+          
+          // Si la API devuelve el objeto con ID, usarlo.
+          // Si no, usar el objeto local con un ID temporal para asegurar que se muestre.
+          const createdVacancy = (_response && _response.id) ? _response : { ...updatedVacancy, id: 'local-' + Date.now() };
+          
+          this.vacancies.push(createdVacancy);
+          this.vacancies = [...this.vacancies]; // Forzar cambio de referencia
+          this.filteredVacancies = [...this.vacancies];
+          
+          this.closeEditModal();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: `La vacante "${updatedVacancy.title}" ha sido creada correctamente.`,
+            life: 3000
+          });
+        },
+        error: (_error: any) => {
+          console.warn('⚠️ Error al crear en API, agregando localmente:', _error);
+          
+          // Generar ID temporal para manejo local
+          const newVacancyWithId = { 
+            ...updatedVacancy, 
+            id: 'local-' + Date.now() 
+          };
+          
+          this.vacancies.push(newVacancyWithId);
+          // Forzar actualización de referencia para detección de cambios
+          this.vacancies = [...this.vacancies];
+          this.filteredVacancies = [...this.vacancies];
+          
+          console.log('✅ Vacante agregada localmente con ID:', newVacancyWithId.id);
+          console.log('📊 Estado después de agregar - Total vacantes:', this.vacancies.length);
+          
+          this.closeEditModal();
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Vacante agregada localmente',
+            detail: `La vacante "${updatedVacancy.title}" ha sido agregada (sin conexión).`,
+            life: 3000
+          });
+        },
+      });
+    }
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.editingVacancy = null;
+  }
+
+  deleteVacancy(vacancy: any): void {
+    this.confirmationService.confirm({
+      message: `¿Estás seguro de que deseas eliminar la vacante "${vacancy.titulo || vacancy.title}"?`,
+      header: 'Confirmar Eliminación',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí, eliminar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        // Guardar información para undo
+        const index = this.vacancies.findIndex((v: any) => 
+          v.id ? v.id === vacancy.id : (v.title === vacancy.title || v.titulo === vacancy.titulo)
+        );
+        this.deletedVacancy = { ...vacancy };
+        this.deletedVacancyIndex = index;
+
+        // Eliminar de la vista inmediatamente
+        if (index !== -1) {
+          this.vacancies.splice(index, 1);
+          this.applyFilters();
+        }
+
+        // Mostrar toast con opción de deshacer
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Vacante eliminada',
+          detail: `"${vacancy.titulo || vacancy.title}" ha sido eliminada. Tienes 5 segundos para deshacer.`,
+          sticky: true,
+          key: 'deleteToast',
+          icon: 'pi pi-trash',
+          data: { vacancy }
+        });
+
+        // Configurar timeout para confirmar eliminación
+        this.undoTimeout = setTimeout(() => {
+          this.confirmDelete();
+        }, 5000);
+      }
+    });
+  }
+
+  undoDelete(): void {
+    if (this.deletedVacancy && this.deletedVacancyIndex !== -1) {
+      // Cancelar timeout
+      if (this.undoTimeout) {
+        clearTimeout(this.undoTimeout);
+        this.undoTimeout = null;
+      }
+
+      // Restaurar vacante
+      this.vacancies.splice(this.deletedVacancyIndex, 0, this.deletedVacancy);
+      this.applyFilters();
+
+      // Limpiar toast
+      this.messageService.clear('deleteToast');
+
+      // Mostrar confirmación
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Eliminación cancelada',
+        detail: `La vacante "${this.deletedVacancy.title || this.deletedVacancy.titulo}" ha sido restaurada.`,
+        life: 3000
+      });
+
+      // Limpiar variables
+      this.deletedVacancy = null;
+      this.deletedVacancyIndex = -1;
+    }
+  }
+
+  confirmDelete(): void {
+    if (this.deletedVacancy) {
+      // Limpiar toast
+      this.messageService.clear('deleteToast');
+
+      // Si tiene ID, eliminar del servidor
+      if (this.deletedVacancy.id) {
+        this.vacancyService.deleteVacancy(this.deletedVacancy.id).subscribe({
+          next: (_result: any) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Eliminación confirmada',
+              detail: `La vacante "${this.deletedVacancy?.title || this.deletedVacancy?.titulo}" ha sido eliminada permanentemente.`,
+              life: 3000
+            });
+          },
+          error: (_error: any) => {
+            // Ya fue eliminada localmente, solo mostrar mensaje
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Eliminación local',
+              detail: 'La vacante fue eliminada localmente (sin conexión).',
+              life: 3000
+            });
+          },
+        });
+      }
+
+      // Limpiar variables
+      this.deletedVacancy = null;
+      this.deletedVacancyIndex = -1;
+      this.undoTimeout = null;
+    }
   }
 }

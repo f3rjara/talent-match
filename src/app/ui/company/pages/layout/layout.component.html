@@ -1,11 +1,11 @@
-<div class="h-dvh flex flex-col">
+<div class="min-h-screen flex flex-col">
   <header class="layout-header bg-primary">
     <div class="container flex items-center justify-between py-4">
       <img src="assets/images/logo-flow-match.png" alt="Logo de Flow Match" class="max-w-[120px] w-full" />
       <p-menubar [model]="items" styleClass="bg-primary text-white border-none" />
     </div>
   </header>
-  <main class="container h-full flex-grow py-8">
+  <main class="container flex-grow py-8">
     <router-outlet></router-outlet>
   </main>
   <footer class="layout-footer bg-gray-100 text-center p-4">

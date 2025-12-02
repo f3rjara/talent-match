@@ -15,4 +15,12 @@ export class VacancyService {
   createVacancy(data: any): Observable<any> {
     return this.http.post(`http://localhost:3000/api/vacancy`, data);
   }
+
+  updateVacancy(id: string, data: any): Observable<any> {
+    return this.http.put(`http://localhost:3000/api/vacancy/${id}`, data);
+  }
+
+  deleteVacancy(id: string): Observable<any> {
+    return this.http.delete(`http://localhost:3000/api/vacancy/${id}`);
+  }
 }
