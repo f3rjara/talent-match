@@ -22,6 +22,18 @@ export const FlowMatchPreset = definePreset(Aura, {
         900: '{zinc.900}',
         950: '{zinc.950}',
       },
+      primary: {
+        color: '{zinc.950}',
+        inverseColor: '#ffffff',
+        hoverColor: '{zinc.900}',
+        activeColor: '{zinc.800}',
+      },
+      highlight: {
+        background: '{zinc.950}',
+        focusBackground: '{zinc.700}',
+        color: '#ffffff',
+        focusColor: '#ffffff',
+      },
     },
     dark: {
       surface: {
@@ -37,6 +49,18 @@ export const FlowMatchPreset = definePreset(Aura, {
         800: '{slate.800}',
         900: '{slate.900}',
         950: '{slate.950}',
+      },
+      primary: {
+        color: '{zinc.50}',
+        inverseColor: '{zinc.950}',
+        hoverColor: '{zinc.100}',
+        activeColor: '{zinc.200}',
+      },
+      highlight: {
+        background: 'rgba(250, 250, 250, .16)',
+        focusBackground: 'rgba(250, 250, 250, .24)',
+        color: 'rgba(255,255,255,.87)',
+        focusColor: 'rgba(255,255,255,.87)',
       },
     },
   },

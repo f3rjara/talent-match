@@ -1,17 +1,14 @@
-<!-- eslint-disable prettier/prettier -->
-<div class="layout-container">
-  <header class="layout-header">
-    <h1>Hackathon App</h1>
-    <nav>
-      <!-- <a href="#" class="nav-link">Home</a>
-      <a href="#" class="nav-link">Vacancies</a>
-      <a href="#" class="nav-link">Contact</a> -->
-    </nav>
+<div class="h-dvh flex flex-col">
+  <header class="layout-header bg-primary">
+    <div class="container flex items-center justify-between py-4">
+      <img src="assets/images/logo-flow-match.png" alt="Logo de Flow Match" class="max-w-[120px] w-full" />
+      <p-menubar [model]="items" styleClass="bg-primary text-white border-none" />
+    </div>
   </header>
-  <main class="layout-content">
+  <main class="container h-full flex-grow py-8">
     <router-outlet></router-outlet>
   </main>
-  <footer class="layout-footer">
-    <p>© 2024 Hackathon Project. All rights reserved.</p>
+  <footer class="layout-footer bg-gray-100 text-center p-4">
+    <p>© 2025 Flow Match Project. All rights reserved.</p>
   </footer>
 </div>
