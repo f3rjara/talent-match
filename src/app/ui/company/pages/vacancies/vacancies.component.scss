@@ -86,6 +86,42 @@
   color: #6366f1;
 }
 
+.card-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+
+  h3 {
+    margin: 0;
+    flex: 1;
+  }
+
+  .status-badge {
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.status-draft {
+      background: #f59e0b;
+      color: white;
+    }
+
+    &.status-published {
+      background: #10b981;
+      color: white;
+    }
+
+    &.status-closed {
+      background: #6b7280;
+      color: white;
+    }
+  }
+}
+
 .vacancy-actions {
   display: flex;
   gap: 10px;

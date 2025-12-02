@@ -92,10 +92,15 @@
 
   <div class="vacancy-cards grid">
     <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card col-12">
-      <h3>{{ vacancy.titulo }}</h3>
-      <p><strong>Experiencia:</strong> {{ vacancy.experiencia }}</p>
-      <p><strong>Ubicación:</strong> {{ vacancy.ubicacion }}</p>
-      <p><strong>Disponibilidad:</strong> {{ vacancy.disponibilidad }}</p>
+      <div class="card-header-section">
+        <h3>{{ vacancy.title || vacancy.titulo }}</h3>
+        <span class="status-badge" [ngClass]="'status-' + (vacancy.status || 'draft')">
+          {{ vacancy.status === 'draft' ? 'Borrador' : vacancy.status === 'published' ? 'Publicada' : 'Cerrada' }}
+        </span>
+      </div>
+      <p><strong>Experiencia:</strong> {{ vacancy.experienceRequired || vacancy.experiencia }}</p>
+      <p><strong>Ubicación:</strong> {{ vacancy.location || vacancy.ubicacion }}</p>
+      <p><strong>Disponibilidad:</strong> {{ vacancy.availability || vacancy.disponibilidad }}</p>
       <div class="vacancy-actions">
         <button
           pButton
@@ -103,7 +108,7 @@
           label="Ver Detalle"
           icon="pi pi-eye"
           class="p-button-sm p-button-outlined"
-          (click)="navigateToCandidates(vacancy)"></button>
+          (click)="viewVacancyDetail(vacancy)"></button>
         <button
           pButton
           type="button"
@@ -124,19 +129,43 @@
 
   <!-- Modal -->
   <p-dialog
-    header="Crear una vacante"
+    header="Creación Rápida de Vacante"
     [(visible)]="modalVisible"
     (onHide)="closeModal()"
     [closable]="true"
     [style]="{ width: '50vw' }">
     <div class="modal-content">
-      <p>
-        Habla los detalles de la vacante en el siguiente formato:
-        <strong>Titulo</strong>, experiencia 3 años, ubicación <strong>remoto</strong>", disponibilidad
-        <b>inmediata</b>
-      </p>
+      <div class="instructions-container mb-4">
+        <div class="p-3 mb-3 surface-ground border-round">
+          <p class="mt-0 mb-2 font-bold text-primary">¿Qué información puedo incluir?</p>
+          <p class="mb-3">
+            Esta herramienta captura la información esencial para publicar rápidamente. Menciona los siguientes datos:
+          </p>
 
-      <p><strong>Ejemplo:</strong> enfermero experiencia 5 años ubicación pasto disponibilidad inmediata</p>
+          <ul class="format-list mb-3 pl-3">
+            <li class="mb-1"><strong>Título del cargo</strong> (Menciónalo al inicio)</li>
+            <li class="mb-1"><strong>Experiencia</strong> (Palabra clave: "experiencia")</li>
+            <li class="mb-1"><strong>Ubicación</strong> (Palabra clave: "ubicación")</li>
+            <li class="mb-1"><strong>Disponibilidad</strong> (Palabra clave: "disponibilidad")</li>
+          </ul>
+        </div>
+
+        <div class="example-box p-3 border-1 surface-border border-round mb-3">
+          <p class="text-sm text-500 m-0 mb-1">Ejemplo de voz o texto:</p>
+          <p class="font-italic m-0 text-900">
+            "Analista de Calidad <strong>experiencia</strong> 2 años <strong>ubicación</strong> Medellín
+            <strong>disponibilidad</strong> tiempo completo"
+          </p>
+        </div>
+
+        <div class="info-note flex align-items-center p-2 text-sm text-600 bg-yellow-50 border-round">
+          <i class="pi pi-info-circle mr-2 text-yellow-600"></i>
+          <span>
+            <strong>Nota:</strong> Detalles como <em>habilidades técnicas</em>, <em>competencias</em> y
+            <em>descripción detallada</em> podrás agregarlos editando la vacante una vez creada.
+          </span>
+        </div>
+      </div>
 
       <button
         pButton
@@ -173,4 +202,8 @@
     (onSave)="handleSaveVacancy($event)"
     (onCancel)="closeEditModal()">
   </app-vacancy-form>
+
+  <!-- Diálogo de Detalles -->
+  <app-vacancy-detail-dialog [vacancy]="selectedVacancy" [isVisible]="showDetailDialog" (onClose)="closeDetailDialog()">
+  </app-vacancy-detail-dialog>
 </div>

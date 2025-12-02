@@ -1,10 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
+import { InputTextModule} from 'primeng/inputtext';
+import { InputTextarea } from 'primeng/inputtextarea';
+import { ChipsModule } from 'primeng/chips';
+import { TabViewModule } from 'primeng/tabview';
 import { Vacancy } from '../../models/vacancy.interface';
 
 @Component({
@@ -12,11 +16,15 @@ import { Vacancy } from '../../models/vacancy.interface';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     DialogModule,
     ButtonModule,
     DropdownModule,
-    InputTextModule
+    InputTextModule,
+    InputTextarea,
+    ChipsModule,
+    TabViewModule
   ],
   templateUrl: './vacancy-form.component.html',
   styleUrls: ['./vacancy-form.component.scss']
@@ -29,32 +37,17 @@ export class VacancyFormComponent implements OnInit, OnChanges {
 
   vacancyForm!: FormGroup;
 
-  experienciaOptions = [
-    { label: '1+ año', value: '1+ año' },
-    { label: '2+ años', value: '2+ años' },
-    { label: '3+ años', value: '3+ años' },
-    { label: '4+ años', value: '4+ años' },
-    { label: '5+ años', value: '5+ años' },
-    { label: '6+ años', value: '6+ años' },
-    { label: '7+ años', value: '7+ años' },
-    { label: '8+ años', value: '8+ años' },
-    { label: '9+ años', value: '9+ años' },
-    { label: '10+ años', value: '10+ años' }
+  statusOptions = [
+    { label: 'Borrador', value: 'draft' },
+    { label: 'Publicada', value: 'published' },
+    { label: 'Cerrada', value: 'closed' }
   ];
 
-  ubicacionOptions = [
-    { label: 'Remoto', value: 'Remoto' },
-    { label: 'Presencial', value: 'Presencial' },
-    { label: 'Híbrido', value: 'Híbrido' }
-  ];
-
-  disponibilidadOptions = [
-    { label: 'Inmediata', value: 'Inmediata' },
-    { label: '15 días', value: '15 días' },
-    { label: '1 mes', value: '1 mes' },
-    { label: '2 meses', value: '2 meses' },
-    { label: '3 meses', value: '3 meses' }
-  ];
+  // Arrays para chips
+  requiredTechnicalSkills: string[] = [];
+  preferredTechnicalSkills: string[] = [];
+  behavioralCompetencies: string[] = [];
+  cognitiveSkills: string[] = [];
 
   constructor(private fb: FormBuilder) {}
 
@@ -70,10 +63,15 @@ export class VacancyFormComponent implements OnInit, OnChanges {
 
   private initForm(): void {
     this.vacancyForm = this.fb.group({
-      titulo: ['', [Validators.required, Validators.minLength(3)]],
-      experiencia: ['', Validators.required],
-      ubicacion: ['', Validators.required],
-      disponibilidad: ['', Validators.required]
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      experienceRequired: [''],
+      location: [''],
+      availability: [''],
+      description: [''],
+      status: ['draft'],
+      technicalSkillsWeight: [0.4, [Validators.min(0), Validators.max(1)]],
+      behavioralWeight: [0.3, [Validators.min(0), Validators.max(1)]],
+      cognitiveWeight: [0.3, [Validators.min(0), Validators.max(1)]]
     });
 
     if (this.vacancy) {
@@ -83,22 +81,80 @@ export class VacancyFormComponent implements OnInit, OnChanges {
 
   private populateForm(): void {
     if (this.vacancy) {
+      // Poblar campos básicos
       this.vacancyForm.patchValue({
-        titulo: this.vacancy.titulo || '',
-        experiencia: this.vacancy.experiencia || '',
-        ubicacion: this.vacancy.ubicacion || '',
-        disponibilidad: this.vacancy.disponibilidad || ''
+        title: this.vacancy.title || this.vacancy.titulo || '',
+        experienceRequired: this.vacancy.experienceRequired || this.vacancy.experiencia || '',
+        location: this.vacancy.location || this.vacancy.ubicacion || '',
+        availability: this.vacancy.availability || this.vacancy.disponibilidad || '',
+        description: this.vacancy.description || '',
+        status: this.vacancy.status || 'draft'
       });
+
+      // Poblar skills de matchingCriteria si existen
+      if (this.vacancy.matchingCriteria) {
+        this.requiredTechnicalSkills = [...(this.vacancy.matchingCriteria.technicalSkills?.required || [])];
+        this.preferredTechnicalSkills = [...(this.vacancy.matchingCriteria.technicalSkills?.preferred || [])];
+        this.behavioralCompetencies = [...(this.vacancy.matchingCriteria.behavioralCompetencies?.required || [])];
+        this.cognitiveSkills = [...(this.vacancy.matchingCriteria.cognitiveSkills?.required || [])];
+
+        this.vacancyForm.patchValue({
+          technicalSkillsWeight: this.vacancy.matchingCriteria.technicalSkills?.weight || 0.4,
+          behavioralWeight: this.vacancy.matchingCriteria.behavioralCompetencies?.weight || 0.3,
+          cognitiveWeight: this.vacancy.matchingCriteria.cognitiveSkills?.weight || 0.3
+        });
+      }
     }
+  }
+
+  fillMockData(): void {
+    this.vacancyForm.patchValue({
+      title: 'Full Stack Developer',
+      experienceRequired: '3+ years with Angular and Node.js',
+      location: 'Remote',
+      availability: 'Immediate',
+      description: 'We are looking for a skilled Full Stack Developer to join our dynamic team. You will be working on cutting-edge technologies and building scalable applications.',
+      status: 'published',
+      technicalSkillsWeight: 0.5,
+      behavioralWeight: 0.3,
+      cognitiveWeight: 0.2
+    });
+    this.requiredTechnicalSkills = ['Angular', 'TypeScript', 'Node.js'];
+    this.preferredTechnicalSkills = ['MongoDB', 'AWS', 'Docker'];
+    this.behavioralCompetencies = ['Teamwork', 'Communication', 'Problem Solving'];
+    this.cognitiveSkills = ['Analytical Thinking', 'Creativity'];
   }
 
   save(): void {
     if (this.vacancyForm.valid) {
       const formValue = this.vacancyForm.value;
+      
       const updatedVacancy: Vacancy = {
         ...this.vacancy,
-        ...formValue
+        id: this.vacancy?.id,
+        title: formValue.title,
+        experienceRequired: formValue.experienceRequired,
+        location: formValue.location,
+        availability: formValue.availability,
+        description: formValue.description,
+        status: formValue.status,
+        matchingCriteria: {
+          technicalSkills: {
+            required: this.requiredTechnicalSkills,
+            preferred: this.preferredTechnicalSkills,
+            weight: formValue.technicalSkillsWeight
+          },
+          behavioralCompetencies: {
+            required: this.behavioralCompetencies,
+            weight: formValue.behavioralWeight
+          },
+          cognitiveSkills: {
+            required: this.cognitiveSkills,
+            weight: formValue.cognitiveWeight
+          }
+        }
       };
+      
       this.onSave.emit(updatedVacancy);
       this.resetForm();
     } else {
@@ -112,7 +168,16 @@ export class VacancyFormComponent implements OnInit, OnChanges {
   }
 
   private resetForm(): void {
-    this.vacancyForm.reset();
+    this.vacancyForm.reset({
+      status: 'draft',
+      technicalSkillsWeight: 0.4,
+      behavioralWeight: 0.3,
+      cognitiveWeight: 0.3
+    });
+    this.requiredTechnicalSkills = [];
+    this.preferredTechnicalSkills = [];
+    this.behavioralCompetencies = [];
+    this.cognitiveSkills = [];
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
@@ -133,7 +198,11 @@ export class VacancyFormComponent implements OnInit, OnChanges {
       return 'Este campo es requerido';
     }
     if (field?.hasError('minlength')) {
-      return 'Debe tener al menos 3 caracteres';
+      const minLength = field.errors?.['minlength'].requiredLength;
+      return `Debe tener al menos ${minLength} caracteres`;
+    }
+    if (field?.hasError('min') || field?.hasError('max')) {
+      return 'El peso debe estar entre 0 y 1';
     }
     return '';
   }

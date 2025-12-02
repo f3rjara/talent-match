@@ -1,0 +1,233 @@
+::ng-deep .vacancy-detail-dialog {
+  width: 90%;
+  max-width: 800px;
+
+  .p-dialog-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+
+    .p-dialog-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .p-dialog-header-icon {
+      color: white;
+    }
+  }
+
+  .p-dialog-content {
+    padding: 0;
+  }
+}
+
+.detail-content {
+  min-height: 400px;
+}
+
+.info-section {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+
+  &.full-width {
+    flex-direction: column;
+  }
+
+  .label {
+    font-weight: 700;
+    color: #495057;
+    min-width: 180px;
+    font-size: 0.95rem;
+  }
+
+  .value {
+    flex: 1;
+    color: #212529;
+    font-size: 0.95rem;
+
+    &.description {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+      margin: 0.5rem 0 0 0;
+      line-height: 1.6;
+    }
+  }
+
+  .status-badge {
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.status-draft {
+      background: #f59e0b;
+      color: white;
+    }
+
+    &.status-published {
+      background: #10b981;
+      color: white;
+    }
+
+    &.status-closed {
+      background: #6b7280;
+      color: white;
+    }
+  }
+}
+
+.skills-section {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.skill-group {
+  h4 {
+    margin: 0 0 1rem 0;
+    color: #495057;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  ::ng-deep .skill-chip {
+    &.required {
+      background: #ef4444;
+      color: white;
+
+      .p-chip-text {
+        color: white;
+      }
+    }
+
+    &.preferred {
+      background: #3b82f6;
+      color: white;
+
+      .p-chip-text {
+        color: white;
+      }
+    }
+
+    &.behavioral {
+      background: #10b981;
+      color: white;
+
+      .p-chip-text {
+        color: white;
+      }
+    }
+
+    &.cognitive {
+      background: #8b5cf6;
+      color: white;
+
+      .p-chip-text {
+        color: white;
+      }
+    }
+  }
+}
+
+.weight-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  align-self: flex-start;
+}
+
+.no-data {
+  color: #6c757d;
+  font-style: italic;
+  padding: 1rem;
+  text-align: center;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 0;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+::ng-deep .p-tabview {
+  .p-tabview-nav {
+    background: #f8f9fa;
+    border: none;
+
+    li {
+      .p-tabview-nav-link {
+        padding:1rem 1.5rem;
+        font-weight: 600;
+        color: #6c757d;
+        border: none;
+        background: transparent;
+
+        &:hover {
+          background: rgba(102, 126, 234, 0.1);
+          color: #667eea;
+        }
+      }
+
+      &.p-highlight .p-tabview-nav-link {
+        background: white;
+        color: #667eea;
+        border-bottom: 3px solid #667eea;
+      }
+    }
+  }
+
+  .p-tabview-panels {
+    background: white;
+    padding: 0;
+    border: 1px solid #dee2e6;
+    border-top: none;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  ::ng-deep .vacancy-detail-dialog {
+    width: 95%;
+  }
+
+  .info-row {
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .label {
+      min-width: auto;
+    }
+  }
+
+  .chips-container {
+    gap: 0.5rem;
+  }
+}

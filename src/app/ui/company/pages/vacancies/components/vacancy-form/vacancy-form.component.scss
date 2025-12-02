@@ -1,6 +1,6 @@
 ::ng-deep .vacancy-form-dialog {
   width: 90%;
-  max-width: 600px;
+  max-width: 900px;
 
   .p-dialog-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -15,7 +15,7 @@
   }
 
   .p-dialog-content {
-    padding: 2rem;
+    padding: 0;
     background: #f8f9fa;
   }
 
@@ -27,6 +27,12 @@
 }
 
 .vacancy-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-section {
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -95,12 +101,46 @@
       box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
     }
   }
+}
 
-  &.invalid .p-dropdown {
-    border-color: #dc3545;
+::ng-deep .skills-chips {
+  .p-chips {
+    width: 100%;
 
-    &:not(.p-disabled).p-focus {
-      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    .p-chips-multiple-container {
+      width: 100%;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      padding: 0.5rem;
+      min-height: 60px;
+
+      &:hover {
+        border-color: #667eea;
+      }
+
+      &.p-focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      }
+
+      .p-chips-token {
+        background: #667eea;
+        color: white;
+        padding: 0.5rem 0.75rem;
+        margin: 0.25rem;
+        border-radius: 16px;
+        font-size: 0.9rem;
+
+        .p-chips-token-icon {
+          color: white;
+          margin-left: 0.5rem;
+        }
+      }
+
+      .p-chips-input-token input {
+        font-size: 1rem;
+        padding: 0.5rem;
+      }
     }
   }
 }
@@ -111,6 +151,12 @@
   margin-top: 0.25rem;
   display: block;
   animation: slideDown 0.3s ease;
+}
+
+.help-text {
+  color: #6c757d;
+  font-size: 0.875rem;
+  font-style: italic;
 }
 
 @keyframes slideDown {
@@ -156,18 +202,51 @@
   }
 }
 
+::ng-deep .p-tabview {
+  .p-tabview-nav {
+    background: white;
+    border-bottom: 2px solid #dee2e6;
+
+    li {
+      .p-tabview-nav-link {
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        color: #6c757d;
+        border: none;
+        background: transparent;
+
+        &:hover {
+          background: rgba(102, 126, 234, 0.1);
+          color: #667eea;
+        }
+      }
+
+      &.p-highlight .p-tabview-nav-link {
+        color: #667eea;
+        border-bottom: 3px solid #667eea;
+      }
+    }
+  }
+
+  .p-tabview-panels {
+    background: transparent;
+    padding: 0;
+    border: none;
+  }
+}
+
 // Responsive design
 @media (max-width: 768px) {
   ::ng-deep .vacancy-form-dialog {
     width: 95%;
 
     .p-dialog-content {
-      padding: 1.5rem;
+      padding: 0;
     }
+  }
 
-    .p-dialog-footer {
-      padding: 1rem;
-    }
+  .form-section {
+    padding: 1.5rem;
   }
 
   .dialog-footer {

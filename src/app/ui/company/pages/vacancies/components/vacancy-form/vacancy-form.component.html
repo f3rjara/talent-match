@@ -7,82 +7,218 @@
   styleClass="vacancy-form-dialog"
   header="Editar Vacante">
   <form [formGroup]="vacancyForm" class="vacancy-form" (ngSubmit)="save()">
-    <!-- Campo Título -->
-    <div class="form-field">
-      <label for="titulo" class="form-label"> Título de la Vacante <span class="required">*</span> </label>
-      <input
-        id="titulo"
-        type="text"
-        pInputText
-        formControlName="titulo"
-        placeholder="Ej: Frontend Developer"
-        class="form-input"
-        [class.invalid]="isFieldInvalid('titulo')" />
-      <small class="error-message" *ngIf="isFieldInvalid('titulo')">
-        {{ getErrorMessage('titulo') }}
-      </small>
-    </div>
+    <p-tabView>
+      <!-- Tab: Información Básica -->
+      <p-tabPanel header="Información Básica">
+        <div class="form-section">
+          <!-- Campo Título -->
+          <div class="form-field">
+            <label for="title" class="form-label"> Título de la Vacante <span class="required">*</span> </label>
+            <input
+              id="title"
+              type="text"
+              pInputText
+              formControlName="title"
+              placeholder="Ej: Senior Software Engineer"
+              class="form-input"
+              [class.invalid]="isFieldInvalid('title')" />
+            <small class="error-message" *ngIf="isFieldInvalid('title')">
+              {{ getErrorMessage('title') }}
+            </small>
+          </div>
 
-    <!-- Campo Experiencia -->
-    <div class="form-field">
-      <label for="experiencia" class="form-label"> Experiencia Requerida <span class="required">*</span> </label>
-      <p-dropdown
-        id="experiencia"
-        formControlName="experiencia"
-        [options]="experienciaOptions"
-        placeholder="Seleccione experiencia"
-        optionLabel="label"
-        optionValue="value"
-        styleClass="form-dropdown"
-        [class.invalid]="isFieldInvalid('experiencia')"></p-dropdown>
-      <small class="error-message" *ngIf="isFieldInvalid('experiencia')">
-        {{ getErrorMessage('experiencia') }}
-      </small>
-    </div>
+          <!-- Campo Descripción -->
+          <div class="form-field">
+            <label for="description" class="form-label"> Descripción </label>
+            <textarea
+              id="description"
+              pInputTextarea
+              formControlName="description"
+              rows="4"
+              placeholder="Descripción detallada de la vacante..."
+              class="form-input"
+              [class.invalid]="isFieldInvalid('description')">
+            </textarea>
+            <small class="error-message" *ngIf="isFieldInvalid('description')">
+              {{ getErrorMessage('description') }}
+            </small>
+          </div>
 
-    <!-- Campo Ubicación -->
-    <div class="form-field">
-      <label for="ubicacion" class="form-label"> Ubicación <span class="required">*</span> </label>
-      <p-dropdown
-        id="ubicacion"
-        formControlName="ubicacion"
-        [options]="ubicacionOptions"
-        placeholder="Seleccione ubicación"
-        optionLabel="label"
-        optionValue="value"
-        styleClass="form-dropdown"
-        [class.invalid]="isFieldInvalid('ubicacion')"></p-dropdown>
-      <small class="error-message" *ngIf="isFieldInvalid('ubicacion')">
-        {{ getErrorMessage('ubicacion') }}
-      </small>
-    </div>
+          <div class="form-row">
+            <!-- Campo Experiencia -->
+            <div class="form-field">
+              <label for="experienceRequired" class="form-label"> Experiencia Requerida </label>
+              <input
+                id="experienceRequired"
+                type="text"
+                pInputText
+                formControlName="experienceRequired"
+                placeholder="Ej: 3+ años"
+                class="form-input" />
+            </div>
 
-    <!-- Campo Disponibilidad -->
-    <div class="form-field">
-      <label for="disponibilidad" class="form-label"> Disponibilidad <span class="required">*</span> </label>
-      <p-dropdown
-        id="disponibilidad"
-        formControlName="disponibilidad"
-        [options]="disponibilidadOptions"
-        placeholder="Seleccione disponibilidad"
-        optionLabel="label"
-        optionValue="value"
-        styleClass="form-dropdown"
-        [class.invalid]="isFieldInvalid('disponibilidad')"></p-dropdown>
-      <small class="error-message" *ngIf="isFieldInvalid('disponibilidad')">
-        {{ getErrorMessage('disponibilidad') }}
-      </small>
-    </div>
+            <!-- Campo Ubicación -->
+            <div class="form-field">
+              <label for="location" class="form-label"> Ubicación </label>
+              <input
+                id="location"
+                type="text"
+                pInputText
+                formControlName="location"
+                placeholder="Ej: Remoto / Ciudad"
+                class="form-input" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- Campo Disponibilidad -->
+            <div class="form-field">
+              <label for="availability" class="form-label"> Disponibilidad </label>
+              <input
+                id="availability"
+                type="text"
+                pInputText
+                formControlName="availability"
+                placeholder="Ej: Inmediata"
+                class="form-input" />
+            </div>
+
+            <!-- Campo Estado -->
+            <div class="form-field">
+              <label for="status" class="form-label"> Estado </label>
+              <p-dropdown
+                id="status"
+                [options]="statusOptions"
+                formControlName="status"
+                optionLabel="label"
+                optionValue="value"
+                styleClass="form-dropdown">
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab: Habilidades Técnicas -->
+      <p-tabPanel header="Habilidades Técnicas">
+        <div class="form-section">
+          <div class="form-field">
+            <label class="form-label"> Habilidades Requeridas </label>
+            <p-chips
+              [(ngModel)]="requiredTechnicalSkills"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Presione Enter para agregar"
+              styleClass="skills-chips">
+            </p-chips>
+            <small class="help-text">Agregue habilidades técnicas obligatorias</small>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label"> Habilidades Preferidas </label>
+            <p-chips
+              [(ngModel)]="preferredTechnicalSkills"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Presione Enter para agregar"
+              styleClass="skills-chips">
+            </p-chips>
+            <small class="help-text">Agregue habilidades técnicas deseables pero no obligatorias</small>
+          </div>
+
+          <div class="form-field">
+            <label for="technicalSkillsWeight" class="form-label">
+              Peso en la evaluación <span class="required">*</span>
+            </label>
+            <input
+              id="technicalSkillsWeight"
+              type="number"
+              pInputText
+              formControlName="technicalSkillsWeight"
+              step="0.1"
+              min="0"
+              max="1"
+              class="form-input" />
+            <small class="help-text">Valor entre 0 y 1 (ej: 0.4 = 40%)</small>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab: Competencias Conductuales -->
+      <p-tabPanel header="Competencias Conductuales">
+        <div class="form-section">
+          <div class="form-field">
+            <label class="form-label"> Competencias Requeridas </label>
+            <p-chips
+              [(ngModel)]="behavioralCompetencies"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Presione Enter para agregar"
+              styleClass="skills-chips">
+            </p-chips>
+            <small class="help-text">Ej: Leadership, Communication, Teamwork</small>
+          </div>
+
+          <div class="form-field">
+            <label for="behavioralWeight" class="form-label">
+              Peso en la evaluación <span class="required">*</span>
+            </label>
+            <input
+              id="behavioralWeight"
+              type="number"
+              pInputText
+              formControlName="behavioralWeight"
+              step="0.1"
+              min="0"
+              max="1"
+              class="form-input" />
+            <small class="help-text">Valor entre 0 y 1 (ej: 0.3 = 30%)</small>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- Tab: Habilidades Cognitivas -->
+      <p-tabPanel header="Habilidades Cognitivas">
+        <div class="form-section">
+          <div class="form-field">
+            <label class="form-label"> Habilidades Cognitivas Requeridas </label>
+            <p-chips
+              [(ngModel)]="cognitiveSkills"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Presione Enter para agregar"
+              styleClass="skills-chips">
+            </p-chips>
+            <small class="help-text">Ej: Problem Solving, Analytical Thinking, Creativity</small>
+          </div>
+
+          <div class="form-field">
+            <label for="cognitiveWeight" class="form-label">
+              Peso en la evaluación <span class="required">*</span>
+            </label>
+            <input
+              id="cognitiveWeight"
+              type="number"
+              pInputText
+              formControlName="cognitiveWeight"
+              step="0.1"
+              min="0"
+              max="1"
+              class="form-input" />
+            <small class="help-text">Valor entre 0 y 1 (ej: 0.3 = 30%)</small>
+          </div>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
   </form>
 
   <ng-template pTemplate="footer">
     <div class="dialog-footer">
       <p-button
-        label="Cancelar"
-        icon="pi pi-times"
-        (onClick)="cancel()"
-        styleClass="p-button-text p-button-secondary"></p-button>
-      <p-button label="Guardar" icon="pi pi-check" (onClick)="save()" styleClass="p-button-primary"></p-button>
+        label="Llenar Datos de Prueba"
+        icon="pi pi-bolt"
+        (onClick)="fillMockData()"
+        styleClass="p-button-text p-button-help mr-auto">
+      </p-button>
+      <p-button label="Cancelar" icon="pi pi-times" (onClick)="cancel()" styleClass="p-button-text p-button-secondary">
+      </p-button>
+      <p-button label="Guardar" icon="pi pi-check" (onClick)="save()" styleClass="p-button-primary"> </p-button>
     </div>
   </ng-template>
 </p-dialog>
