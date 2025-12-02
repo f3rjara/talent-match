@@ -1,78 +1,129 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
+import { SkeletonModule } from 'primeng/skeleton';
+import { DialogModule } from 'primeng/dialog';
+import { DividerModule } from 'primeng/divider';
+import { ChipModule } from 'primeng/chip';
 import { VacancyService } from './services/vacancy.service';
+import { Vacancy } from '../../../../shared/interfaces/vacancy.interface';
 
 @Component({
   selector: 'app-available-offers',
-  imports: [CommonModule, ButtonModule, CardModule],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    CardModule,
+    TagModule,
+    TooltipModule,
+    SkeletonModule,
+    DialogModule,
+    DividerModule,
+    ChipModule,
+  ],
   templateUrl: './available-offers.component.html',
   styleUrl: './available-offers.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvailableOffersComponent implements OnInit {
   private readonly _router = inject(Router);
-  private readonly _vacancyService: VacancyService = inject(VacancyService);
+  private readonly _vacancyService = inject(VacancyService);
 
-  availablOffers: any = [];
-
-  avaliableOffersMock = [
-    {
-      id: 1,
-      titulo: 'Frontend Developer',
-      experiencia: '3+ years',
-      ubicacion: 'Remote',
-      disponibilidad: 'inmediato',
-    },
-    {
-      id: 2,
-      titulo: 'Backend Developer',
-      experiencia: '4+ years',
-      ubicacion: 'On-site',
-      disponibilidad: 'inmediato',
-    },
-    {
-      id: 3,
-      titulo: 'UI/UX Designer',
-      experiencia: '2+ years',
-      ubicacion: 'Hybrid',
-      disponibilidad: 'inmediato',
-    },
-    {
-      id: 4,
-      titulo: 'DevOps Engineer',
-      experiencia: '5+ years',
-      ubicacion: 'Remote',
-      disponibilidad: 'inmediato',
-    },
-    {
-      id: 5,
-      titulo: 'Data Scientist',
-      experiencia: '3+ years',
-      ubicacion: 'Remote',
-      disponibilidad: 'inmediato',
-    },
-  ];
+  vacancies = signal<Vacancy[]>([]);
+  favorites = signal<Set<string>>(new Set());
+  loading = signal<boolean>(true);
+  selectedVacancy = signal<Vacancy | null>(null);
+  showDetails = signal<boolean>(false);
 
   ngOnInit(): void {
-    this.getVacancies();
+    this.loadVacancies();
+    this.loadFavorites();
   }
 
-  gotoInitAplication(idVacancie: number, title: string) {
-    const navigateTo = `/candidate/init-aplication/${idVacancie}`;
-    this._router.navigate([navigateTo], { queryParams: { title: title } });
-  }
-
-  getVacancies() {
-    this._vacancyService.getVacancy().subscribe({
+  loadVacancies(): void {
+    this.loading.set(true);
+    this._vacancyService.getVacancies().subscribe({
       next: (response) => {
-        this.availablOffers = response;
+        this.vacancies.set(response.vacancies);
+        this.loading.set(false);
       },
-      error: (error) => {
-        console.log('error get:', error);
-        this.availablOffers = this.avaliableOffersMock;
+      error: () => {
+        this.loading.set(false);
       },
     });
+  }
+
+  loadFavorites(): void {
+    this._vacancyService.getFavorites().subscribe({
+      next: (response) => {
+        this.favorites.set(new Set(response.favorites));
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+      },
+    });
+  }
+
+  toggleFavorite(vacancyId: string, event: Event): void {
+    event.stopPropagation();
+    const currentFavorites = new Set(this.favorites());
+
+    if (currentFavorites.has(vacancyId)) {
+      currentFavorites.delete(vacancyId);
+    } else {
+      currentFavorites.add(vacancyId);
+    }
+
+    this.favorites.set(currentFavorites);
+
+    this._vacancyService.toggleFavorite(vacancyId).subscribe({
+      error: () => {
+        this.loadFavorites();
+      },
+    });
+  }
+
+  isFavorite(vacancyId: string): boolean {
+    return this.favorites().has(vacancyId);
+  }
+
+  viewDetails(vacancy: Vacancy): void {
+    this.selectedVacancy.set(vacancy);
+    this.showDetails.set(true);
+  }
+
+  closeDetails(): void {
+    this.showDetails.set(false);
+    this.selectedVacancy.set(null);
+  }
+
+  applyToVacancy(vacancy: Vacancy): void {
+    const navigateTo = `/candidato/aplicar/${vacancy.vacancyId}`;
+    this._router.navigate([navigateTo], {
+      queryParams: { title: vacancy.title },
+    });
+  }
+
+  getStatusSeverity(status: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' {
+    const severityMap: Record<string, 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast'> = {
+      open: 'success',
+      closed: 'danger',
+      paused: 'warning',
+    };
+    return severityMap[status] || 'info';
+  }
+
+  getStatusLabel(status: string): string {
+    const labelMap: Record<string, string> = {
+      open: 'Abierta',
+      closed: 'Cerrada',
+      paused: 'Pausada',
+    };
+    return labelMap[status] || status;
   }
 }
