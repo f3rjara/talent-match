@@ -1,1 +1,237 @@
-<p>postulationsComponent works!</p>,
+<div class="min-h-screen py-8 px-4">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-2 flex items-center gap-3">
+        <i class="pi pi-briefcase"></i>
+        Mis Postulaciones
+      </h1>
+      <p class="text-purple-400">Gestiona y da seguimiento a tus aplicaciones</p>
+    </div>
+
+    <!-- Mini Dashboard de Estadísticas -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+      <!-- Total -->
+      <div
+        class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl hover:scale-105 transition-transform cursor-pointer"
+        (click)="filterApplications('all')">
+        <div class="flex items-center justify-between mb-2">
+          <i class="pi pi-briefcase text-2xl opacity-80"></i>
+          <span class="text-3xl font-bold">{{ stats().total }}</span>
+        </div>
+        <p class="text-sm opacity-90 font-medium">Total</p>
+      </div>
+
+      <!-- Pendientes -->
+      <div
+        class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 backdrop-blur-lg border rounded-2xl p-6 text-white shadow-xl hover:scale-105 transition-transform cursor-pointer"
+        (click)="filterApplications('pending')">
+        <div class="flex items-center justify-between mb-2">
+          <i class="pi pi-clock text-2xl text-gray-300"></i>
+          <span class="text-3xl font-bold">{{ stats().pending }}</span>
+        </div>
+        <p class="text-sm opacity-90 font-medium">Pendientes</p>
+      </div>
+
+      <!-- En Revisión -->
+      <div
+        class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 text-white shadow-xl hover:scale-105 transition-transform cursor-pointer"
+        (click)="filterApplications('reviewing')">
+        <div class="flex items-center justify-between mb-2">
+          <i class="pi pi-eye text-2xl text-blue-300"></i>
+          <span class="text-3xl font-bold">{{ stats().reviewing }}</span>
+        </div>
+        <p class="text-sm opacity-90 font-medium">En Revisión</p>
+      </div>
+
+      <!-- Entrevistas -->
+      <div
+        class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 text-white shadow-xl hover:scale-105 transition-transform cursor-pointer"
+        (click)="filterApplications('interview')">
+        <div class="flex items-center justify-between mb-2">
+          <i class="pi pi-calendar text-2xl text-amber-300"></i>
+          <span class="text-3xl font-bold">{{ stats().interviews }}</span>
+        </div>
+        <p class="text-sm opacity-90 font-medium">Entrevistas</p>
+      </div>
+
+      <!-- Aceptados -->
+      <div
+        class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 text-white shadow-xl hover:scale-105 transition-transform cursor-pointer"
+        (click)="filterApplications('accepted')">
+        <div class="flex items-center justify-between mb-2">
+          <i class="pi pi-check-circle text-2xl text-green-300"></i>
+          <span class="text-3xl font-bold">{{ stats().accepted }}</span>
+        </div>
+        <p class="text-sm opacity-90 font-medium">Aceptados</p>
+      </div>
+
+      <!-- Rechazados -->
+      <div
+        class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 text-white shadow-xl hover:scale-105 transition-transform cursor-pointer"
+        (click)="filterApplications('rejected')">
+        <div class="flex items-center justify-between mb-2">
+          <i class="pi pi-times-circle text-2xl text-red-300"></i>
+          <span class="text-3xl font-bold">{{ stats().rejected }}</span>
+        </div>
+        <p class="text-sm opacity-90 font-medium">Rechazados</p>
+      </div>
+    </div>
+
+    <!-- Filtro Activo -->
+    @if (selectedFilter() !== 'all') {
+      <div class="mb-6 flex items-center gap-3">
+        <p-chip
+          [label]="'Filtro: ' + getStatusLabel(selectedFilter())"
+          [removable]="true"
+          (onRemove)="filterApplications('all')"
+          styleClass="bg-purple-500 text-white"></p-chip>
+      </div>
+    }
+
+    <!-- Lista de Postulaciones -->
+    @if (filteredApplications().length > 0) {
+      <div class="space-y-4">
+        @for (app of filteredApplications(); track app.id) {
+          <div
+            class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl overflow-hidden hover:border-purple-400 transition-all shadow-xl">
+            <!-- Header de la Card -->
+            <div class="p-6 border-b border-white/10">
+              <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex-1">
+                  <div class="flex items-start gap-3 mb-3">
+                    <div
+                      class="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <i class="pi pi-building text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                      <h3 class="text-xl font-bold mb-1">{{ app.position }}</h3>
+                      <div class="flex flex-wrap items-center gap-2 text-sm text-purple-600">
+                        <span class="flex items-center gap-1">
+                          <i class="pi pi-building text-xs"></i>
+                          {{ app.company }}
+                        </span>
+                        <span class="text-purple-400">•</span>
+                        <span class="flex items-center gap-1">
+                          <i class="pi pi-map-marker text-xs"></i>
+                          {{ app.location }}
+                        </span>
+                        <span class="text-purple-400">•</span>
+                        <span class="flex items-center gap-1">
+                          <i class="pi pi-dollar text-xs"></i>
+                          {{ app.salary }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="text-gray-500 text-sm">{{ app.description }}</p>
+                </div>
+
+                <div class="flex flex-col items-end gap-3 flex-shrink-0">
+                  <p-tag
+                    [value]="getStatusConfig(app.status).label"
+                    [severity]="getStatusConfig(app.status).severity"
+                    [icon]="'pi ' + getStatusConfig(app.status).icon"
+                    styleClass="text-sm font-semibold"></p-tag>
+
+                  @if (app.status === 'interview' && app.interviewDate) {
+                    <div class="bg-amber-500/20 border border-amber-400/30 rounded-lg px-4 py-2 text-amber-800 text-sm">
+                      <i class="pi pi-calendar mr-2"></i>
+                      Entrevista: {{ formatDate(app.interviewDate) }}
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Body de la Card -->
+            <div class="p-6 bg-white/5">
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <!-- Fechas -->
+                <div class="flex flex-wrap gap-6 text-sm">
+                  <div>
+                    <p class="text-purple-500 mb-1">Aplicado</p>
+                    <p class="font-medium">{{ formatDate(app.appliedDate) }}</p>
+                    <p class="text-gray-400 text-xs">Hace {{ getDaysAgo(app.appliedDate) }} días</p>
+                  </div>
+                  <div>
+                    <p class="text-purple-500 mb-1">Última actualización</p>
+                    <p class="font-medium">{{ formatDate(app.lastUpdate) }}</p>
+                    <p class="text-gray-400 text-xs">Hace {{ getDaysAgo(app.lastUpdate) }} días</p>
+                  </div>
+                </div>
+
+                <!-- Barra de Progreso -->
+                <div class="flex-1 max-w-xs">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-purple-500">Progreso</span>
+                    <span class="text-sm font-bold">{{ app.progress }}%</span>
+                  </div>
+                  <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      class="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all"
+                      [style.width.%]="app.progress"></div>
+                  </div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="flex gap-2">
+                  <p-button
+                    label="Ver Detalles"
+                    icon="pi pi-eye"
+                    (onClick)="viewDetails(app)"
+                    [text]="true"
+                    styleClass="text-white hover:bg-white/10"></p-button>
+                  @if (app.status !== 'accepted' && app.status !== 'rejected') {
+                    <p-button
+                      icon="pi pi-times"
+                      (onClick)="withdrawApplication(app)"
+                      [text]="true"
+                      severity="danger"
+                      pTooltip="Retirar aplicación"
+                      tooltipPosition="top"></p-button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Estado Vacío -->
+      <div class="flex flex-col items-center justify-center py-20">
+        <div
+          class="w-32 h-32 bg-white/5 backdrop-blur-lg border border-white/10 rounded-full flex items-center justify-center mb-6">
+          <i class="pi pi-inbox text-6xl text-purple-300"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-2">
+          @if (selectedFilter() === 'all') {
+            No tienes postulaciones
+          } @else {
+            No hay postulaciones {{ getStatusLabel(selectedFilter()).toLowerCase() }}
+          }
+        </h3>
+        <p class="text-purple-200 mb-6 text-center max-w-md">
+          @if (selectedFilter() === 'all') {
+            Comienza a explorar las vacantes disponibles y aplica a las que más te interesen
+          } @else {
+            Intenta con otro filtro o explora nuevas oportunidades
+          }
+        </p>
+        @if (selectedFilter() === 'all') {
+          <p-button
+            label="Explorar Vacantes"
+            icon="pi pi-search"
+            styleClass="bg-gradient-to-r from-purple-500 to-indigo-600 border-0"></p-button>
+        } @else {
+          <p-button
+            label="Limpiar Filtro"
+            icon="pi pi-filter-slash"
+            (onClick)="filterApplications('all')"
+            severity="secondary"></p-button>
+        }
+      </div>
+    }
+  </div>
+</div>
