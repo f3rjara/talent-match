@@ -77,20 +77,7 @@
     </div>
   </div>
 
-  <!-- <div class="vacancy-cards">
-    <p-card
-      *ngFor="let vacancy of filteredVacancies"
-      header="{{ vacancy.titulo }}"
-      class="vacancy-card"
-    >
-      <p><strong>Experiencia:</strong> {{ vacancy.experiencia }}</p>
-      <p><strong>Ubicación:</strong> {{ vacancy.ubicacion }}</p>
-      <p><strong>Disponibilidad:</strong> {{ vacancy.disponibilidad }}</p>
-      <button pButton type="button" label="Apply" class="p-button-success"></button>
-    </p-card>
-  </div> -->
-
-  <div class="vacancy-cards grid mt-8">
+  <div class="vacancy-cards grid">
     <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card col-12">
       <div class="card-header-section">
         <h3>{{ vacancy.title || vacancy.titulo }}</h3>
@@ -138,31 +125,59 @@
       <div class="instructions-container mb-4">
         <div class="p-3 mb-3 surface-ground border-round">
           <p class="mt-0 mb-2 font-bold text-primary">¿Qué información puedo incluir?</p>
-          <p class="mb-3">
-            Esta herramienta captura la información esencial para publicar rápidamente. Menciona los siguientes datos:
-          </p>
+          <p class="mb-3">Menciona los datos que tengas disponibles. Solo el <strong>Título</strong> es obligatorio.</p>
 
-          <ul class="format-list mb-3 pl-3">
-            <li class="mb-1"><strong>Título del cargo</strong> (Menciónalo al inicio)</li>
-            <li class="mb-1"><strong>Experiencia</strong> (Palabra clave: "experiencia")</li>
-            <li class="mb-1"><strong>Ubicación</strong> (Palabra clave: "ubicación")</li>
-            <li class="mb-1"><strong>Disponibilidad</strong> (Palabra clave: "disponibilidad")</li>
-          </ul>
+          <div class="mb-3">
+            <p class="text-sm font-bold mb-2">Campos básicos:</p>
+            <ul class="format-list mb-2 pl-3 text-sm">
+              <li class="mb-1"><strong>Título</strong> - Menciónalo al inicio (Obligatorio)</li>
+              <li class="mb-1"><strong>experiencia</strong> - Ej: "experiencia 5 años"</li>
+              <li class="mb-1"><strong>ubicación</strong> - Ej: "ubicación Bogotá"</li>
+              <li class="mb-1"><strong>disponibilidad</strong> - Ej: "disponibilidad inmediata"</li>
+            </ul>
+          </div>
+
+          <div class="mb-3">
+            <p class="text-sm font-bold mb-2">Campos avanzados (opcionales):</p>
+            <ul class="format-list mb-2 pl-3 text-sm">
+              <li class="mb-1"><strong>descripción</strong> - Texto libre sobre la vacante</li>
+              <li class="mb-1"><strong>skills</strong> o <strong>habilidades</strong> - Lista separada por espacios</li>
+            </ul>
+          </div>
         </div>
 
-        <div class="example-box p-3 border-1 surface-border border-round mb-3">
-          <p class="text-sm text-500 m-0 mb-1">Ejemplo de voz o texto:</p>
-          <p class="font-italic m-0 text-900">
-            "Analista de Calidad <strong>experiencia</strong> 2 años <strong>ubicación</strong> Medellín
-            <strong>disponibilidad</strong> tiempo completo"
-          </p>
+        <div class="examples-container">
+          <div class="example-box p-3 border-1 surface-border border-round mb-2">
+            <p class="text-sm text-600 m-0 mb-1">Ejemplo básico:</p>
+            <p class="font-italic m-0 text-900 text-sm">
+              "Desarrollador Frontend <strong>experiencia</strong> 3 años <strong>ubicación</strong> remoto
+              <strong>disponibilidad</strong> tiempo completo"
+            </p>
+          </div>
+
+          <div class="example-box p-3 border-1 surface-border border-round mb-2">
+            <p class="text-sm text-600 m-0 mb-1">Ejemplo con descripción:</p>
+            <p class="font-italic m-0 text-900 text-sm">
+              "Analista de Datos <strong>experiencia</strong> 2 años <strong>descripción</strong> Buscamos analista para
+              proyectos de BI <strong>ubicación</strong> Medellín"
+            </p>
+          </div>
+
+          <div class="example-box p-3 border-1 surface-border border-round">
+            <p class="text-sm text-600 m-0 mb-1">Ejemplo completo con skills:</p>
+            <p class="font-italic m-0 text-900 text-sm">
+              "DevOps Engineer <strong>experiencia</strong> 4 años <strong>skills</strong> Docker Kubernetes AWS
+              <strong>descripción</strong> Ingeniero para automatización de infraestructura
+              <strong>disponibilidad</strong> inmediata"
+            </p>
+          </div>
         </div>
 
-        <div class="info-note flex align-items-center p-2 text-sm text-600 bg-yellow-50 border-round">
-          <i class="pi pi-info-circle mr-2 text-yellow-600"></i>
+        <div class="info-note flex align-items-center p-2 text-sm text-600 bg-blue-50 border-round mt-3">
+          <i class="pi pi-lightbulb mr-2 text-blue-600"></i>
           <span>
-            <strong>Nota:</strong> Detalles como <em>habilidades técnicas</em>, <em>competencias</em> y
-            <em>descripción detallada</em> podrás agregarlos editando la vacante una vez creada.
+            <strong>Tip:</strong> Puedes mencionar los campos en cualquier orden. Los que no menciones se podrán agregar
+            después editando la vacante.
           </span>
         </div>
       </div>

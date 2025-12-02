@@ -1,4 +1,3 @@
-const BASE_URL = 'http://localhost:3242';
 export const environment = {
   production: false,
   BASE_URL,
