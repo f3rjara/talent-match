@@ -1,0 +1,119 @@
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 max-w-6xl">
+    <!-- Header -->
+    <div class="mb-12">
+      <h1 class="text-4xl font-bold text-primary mb-2">Perfil de la Empresa</h1>
+      <p class="text-slate-600">Gestiona la información de tu empresa</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Sidebar - Información de la empresa -->
+      <div class="lg:col-span-1">
+        <p-card styleClass="shadow-lg border-gray-200 border">
+          <div class="flex flex-col items-center text-center">
+            <p-avatar
+              label="{{ companyData['name'].charAt(0) }}"
+              size="xlarge"
+              shape="circle"
+              styleClass="bg-primary text-white mb-4"
+              [style]="{ width: '120px', height: '120px', fontSize: '3rem' }" />
+            <h2 class="text-2xl font-bold text-primary mb-2">{{ companyData['name'] }}</h2>
+            <p class="text-slate-500 mb-1">NIT: {{ companyData['nit'] }}</p>
+            <p-tag value="Verificada" severity="success" styleClass="mt-2" />
+
+            <p-divider />
+
+            <div class="w-full text-left space-y-3">
+              <div class="flex items-center gap-3">
+                <i class="pi pi-building text-primary"></i>
+                <span class="text-slate-700">{{ companyData['industry'] }}</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="pi pi-users text-primary"></i>
+                <span class="text-slate-700">{{ companyData['employees'] }} empleados</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="pi pi-map-marker text-primary"></i>
+                <span class="text-slate-700">{{ companyData['address'] }}</span>
+              </div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Main Content - Formulario de edición -->
+      <div class="lg:col-span-2">
+        <p-card styleClass="shadow-lg border-gray-100 border">
+          <ng-template pTemplate="header">
+            <div class="flex justify-between items-center p-4">
+              <h3 class="text-xl font-semibold text-primary">Información de la Empresa</h3>
+              @if (!editMode) {
+                <p-button
+                  label="Editar"
+                  icon="pi pi-pencil"
+                  (onClick)="toggleEditMode()"
+                  severity="secondary"
+                  [outlined]="true" />
+              }
+            </div>
+          </ng-template>
+
+          <div class="space-y-6">
+            <!-- Información Básica -->
+            <div>
+              <h4 class="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-2">
+                <i class="pi pi-info-circle text-primary"></i>
+                Información Básica
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @for (field of fields; track field.key) {
+                  <div class="flex flex-col gap-2">
+                    <label class="font-medium text-slate-700">{{ field.label }}</label>
+                    @if (editMode) {
+                      <input
+                        pInputText
+                        [type]="field.type"
+                        [(ngModel)]="companyData[field.key]"
+                        class="w-full"
+                        [placeholder]="field.placeholder" />
+                    } @else {
+                      <p class="text-slate-600">{{ companyData[field.key] }}</p>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <p-divider />
+
+            <!-- Descripción -->
+            <div>
+              <h4 class="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-2">
+                <i class="pi pi-file-edit text-primary"></i>
+                Descripción de la Empresa
+              </h4>
+              @if (editMode) {
+                <textarea
+                  pInputTextarea
+                  [(ngModel)]="companyData['description']"
+                  rows="5"
+                  class="w-full"
+                  placeholder="Describe tu empresa..."></textarea>
+              } @else {
+                <p class="text-slate-600 leading-relaxed">{{ companyData['description'] }}</p>
+              }
+            </div>
+
+            <!-- Botones de acción -->
+            @if (editMode) {
+              <div class="flex gap-3 justify-end pt-4">
+                <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="toggleEditMode()" />
+                <p-button label="Guardar Cambios" icon="pi pi-check" (onClick)="saveProfile()" />
+              </div>
+            }
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>

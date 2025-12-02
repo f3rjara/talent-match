@@ -1,88 +1,193 @@
-<!-- eslint-disable prettier/prettier -->
-<h1 *ngIf="titulo">Candidatos para {{ titulo }}</h1>
+<div class="py-6">
+  <div class="container">
+    <!-- Card informativa de la vacante -->
+    <p-card styleClass="shadow-lg mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-primary">
+      <div class="flex items-start gap-4">
+        <div class="bg-primary text-white p-4 rounded-lg">
+          <i class="pi pi-briefcase text-3xl"></i>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-2xl font-bold text-primary mb-2">Senior Software Engineer</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-calendar text-primary"></i>
+              <div>
+                <p class="text-xs text-slate-500">Estado</p>
+                <p class="font-semibold text-slate-700">Publicada</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="pi pi-clock text-primary"></i>
+              <div>
+                <p class="text-xs text-slate-500">Experiencia</p>
+                <p class="font-semibold text-slate-700">5 años en desarrollo de software</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="pi pi-map-marker text-primary"></i>
+              <div>
+                <p class="text-xs text-slate-500">Ubicación</p>
+                <p class="font-semibold text-slate-700">Remoto / Pasto, Nariño</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="pi pi-user text-primary"></i>
+              <div>
+                <p class="text-xs text-slate-500">Disponibilidad</p>
+                <p class="font-semibold text-slate-700">Tiempo completo, inicio inmediato</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="pi pi-users text-primary"></i>
+              <div>
+                <p class="text-xs text-slate-500">Postulados</p>
+                <p class="font-semibold text-slate-700">{{ allCandidates.length }} candidatos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-card>
 
-<p-card class="card">
-  <p-table [value]="candidates" [tableStyle]="{ 'min-width': '50rem' }">
-    <ng-template pTemplate="header" let-columns>
-      <tr>
-        <th>Candidato</th>
-        <th>Teléfono</th>
-        <th>Email</th>
-        <th>Observación</th>
-        <th>Acciones</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-candidate let-columns="columns">
-      <tr>
-        <td>{{ candidate.name }}</td>
-        <td>{{ candidate.phone }}</td>
-        <td>{{ candidate.email }}</td>
-        <td>
-          <span [ngClass]="getScoreClass(candidate.score)">{{ candidate.score }}</span>
-        </td>
-        <td class="flex gap-2">
-          <p-button
-            icon="pi pi-eye"
-            severity="success"
-            (click)="viewCandidateDetails(candidate)"
-          />
-          <p-button icon="pi pi-check-circle" severity="info" />
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-</p-card>
+    <h2 class="text-2xl font-bold text-primary mb-6">Candidatos {{ titulo }}</h2>
 
-<!-- Modal para mostrar los detalles -->
-<p-dialog
-  header="Recomendación para candidato"
-  [(visible)]="modalVisible"
-  [style]="{ width: '40vw' }"
-  [closable]="true">
-  <div *ngIf="selectedCandidate">
-    <div *ngIf="selectedCandidate.score === 'Altamente calificado'">
-      <h2>{{ selectedCandidate.name }}</h2>
-      <p>
-        Este candidato está clasificado como
-        <strong>{{ selectedCandidate.score }}</strong>.
-        Nuestra recomendación es considerarlo altamente para roles desafiantes.
-      </p>
-      <h3>Razones:</h3>
-      <ul>
-        <li>Tiene una trayectoria destacada en su campo de experiencia.</li>
-        <li>Demuestra habilidades técnicas sobresalientes.</li>
-        <li>Ha recibido evaluaciones positivas en proyectos previos.</li>
-      </ul>
-    </div>
+    <p-card styleClass="shadow-lg mb-6">
+      <p-table [value]="candidates" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Candidato</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Calificación</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-candidate>
+          <tr>
+            <td>{{ candidate.name }}</td>
+            <td>{{ candidate.phone }}</td>
+            <td>{{ candidate.email }}</td>
+            <td>
+              <span [ngClass]="getScoreClass(candidate.score)" class="font-light px-4 py-2 rounded">
+                {{ candidate.score }}
+              </span>
+            </td>
+            <td class="flex gap-2">
+              <p-button
+                icon="pi pi-eye"
+                severity="success"
+                [outlined]="true"
+                (click)="viewCandidateDetails(candidate)"
+                pTooltip="Ver detalles" />
+              @if (!isSelected(candidate)) {
+                <p-button
+                  icon="pi pi-check-circle"
+                  severity="info"
+                  (click)="selectCandidate(candidate)"
+                  pTooltip="Considerar para selección final" />
+              } @else {
+                <p-button
+                  icon="pi pi-times-circle"
+                  severity="danger"
+                  (click)="removeFromSelection(candidate)"
+                  pTooltip="Remover de selección" />
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
 
-    <div *ngIf="selectedCandidate.score === 'Parcialmente calificado'">
-      <h2>{{ selectedCandidate.name }}</h2>
-      <p>
-        Este candidato está clasificado como
-        <strong>{{ selectedCandidate.score }}</strong>.
-        El candidato tiene habilidades y experiencia que lo hacen adecuado para roles de nivel intermedio o como apoyo en proyectos más grandes. Con un enfoque en su desarrollo profesional, podría alcanzar un nivel más alto de rendimiento.
-      </p>
-      <h3>Razones:</h3>
-      <ul>
-        <li>Ha demostrado conocimientos básicos en el área, pero aún puede necesitar supervisión o capacitación adicional.</li>
-        <li>Tiene potencial para desarrollarse en roles más avanzados si se le brinda orientación y recursos adecuados.</li>
-        <li>Su historial muestra un desempeño constante, aunque no sobresaliente, en proyectos anteriores.</li>
-      </ul>
-    </div>
+    @if (selectedCandidates.length > 0) {
+      <h2 class="text-2xl font-bold text-primary mb-4">Candidatos Seleccionados para Entrevista</h2>
+      <p-card styleClass="shadow-lg bg-blue-50">
+        <p-table [value]="selectedCandidates" [tableStyle]="{ 'min-width': '50rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Candidato</th>
+              <th>Teléfono</th>
+              <th>Email</th>
+              <th>Calificación</th>
+              <th>Acciones</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-candidate>
+            <tr>
+              <td class="font-semibold">{{ candidate.name }}</td>
+              <td>{{ candidate.phone }}</td>
+              <td>{{ candidate.email }}</td>
+              <td>
+                <span [ngClass]="getScoreClass(candidate.score)" class="font-light px-4 py-2 rounded">
+                  {{ candidate.score }}
+                </span>
+              </td>
+              <td>
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [outlined]="true"
+                  (click)="removeFromSelection(candidate)"
+                  pTooltip="Remover" />
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    }
 
-    <div *ngIf="selectedCandidate.score === 'No calificado'">
-      <h2>{{ selectedCandidate.name }}</h2>
-      <p>
-        Este candidato está clasificado como
-        <strong>{{ selectedCandidate.score }}</strong>.
-        El candidato no cumple con los requisitos necesarios para el rol actual. Sin embargo, podría ser considerado para posiciones que requieran menos experiencia o conocimientos básicos, dependiendo de sus aspiraciones y disposición para aprender.
-      </p>
-      <h3>Razones:</h3>
-      <ul>
-        <li>Carece de la experiencia o habilidades técnicas necesarias para cumplir con los estándares del puesto.</li>
-        <li>Su perfil no coincide con los requerimientos específicos del rol, aunque podría adaptarse a otras áreas con menos exigencia.</li>
-        <li>Podría requerir un proceso de capacitación extensivo para alcanzar un nivel aceptable en este tipo de proyectos.</li>
-      </ul>
-    </div>
+    <!-- Modal para mostrar los detalles -->
+    <p-dialog
+      header="Recomendación para candidato"
+      [(visible)]="modalVisible"
+      [style]="{ width: '40vw' }"
+      [modal]="true"
+      [closable]="true">
+      <div *ngIf="selectedCandidate">
+        @if (selectedCandidate.score === 'Altamente calificado') {
+          <h2 class="mb-4 text-xl font-bold">{{ selectedCandidate.name }}</h2>
+          <p>
+            Este candidato está clasificado como
+            <strong>{{ selectedCandidate.score }}</strong
+            >. Nuestra recomendación es considerarlo altamente para roles desafiantes.
+          </p>
+          <h3 class="my-2 font-semibold">Razones:</h3>
+          <ul class="list-disc ml-6">
+            <li>Tiene una trayectoria destacada en su campo de experiencia.</li>
+            <li>Demuestra habilidades técnicas sobresalientes.</li>
+            <li>Ha recibido evaluaciones positivas en proyectos previos.</li>
+          </ul>
+        }
+
+        @if (selectedCandidate.score === 'Parcialmente calificado') {
+          <h2 class="mb-4 text-xl font-bold">{{ selectedCandidate.name }}</h2>
+          <p>
+            Este candidato está clasificado como
+            <strong>{{ selectedCandidate.score }}</strong
+            >. El candidato tiene habilidades y experiencia que lo hacen adecuado para roles de nivel intermedio.
+          </p>
+          <h3 class="my-2 font-semibold">Razones:</h3>
+          <ul class="list-disc ml-6">
+            <li>Ha demostrado conocimientos básicos en el área.</li>
+            <li>Tiene potencial para desarrollarse en roles más avanzados.</li>
+            <li>Su historial muestra un desempeño constante en proyectos anteriores.</li>
+          </ul>
+        }
+
+        @if (selectedCandidate.score === 'No calificado') {
+          <h2 class="mb-4 text-xl font-bold">{{ selectedCandidate.name }}</h2>
+          <p>
+            Este candidato está clasificado como
+            <strong>{{ selectedCandidate.score }}</strong
+            >. El candidato no cumple con los requisitos necesarios para el rol actual.
+          </p>
+          <h3 class="my-2 font-semibold">Razones:</h3>
+          <ul class="list-disc ml-6">
+            <li>Carece de la experiencia o habilidades técnicas necesarias.</li>
+            <li>Su perfil no coincide con los requerimientos específicos del rol.</li>
+            <li>Podría requerir un proceso de capacitación extensivo.</li>
+          </ul>
+        }
+      </div>
+    </p-dialog>
   </div>
-</p-dialog>
+</div>

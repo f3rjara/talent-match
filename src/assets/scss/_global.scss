@@ -11,6 +11,9 @@ html, body {
 .container {
   max-width: _vars.$desktop;
   margin: 0 auto;
+  @media (max-width: _vars.$desktop) {
+    padding: 0 15px !important;
+  }
 }
 
 .custom-bg {
