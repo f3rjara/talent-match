@@ -1,0 +1,88 @@
+<p-dialog
+  [(visible)]="isVisible"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="vacancy-form-dialog"
+  header="Editar Vacante">
+  <form [formGroup]="vacancyForm" class="vacancy-form" (ngSubmit)="save()">
+    <!-- Campo Título -->
+    <div class="form-field">
+      <label for="titulo" class="form-label"> Título de la Vacante <span class="required">*</span> </label>
+      <input
+        id="titulo"
+        type="text"
+        pInputText
+        formControlName="titulo"
+        placeholder="Ej: Frontend Developer"
+        class="form-input"
+        [class.invalid]="isFieldInvalid('titulo')" />
+      <small class="error-message" *ngIf="isFieldInvalid('titulo')">
+        {{ getErrorMessage('titulo') }}
+      </small>
+    </div>
+
+    <!-- Campo Experiencia -->
+    <div class="form-field">
+      <label for="experiencia" class="form-label"> Experiencia Requerida <span class="required">*</span> </label>
+      <p-dropdown
+        id="experiencia"
+        formControlName="experiencia"
+        [options]="experienciaOptions"
+        placeholder="Seleccione experiencia"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="form-dropdown"
+        [class.invalid]="isFieldInvalid('experiencia')"></p-dropdown>
+      <small class="error-message" *ngIf="isFieldInvalid('experiencia')">
+        {{ getErrorMessage('experiencia') }}
+      </small>
+    </div>
+
+    <!-- Campo Ubicación -->
+    <div class="form-field">
+      <label for="ubicacion" class="form-label"> Ubicación <span class="required">*</span> </label>
+      <p-dropdown
+        id="ubicacion"
+        formControlName="ubicacion"
+        [options]="ubicacionOptions"
+        placeholder="Seleccione ubicación"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="form-dropdown"
+        [class.invalid]="isFieldInvalid('ubicacion')"></p-dropdown>
+      <small class="error-message" *ngIf="isFieldInvalid('ubicacion')">
+        {{ getErrorMessage('ubicacion') }}
+      </small>
+    </div>
+
+    <!-- Campo Disponibilidad -->
+    <div class="form-field">
+      <label for="disponibilidad" class="form-label"> Disponibilidad <span class="required">*</span> </label>
+      <p-dropdown
+        id="disponibilidad"
+        formControlName="disponibilidad"
+        [options]="disponibilidadOptions"
+        placeholder="Seleccione disponibilidad"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="form-dropdown"
+        [class.invalid]="isFieldInvalid('disponibilidad')"></p-dropdown>
+      <small class="error-message" *ngIf="isFieldInvalid('disponibilidad')">
+        {{ getErrorMessage('disponibilidad') }}
+      </small>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        (onClick)="cancel()"
+        styleClass="p-button-text p-button-secondary"></p-button>
+      <p-button label="Guardar" icon="pi pi-check" (onClick)="save()" styleClass="p-button-primary"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>

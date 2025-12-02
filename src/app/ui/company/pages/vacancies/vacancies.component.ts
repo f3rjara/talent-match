@@ -7,10 +7,12 @@ import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { VacancyService } from './services/vacancy.service';
+import { VacancyFormComponent } from './components/vacancy-form/vacancy-form.component';
+import { Vacancy } from './models/vacancy.interface';
 
 @Component({
   selector: 'app-vacancies',
-  imports: [CommonModule, FormsModule, ButtonModule, CardModule, DialogModule, DropdownModule],
+  imports: [CommonModule, FormsModule, ButtonModule, CardModule, DialogModule, DropdownModule, VacancyFormComponent],
   templateUrl: './vacancies.component.html',
   styleUrls: ['./vacancies.component.scss'],
 })
@@ -52,6 +54,10 @@ export class VacanciesComponent implements OnInit {
     { label: '15 días', value: '15 días' },
     { label: '1 mes', value: '1 mes' },
   ];
+
+  // Propiedades para el formulario de edición
+  editingVacancy: Vacancy | null = null;
+  showEditModal: boolean = false;
 
   constructor(
     private router: Router,
@@ -142,6 +148,7 @@ export class VacanciesComponent implements OnInit {
 
     // Convertir la transcripción a minúsculas para un análisis consistente
     const lowerCaseTranscription = this.transcription.toLowerCase();
+    console.log(lowerCaseTranscription);
 
     // Extraer experiencia (buscar "experiencia X años")
     const experienciaMatch = lowerCaseTranscription.match(/experiencia (\d+\+? años?)/i);
@@ -204,5 +211,45 @@ export class VacanciesComponent implements OnInit {
 
   navigateToCandidates(vacancy: any): void {
     this.router.navigate(['/home/applications'], { queryParams: { titulo: vacancy.titulo } });
+  }
+
+  // Métodos para edición de vacantes
+  editVacancy(vacancy: any): void {
+    this.editingVacancy = { ...vacancy };
+    this.showEditModal = true;
+  }
+
+  handleSaveVacancy(updatedVacancy: Vacancy): void {
+    // Si la vacante tiene ID, actualizar en el servicio
+    if (updatedVacancy.id) {
+      this.vacancyService.updateVacancy(updatedVacancy.id, updatedVacancy).subscribe({
+        next: (_result: any) => {
+          this.getVacancies();
+          this.closeEditModal();
+        },
+        error: (_error: any) => {
+          // Si falla, actualizar localmente
+          const index = this.vacancies.findIndex((v: any) => v.id === updatedVacancy.id);
+          if (index !== -1) {
+            this.vacancies[index] = updatedVacancy;
+            this.applyFilters();
+          }
+          this.closeEditModal();
+        },
+      });
+    } else {
+      // Si no tiene ID, buscar por título y actualizar
+      const index = this.vacancies.findIndex((v: any) => v.titulo === this.editingVacancy?.titulo);
+      if (index !== -1) {
+        this.vacancies[index] = updatedVacancy;
+        this.applyFilters();
+      }
+      this.closeEditModal();
+    }
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.editingVacancy = null;
   }
 }

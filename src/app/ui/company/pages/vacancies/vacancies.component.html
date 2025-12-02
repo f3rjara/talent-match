@@ -56,12 +56,22 @@
       <p><strong>Experiencia:</strong> {{ vacancy.experiencia }}</p>
       <p><strong>Ubicación:</strong> {{ vacancy.ubicacion }}</p>
       <p><strong>Disponibilidad:</strong> {{ vacancy.disponibilidad }}</p>
-      <button
-        pButton
-        type="button"
-        label="Ver Detalle"
-        class="p-button-sm p-button-outlined"
-        (click)="navigateToCandidates(vacancy)"></button>
+      <div class="vacancy-actions">
+        <button
+          pButton
+          type="button"
+          label="Ver Detalle"
+          icon="pi pi-eye"
+          class="p-button-sm p-button-outlined"
+          (click)="navigateToCandidates(vacancy)"></button>
+        <button
+          pButton
+          type="button"
+          label="Editar"
+          icon="pi pi-pencil"
+          class="p-button-sm p-button-outlined p-button-warning"
+          (click)="editVacancy(vacancy)"></button>
+      </div>
     </div>
   </div>
 
@@ -74,8 +84,9 @@
     [style]="{ width: '50vw' }">
     <div class="modal-content">
       <p>
-        Habla los detalles de la vacante en el siguiente formato: "<strong>Titulo</strong>, experiencia
-        <strong>3 años</strong>, ubicacion <strong>remoto</strong>", disponibilidad <strong>inmediata</strong>
+        Habla los detalles de la vacante en el siguiente formato:
+        <strong>Titulo</strong>, experiencia 3 años, ubicación <strong>remoto</strong>", disponibilidad
+        <b>inmediata</b>
       </p>
 
       <p><strong>Ejemplo:</strong> enfermero experiencia 5 años ubicación pasto disponibilidad inmediata</p>
@@ -107,4 +118,12 @@
         [disabled]="!transcription"></button>
     </div>
   </p-dialog>
+
+  <!-- Formulario de Edición -->
+  <app-vacancy-form
+    [vacancy]="editingVacancy"
+    [isVisible]="showEditModal"
+    (onSave)="handleSaveVacancy($event)"
+    (onCancel)="closeEditModal()">
+  </app-vacancy-form>
 </div>
