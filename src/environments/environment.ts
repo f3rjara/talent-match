@@ -6,4 +6,5 @@ export const environment = {
   AUTH_API_LOGOUT_URL: 'http://flow-m-Publi-MjNq3yo7kk3C-127344816.us-west-2.elb.amazonaws.com/api/auth/logout',
   AUTH_API_REFRESH_URL: 'http://flow-m-Publi-MjNq3yo7kk3C-127344816.us-west-2.elb.amazonaws.com/api/auth/refresh',
   AUTH_API_ME_URL: 'http://flow-m-Publi-MjNq3yo7kk3C-127344816.us-west-2.elb.amazonaws.com/api/auth/me',
+  VACANCY_API_URL: 'http://flow-m-Publi-MjNq3yo7kk3C-127344816.us-west-2.elb.amazonaws.com/api/vacancies',
 };

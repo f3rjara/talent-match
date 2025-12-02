@@ -11,12 +11,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const isExcluded = excludedUrls.some((url) => req.url.includes(url));
 
   if (token && !isExcluded) {
+    console.log('🔑 Adding Bearer token to request:', req.url);
     const clonedRequest = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,
       },
     });
     return next(clonedRequest);
+  } else {
+    console.log('⚠️ No token attached. Token exists?', !!token, 'Is excluded?', isExcluded, 'URL:', req.url);
   }
 
   return next(req);

@@ -185,12 +185,23 @@ export class VacanciesComponent implements OnInit {
   }
 
   getVacancies() {
-    this.vacancyService.getVacancy().subscribe({
+    this.vacancyService.getVacancies().subscribe({
       next: (response) => {
-        this.vacancies = response;
+        console.log('📦 API Response:', response);
+        if (Array.isArray(response)) {
+          this.vacancies = response;
+        } else if (response.vacancies && Array.isArray(response.vacancies)) {
+          this.vacancies = response.vacancies;
+        } else if (response.data && Array.isArray(response.data)) {
+          this.vacancies = response.data;
+        } else if (response.items && Array.isArray(response.items)) {
+          this.vacancies = response.items;
+        } else {
+          console.warn('⚠️ Unexpected response format, defaulting to empty array', response);
+          this.vacancies = [];
+        }
         this.filteredVacancies = [...this.vacancies];
-        console.log('✅ Vacantes cargadas desde API:', this.vacancies);
-        console.log('✅ Vacantes filtradas:', this.filteredVacancies);
+        console.log('✅ Vacantes cargadas:', this.vacancies);
       },
       error: (error) => {
         console.warn('⚠️ Error al cargar vacantes desde API, usando mock data:', error);
