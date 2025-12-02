@@ -1,0 +1,57 @@
+<div class="grid grid-cols-1 lg:grid-cols-2 min-h-lvh">
+  <div class="bg-primary content-center px-8 py-12">
+    <h2 class="text-white text-center poppins-bold text-3xl lg:text-5xl mb-8">Contrata mejor y más eficiente con IA</h2>
+    <img src="assets/images/logo-flow-match.png" alt="Logo de Flow Match" class="max-w-xs m-auto w-full" />
+  </div>
+  <div class="content-center px-8 py-12">
+    <div class="mb-4 p-8">
+      <p-card header="Ingresar">
+        <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+          <p-floatlabel class="mt-8">
+            <input
+              pInputText
+              id="email_company_label"
+              formControlName="email"
+              autocomplete="email"
+              class="w-full"
+              [class.ng-invalid]="isFieldInvalid('email')"
+              [class.ng-dirty]="isFieldInvalid('email')" />
+            <label for="email_company_label">Email Empresa</label>
+          </p-floatlabel>
+          @if (isFieldInvalid('email')) {
+            <small class="text-red-500 block mt-1">{{ getFieldError('email') }}</small>
+          }
+
+          <p-floatlabel class="mt-8">
+            <p-password
+              formControlName="password"
+              inputId="pass_company"
+              autocomplete="current-password"
+              class="p-input-component"
+              [class.ng-invalid]="isFieldInvalid('password')"
+              [class.ng-dirty]="isFieldInvalid('password')"
+              [feedback]="false" />
+            <label for="pass_company">Contraseña</label>
+          </p-floatlabel>
+          @if (isFieldInvalid('password')) {
+            <small class="text-red-500 block mt-1">{{ getFieldError('password') }}</small>
+          }
+
+          @if (errorMessage) {
+            <p-message severity="error" [text]="errorMessage" styleClass="w-full my-4" />
+          }
+
+          <div class="card flex justify-center mt-6">
+            <p-button
+              label="Iniciar sesión"
+              icon="pi pi-check"
+              [loading]="loading"
+              [disabled]="authForm.invalid || loading"
+              type="submit"
+              styleClass="w-full" />
+          </div>
+        </form>
+      </p-card>
+    </div>
+  </div>
+</div>

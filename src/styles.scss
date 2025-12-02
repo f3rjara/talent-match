@@ -4,3 +4,9 @@
 @plugin "tailwindcss-primeui";
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
 @layer tailwind, primeng;
+
+// PrimeNG Navigation Item Color
+:root {
+  --p-navigation-item-color: #cdf1fd;
+  --p-button-primary-hover-background: rgb(16, 45, 102);
+}
