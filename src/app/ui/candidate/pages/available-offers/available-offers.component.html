@@ -1,325 +1,330 @@
-<div class="vacancies-container p-4">
-  <!-- Header Section -->
-  <div class="mb-6">
-    <div class="flex justify-content-between align-items-center mb-5">
-      <h1 class="text-2xl font-bold text-primary flex-1">Ofertas Laborales Disponibles</h1>
-      <button
-        pButton
-        type="button"
-        icon="pi pi-refresh"
-        class="p-button-rounded p-button-text"
-        pTooltip="Recargar vacantes"
-        tooltipPosition="left"
-        (click)="loadVacancies()"></button>
-    </div>
-    <p class="text-center text-gray-600">
-      Explora las vacantes abiertas y postúlate a las que mejor se ajusten a tu perfil
-    </p>
-  </div>
-
-  <!-- Loading State -->
-  @if (loading()) {
-    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      @for (item of [1, 2, 3, 4, 5, 6]; track item) {
-        <p-card class="vacancy-card-skeleton">
-          <p-skeleton height="2rem" styleClass="mb-3"></p-skeleton>
-          <p-skeleton height="1rem" styleClass="mb-2"></p-skeleton>
-          <p-skeleton height="1rem" styleClass="mb-2"></p-skeleton>
-          <p-skeleton height="1rem" styleClass="mb-3"></p-skeleton>
-          <p-skeleton height="2.5rem"></p-skeleton>
-        </p-card>
-      }
-    </div>
-  }
-
-  <!-- Vacancies List -->
-  @if (!loading() && vacancies().length > 0) {
-    <div class="vacancies-list space-y-4">
-      @for (vacancy of vacancies(); track vacancy.id) {
-        <p-card class="vacancy-card hover:shadow-lg transition-shadow">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            <!-- Left Section: Main Info -->
-            <div class="lg:col-span-6">
-              <div class="flex justify-content-between align-items-start mb-3">
-                <div class="flex-1">
-                  <h3 class="text-2xl font-bold text-primary mb-2">
-                    {{ vacancy.title }}
-                  </h3>
-                  <p-tag
-                    [value]="getStatusLabel(vacancy.status)"
-                    [severity]="getStatusSeverity(vacancy.status)"></p-tag>
-                </div>
-                <button
-                  pButton
-                  type="button"
-                  [icon]="isFavorite(vacancy.id) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                  class="p-button-rounded p-button-text"
-                  [class.text-red-500]="isFavorite(vacancy.id)"
-                  [pTooltip]="isFavorite(vacancy.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'"
-                  tooltipPosition="top"
-                  (click)="toggleFavorite(vacancy.id, $event)"></button>
-              </div>
-
-              <!-- Description -->
-              <div class="description-preview mb-4">
-                <p class="text-gray-700 leading-relaxed line-clamp-2">
-                  {{ vacancy.description }}
-                </p>
-              </div>
-
-              <!-- Skills Preview -->
-              <div class="skills-preview">
-                <span class="text-sm font-medium text-gray-600 mb-2 block">Habilidades requeridas:</span>
-                <div class="flex flex-wrap gap-2">
-                  @for (skill of vacancy.matchingCriteria.technicalSkills.required.slice(0, 5); track skill) {
-                    <p-chip [label]="skill" styleClass="text-sm"></p-chip>
-                  }
-                  @if (vacancy.matchingCriteria.technicalSkills.required.length > 5) {
-                    <p-chip
-                      [label]="'+' + (vacancy.matchingCriteria.technicalSkills.required.length - 5) + ' más'"
-                      styleClass="text-sm bg-gray-200"></p-chip>
-                  }
-                </div>
-              </div>
-            </div>
-
-            <!-- Right Section: Details & Actions -->
-            <div class="lg:col-span-6">
-              <div class="vacancy-meta space-y-3">
-                <!-- Experience -->
-                <div class="flex align-items-start gap-2">
-                  <i class="pi pi-briefcase text-primary mt-1"></i>
-                  <div class="flex-1">
-                    <span class="text-xs text-gray-500 block">Experiencia</span>
-                    <p class="font-medium text-sm">{{ vacancy.experienceRequired }}</p>
-                  </div>
-                </div>
-
-                <!-- Location -->
-                <div class="flex align-items-start gap-2">
-                  <i class="pi pi-map-marker text-primary mt-1"></i>
-                  <div class="flex-1">
-                    <span class="text-xs text-gray-500 block">Ubicación</span>
-                    <p class="font-medium text-sm">{{ vacancy.location }}</p>
-                  </div>
-                </div>
-
-                <!-- Availability -->
-                <div class="flex align-items-start gap-2">
-                  <i class="pi pi-clock text-primary mt-1"></i>
-                  <div class="flex-1">
-                    <span class="text-xs text-gray-500 block">Disponibilidad</span>
-                    <p class="font-medium text-sm">{{ vacancy.availability }}</p>
-                  </div>
-                </div>
-
-                <p-divider></p-divider>
-
-                <!-- Action Buttons -->
-                <div class="flex flex-column gap-2">
-                  <button
-                    pButton
-                    type="button"
-                    label="Ver detalles completos"
-                    icon="pi pi-eye"
-                    class="p-button-outlined w-full"
-                    (click)="viewDetails(vacancy)"></button>
-                  <button
-                    pButton
-                    type="button"
-                    label="Aplicar a esta vacante"
-                    icon="pi pi-send"
-                    class="p-button-success w-full"
-                    (click)="applyToVacancy(vacancy)"></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </p-card>
-      }
-    </div>
-  }
-
-  <!-- Empty State -->
-  @if (!loading() && vacancies().length === 0) {
-    <div class="text-center py-8">
-      <i class="pi pi-inbox text-6xl text-gray-400 mb-4"></i>
-      <h3 class="text-2xl font-semibold text-gray-600 mb-2">No hay vacantes disponibles</h3>
-      <p class="text-gray-500 mb-4">Vuelve pronto para ver nuevas oportunidades</p>
-      <button
-        pButton
-        type="button"
-        label="Comprobar de nuevo"
-        icon="pi pi-refresh"
-        class="p-button-outlined"
-        (click)="loadVacancies()"></button>
-    </div>
-  }
-</div>
-
-<!-- Vacancy Details Dialog -->
-<p-dialog
-  header="Detalles de la Vacante"
-  [(visible)]="showDetails"
-  [modal]="true"
-  [style]="{ width: '50rem' }"
-  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-  (onHide)="closeDetails()">
-  @if (selectedVacancy()) {
-    <div class="vacancy-details-content space-y-4">
-      <!-- Title and Status -->
-      <div class="flex justify-content-between align-items-start">
-        <div>
-          <h2 class="text-2xl font-bold text-primary mb-2">
-            {{ selectedVacancy()!.title }}
-          </h2>
-          <p-tag
-            [value]="getStatusLabel(selectedVacancy()!.status)"
-            [severity]="getStatusSeverity(selectedVacancy()!.status)"></p-tag>
-        </div>
+<div class="container flex-grow py-8">
+  <div class="vacancies-container p-4">
+    <!-- Header Section -->
+    <div class="mb-6">
+      <div class="flex justify-content-between align-items-center mb-5">
+        <h1 class="text-2xl font-bold text-primary flex-1">Ofertas Laborales Disponibles</h1>
         <button
           pButton
           type="button"
-          [icon]="isFavorite(selectedVacancy()!.id) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+          icon="pi pi-refresh"
           class="p-button-rounded p-button-text"
-          [class.text-red-500]="isFavorite(selectedVacancy()!.id)"
-          [pTooltip]="isFavorite(selectedVacancy()!.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'"
-          tooltipPosition="top"
-          (click)="toggleFavorite(selectedVacancy()!.id, $event)"></button>
+          pTooltip="Recargar vacantes"
+          tooltipPosition="left"
+          (click)="loadVacancies()"></button>
       </div>
+      <p class="text-center text-gray-600">
+        Explora las vacantes abiertas y postúlate a las que mejor se ajusten a tu perfil
+      </p>
+    </div>
 
-      <p-divider></p-divider>
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+          <p-card class="vacancy-card-skeleton">
+            <p-skeleton height="2rem" styleClass="mb-3"></p-skeleton>
+            <p-skeleton height="1rem" styleClass="mb-2"></p-skeleton>
+            <p-skeleton height="1rem" styleClass="mb-2"></p-skeleton>
+            <p-skeleton height="1rem" styleClass="mb-3"></p-skeleton>
+            <p-skeleton height="2.5rem"></p-skeleton>
+          </p-card>
+        }
+      </div>
+    }
 
-      <!-- Basic Information -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="info-item">
-          <div class="flex align-items-center gap-2 mb-2">
-            <i class="pi pi-briefcase text-primary"></i>
-            <span class="font-semibold">Experiencia Requerida</span>
+    <!-- Vacancies List -->
+    @if (!loading() && vacancies().length > 0) {
+      <div class="vacancies-list space-y-4">
+        @for (vacancy of vacancies(); track vacancy.id) {
+          <p-card class="vacancy-card hover:shadow-lg transition-shadow">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+              <!-- Left Section: Main Info -->
+              <div class="lg:col-span-6">
+                <div class="flex justify-content-between align-items-start mb-3">
+                  <div class="flex-1">
+                    <h3 class="text-2xl font-bold text-primary mb-2">
+                      {{ vacancy.title }}
+                    </h3>
+                    <p-tag
+                      [value]="getStatusLabel(vacancy.status)"
+                      [severity]="getStatusSeverity(vacancy.status)"></p-tag>
+                  </div>
+                  <button
+                    pButton
+                    type="button"
+                    [icon]="isFavorite(vacancy.id) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                    class="p-button-rounded p-button-text"
+                    [class.text-red-500]="isFavorite(vacancy.id)"
+                    [pTooltip]="isFavorite(vacancy.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+                    tooltipPosition="top"
+                    (click)="toggleFavorite(vacancy.id, $event)"></button>
+                </div>
+
+                <!-- Description -->
+                <div class="description-preview mb-4">
+                  <p class="text-gray-700 leading-relaxed line-clamp-2">
+                    {{ vacancy.description }}
+                  </p>
+                </div>
+
+                <!-- Skills Preview -->
+                <div class="skills-preview">
+                  <span class="text-sm font-medium text-gray-600 mb-2 block">Habilidades requeridas:</span>
+                  <div class="flex flex-wrap gap-2">
+                    @for (skill of vacancy.matchingCriteria.technicalSkills.required.slice(0, 5); track skill) {
+                      <p-chip [label]="skill" styleClass="text-sm"></p-chip>
+                    }
+                    @if (vacancy.matchingCriteria.technicalSkills.required.length > 5) {
+                      <p-chip
+                        [label]="'+' + (vacancy.matchingCriteria.technicalSkills.required.length - 5) + ' más'"
+                        styleClass="text-sm bg-gray-200"></p-chip>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Section: Details & Actions -->
+              <div class="lg:col-span-6">
+                <div class="vacancy-meta space-y-3">
+                  <!-- Experience -->
+                  <div class="flex align-items-start gap-2">
+                    <i class="pi pi-briefcase text-primary mt-1"></i>
+                    <div class="flex-1">
+                      <span class="text-xs text-gray-500 block">Experiencia</span>
+                      <p class="font-medium text-sm">{{ vacancy.experienceRequired }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Location -->
+                  <div class="flex align-items-start gap-2">
+                    <i class="pi pi-map-marker text-primary mt-1"></i>
+                    <div class="flex-1">
+                      <span class="text-xs text-gray-500 block">Ubicación</span>
+                      <p class="font-medium text-sm">{{ vacancy.location }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Availability -->
+                  <div class="flex align-items-start gap-2">
+                    <i class="pi pi-clock text-primary mt-1"></i>
+                    <div class="flex-1">
+                      <span class="text-xs text-gray-500 block">Disponibilidad</span>
+                      <p class="font-medium text-sm">{{ vacancy.availability }}</p>
+                    </div>
+                  </div>
+
+                  <p-divider></p-divider>
+
+                  <!-- Action Buttons -->
+                  <div class="flex flex-column gap-2">
+                    <button
+                      pButton
+                      type="button"
+                      label="Ver detalles completos"
+                      icon="pi pi-eye"
+                      class="p-button-outlined w-full"
+                      (click)="viewDetails(vacancy)"></button>
+                    <button
+                      pButton
+                      type="button"
+                      label="Aplicar a esta vacante"
+                      icon="pi pi-send"
+                      class="p-button-success w-full"
+                      (click)="applyToVacancy(vacancy)"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </p-card>
+        }
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (!loading() && vacancies().length === 0) {
+      <div class="text-center py-8">
+        <i class="pi pi-inbox text-6xl text-gray-400 mb-4"></i>
+        <h3 class="text-2xl font-semibold text-gray-600 mb-2">No hay vacantes disponibles</h3>
+        <p class="text-gray-500 mb-4">Vuelve pronto para ver nuevas oportunidades</p>
+        <button
+          pButton
+          type="button"
+          label="Comprobar de nuevo"
+          icon="pi pi-refresh"
+          class="p-button-outlined"
+          (click)="loadVacancies()"></button>
+      </div>
+    }
+  </div>
+
+  <!-- Vacancy Details Dialog -->
+  <p-dialog
+    header="Detalles de la Vacante"
+    [(visible)]="showDetails"
+    [modal]="true"
+    [style]="{ width: '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    (onHide)="closeDetails()">
+    @if (selectedVacancy()) {
+      <div class="vacancy-details-content space-y-4">
+        <!-- Title and Status -->
+        <div class="flex justify-content-between align-items-start">
+          <div>
+            <h2 class="text-2xl font-bold text-primary mb-2">
+              {{ selectedVacancy()!.title }}
+            </h2>
+            <p-tag
+              [value]="getStatusLabel(selectedVacancy()!.status)"
+              [severity]="getStatusSeverity(selectedVacancy()!.status)"></p-tag>
           </div>
-          <p class="text-gray-700">
-            {{ selectedVacancy()!.experienceRequired }}
+          <button
+            pButton
+            type="button"
+            [icon]="isFavorite(selectedVacancy()!.id) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+            class="p-button-rounded p-button-text"
+            [class.text-red-500]="isFavorite(selectedVacancy()!.id)"
+            [pTooltip]="isFavorite(selectedVacancy()!.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+            tooltipPosition="top"
+            (click)="toggleFavorite(selectedVacancy()!.id, $event)"></button>
+        </div>
+
+        <p-divider></p-divider>
+
+        <!-- Basic Information -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="info-item">
+            <div class="flex align-items-center gap-2 mb-2">
+              <i class="pi pi-briefcase text-primary"></i>
+              <span class="font-semibold">Experiencia Requerida</span>
+            </div>
+            <p class="text-gray-700">
+              {{ selectedVacancy()!.experienceRequired }}
+            </p>
+          </div>
+
+          <div class="info-item">
+            <div class="flex align-items-center gap-2 mb-2">
+              <i class="pi pi-map-marker text-primary"></i>
+              <span class="font-semibold">Ubicación</span>
+            </div>
+            <p class="text-gray-700">{{ selectedVacancy()!.location }}</p>
+          </div>
+
+          <div class="info-item">
+            <div class="flex align-items-center gap-2 mb-2">
+              <i class="pi pi-clock text-primary"></i>
+              <span class="font-semibold">Disponibilidad</span>
+            </div>
+            <p class="text-gray-700">{{ selectedVacancy()!.availability }}</p>
+          </div>
+
+          <div class="info-item">
+            <div class="flex align-items-center gap-2 mb-2">
+              <i class="pi pi-calendar text-primary"></i>
+              <span class="font-semibold">Fecha de Publicación</span>
+            </div>
+            <p class="text-gray-700">
+              {{ selectedVacancy()!.createdAt | date: 'dd/MM/yyyy' }}
+            </p>
+          </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <!-- Description -->
+        <div class="description-section">
+          <div class="flex align-items-center gap-2 mb-3">
+            <i class="pi pi-file-edit text-primary"></i>
+            <h3 class="font-semibold text-lg">Descripción</h3>
+          </div>
+          <p class="text-gray-700 leading-relaxed">
+            {{ selectedVacancy()!.description }}
           </p>
         </div>
 
-        <div class="info-item">
-          <div class="flex align-items-center gap-2 mb-2">
-            <i class="pi pi-map-marker text-primary"></i>
-            <span class="font-semibold">Ubicación</span>
-          </div>
-          <p class="text-gray-700">{{ selectedVacancy()!.location }}</p>
-        </div>
+        <p-divider></p-divider>
 
-        <div class="info-item">
-          <div class="flex align-items-center gap-2 mb-2">
-            <i class="pi pi-clock text-primary"></i>
-            <span class="font-semibold">Disponibilidad</span>
-          </div>
-          <p class="text-gray-700">{{ selectedVacancy()!.availability }}</p>
-        </div>
+        <!-- Skills Section -->
+        <div class="skills-section space-y-4">
+          <h3 class="font-semibold text-lg mb-3">Criterios de Selección</h3>
 
-        <div class="info-item">
-          <div class="flex align-items-center gap-2 mb-2">
-            <i class="pi pi-calendar text-primary"></i>
-            <span class="font-semibold">Fecha de Publicación</span>
-          </div>
-          <p class="text-gray-700">
-            {{ selectedVacancy()!.createdAt | date: 'dd/MM/yyyy' }}
-          </p>
-        </div>
-      </div>
-
-      <p-divider></p-divider>
-
-      <!-- Description -->
-      <div class="description-section">
-        <div class="flex align-items-center gap-2 mb-3">
-          <i class="pi pi-file-edit text-primary"></i>
-          <h3 class="font-semibold text-lg">Descripción</h3>
-        </div>
-        <p class="text-gray-700 leading-relaxed">
-          {{ selectedVacancy()!.description }}
-        </p>
-      </div>
-
-      <p-divider></p-divider>
-
-      <!-- Skills Section -->
-      <div class="skills-section space-y-4">
-        <h3 class="font-semibold text-lg mb-3">Criterios de Selección</h3>
-
-        <!-- Technical Skills -->
-        <div>
-          <div class="flex align-items-center gap-2 mb-2">
-            <i class="pi pi-code text-primary"></i>
-            <span class="font-medium">Habilidades Técnicas Requeridas</span>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            @for (skill of selectedVacancy()!.matchingCriteria.technicalSkills.required; track skill) {
-              <p-chip [label]="skill" styleClass="bg-blue-100 text-blue-800"></p-chip>
-            }
-          </div>
-        </div>
-
-        <!-- Preferred Skills -->
-        @if (selectedVacancy()!.matchingCriteria.technicalSkills.preferred.length > 0) {
+          <!-- Technical Skills -->
           <div>
             <div class="flex align-items-center gap-2 mb-2">
-              <i class="pi pi-star text-primary"></i>
-              <span class="font-medium">Habilidades Técnicas Preferidas</span>
+              <i class="pi pi-code text-primary"></i>
+              <span class="font-medium">Habilidades Técnicas Requeridas</span>
             </div>
             <div class="flex flex-wrap gap-2">
-              @for (skill of selectedVacancy()!.matchingCriteria.technicalSkills.preferred; track skill) {
-                <p-chip [label]="skill" styleClass="bg-purple-100 text-purple-800"></p-chip>
+              @for (skill of selectedVacancy()!.matchingCriteria.technicalSkills.required; track skill) {
+                <p-chip [label]="skill" styleClass="bg-blue-100 text-blue-800"></p-chip>
               }
             </div>
           </div>
-        }
 
-        <!-- Behavioral Competencies -->
-        <div>
-          <div class="flex align-items-center gap-2 mb-2">
-            <i class="pi pi-users text-primary"></i>
-            <span class="font-medium">Competencias Conductuales</span>
+          <!-- Preferred Skills -->
+          @if (selectedVacancy()!.matchingCriteria.technicalSkills.preferred.length > 0) {
+            <div>
+              <div class="flex align-items-center gap-2 mb-2">
+                <i class="pi pi-star text-primary"></i>
+                <span class="font-medium">Habilidades Técnicas Preferidas</span>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                @for (skill of selectedVacancy()!.matchingCriteria.technicalSkills.preferred; track skill) {
+                  <p-chip [label]="skill" styleClass="bg-purple-100 text-purple-800"></p-chip>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Behavioral Competencies -->
+          <div>
+            <div class="flex align-items-center gap-2 mb-2">
+              <i class="pi pi-users text-primary"></i>
+              <span class="font-medium">Competencias Conductuales</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              @for (
+                competency of selectedVacancy()!.matchingCriteria.behavioralCompetencies.required;
+                track competency
+              ) {
+                <p-chip [label]="competency" styleClass="bg-green-100 text-green-800"></p-chip>
+              }
+            </div>
           </div>
-          <div class="flex flex-wrap gap-2">
-            @for (competency of selectedVacancy()!.matchingCriteria.behavioralCompetencies.required; track competency) {
-              <p-chip [label]="competency" styleClass="bg-green-100 text-green-800"></p-chip>
-            }
+
+          <!-- Cognitive Skills -->
+          <div>
+            <div class="flex align-items-center gap-2 mb-2">
+              <i class="pi pi-bolt text-primary"></i>
+              <span class="font-medium">Habilidades Cognitivas</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              @for (skill of selectedVacancy()!.matchingCriteria.cognitiveSkills.required; track skill) {
+                <p-chip [label]="skill" styleClass="bg-orange-100 text-orange-800"></p-chip>
+              }
+            </div>
           </div>
         </div>
 
-        <!-- Cognitive Skills -->
-        <div>
-          <div class="flex align-items-center gap-2 mb-2">
-            <i class="pi pi-bolt text-primary"></i>
-            <span class="font-medium">Habilidades Cognitivas</span>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            @for (skill of selectedVacancy()!.matchingCriteria.cognitiveSkills.required; track skill) {
-              <p-chip [label]="skill" styleClass="bg-orange-100 text-orange-800"></p-chip>
-            }
-          </div>
+        <!-- Action Buttons -->
+        <div class="flex gap-3 pt-4">
+          <button
+            pButton
+            type="button"
+            label="Cerrar"
+            icon="pi pi-times"
+            class="p-button-outlined flex-1"
+            (click)="closeDetails()"></button>
+          <button
+            pButton
+            type="button"
+            label="Aplicar a esta vacante"
+            icon="pi pi-send"
+            class="p-button-success flex-1"
+            (click)="applyToVacancy(selectedVacancy()!); closeDetails()"></button>
         </div>
       </div>
-
-      <!-- Action Buttons -->
-      <div class="flex gap-3 pt-4">
-        <button
-          pButton
-          type="button"
-          label="Cerrar"
-          icon="pi pi-times"
-          class="p-button-outlined flex-1"
-          (click)="closeDetails()"></button>
-        <button
-          pButton
-          type="button"
-          label="Aplicar a esta vacante"
-          icon="pi pi-send"
-          class="p-button-success flex-1"
-          (click)="applyToVacancy(selectedVacancy()!); closeDetails()"></button>
-      </div>
-    </div>
-  }
-</p-dialog>
+    }
+  </p-dialog>
+</div>

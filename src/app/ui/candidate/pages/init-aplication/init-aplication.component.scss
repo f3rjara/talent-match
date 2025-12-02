@@ -1,21 +1,175 @@
 :host {
   display: block;
-  overflow: hidden;
+}
 
-  h1{
-    color: #6429CD;
+.application-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.grid {
+  min-height: 100vh;
+}
+
+.vacancy-info-section {
+  overflow-y: auto;
+  padding: 2rem !important;
+
+  .vacancy-card {
+    max-width: 100%;
   }
 
-  .left {
-    background: #942eb6;
-    background: radial-gradient(at left top, #942eb6, #4c5ce4);
+  .vacancy-detail-card,
+  .required-info-card {
+    border-left: 4px solid var(--primary-color);
   }
 
-  .image {
-    min-height: 95vh;
-    img {
-      height: 100%;
-      object-fit: cover;
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  p-divider {
+    margin: 1rem 0;
+  }
+
+  .space-y-3 > * + * {
+    margin-top: 0.75rem;
+  }
+
+  .space-y-2 > * + * {
+    margin-top: 0.5rem;
+  }
+}
+
+.whatsapp-section {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: white;
+  min-height: 100vh;
+  overflow-y: auto;
+  padding: 2rem !important;
+
+  .whatsapp-container {
+    max-width: 100%;
+  }
+
+  .whatsapp-header {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .whatsapp-messages {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    max-height: 250px;
+    overflow-y: auto;
+
+    .message {
+      margin-bottom: 0.75rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &.bot-message {
+        .message-bubble {
+          background: #e7f8ee;
+          color: #1f2937;
+          border-radius: 12px 12px 12px 0;
+          padding: 0.75rem;
+          max-width: 85%;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+      }
+
+      &.user-message {
+        display: flex;
+        justify-content: flex-end;
+
+        .message-bubble {
+          background: #dcf8c6;
+          color: #1f2937;
+          border-radius: 12px 12px 0 12px;
+          padding: 0.75rem;
+          max-width: 75%;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+      }
     }
+  }
+
+  p-divider {
+    margin: 1rem 0;
+  }
+
+  .qr-section {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1rem;
+    border-radius: 12px;
+    color: #1f2937;
+    margin-bottom: 1rem;
+
+    h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .qr-code-container {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin: 0.75rem auto;
+      width: fit-content;
+    }
+  }
+
+  .action-buttons {
+    margin-bottom: 1rem;
+
+    .whatsapp-button {
+      background: #25d366;
+      border-color: #25d366;
+      color: white;
+      font-weight: 600;
+      padding: 0.875rem;
+      font-size: 1.1rem;
+
+      &:hover {
+        background: #128c7e;
+        border-color: #128c7e;
+      }
+    }
+  }
+
+  .help-text {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 992px) {
+  .vacancy-info-section,
+  .whatsapp-section {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .vacancy-info-section,
+  .whatsapp-section {
+    padding: 1.5rem !important;
+  }
+
+  .whatsapp-messages {
+    max-height: 200px;
   }
 }

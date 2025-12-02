@@ -1,19 +1,177 @@
-<div class="layout-content grid">
-  <div class="image col-12 md:col-6 p-0">
-    <img src="assets/images/bg.png" alt="talent Match" class="image-bg" width="100%" />
-  </div>
-  <div class="container col-12 md:col-6">
-    <div class="application flex flex-column align-content-center">
-      <h1 class="text-center mb-7 px-8">si ya tienes creado un CV en Nuestra web?</h1>
-      <div class="flex gap-2 justify-content-center">
-        <input type="text" pInputText [(ngModel)]="documnet" placeholder="Digita tu wsp" />
-        <p-button label="Aplicar a la oferta" />
+<div class="application-container min-h-screen">
+  <div class="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
+    <!-- Left Column: Vacancy Info -->
+    <div class="vacancy-info-section bg-white p-8 h-full">
+      <div class="vacancy-card h-full flex flex-col">
+        <div class="mb-4">
+          <h1 class="text-4xl font-bold mb-2" style="color: var(--primary-color)">¡Aplica a esta vacante!</h1>
+          <p class="text-gray-600 text-lg">Inicia tu proceso de selección a través de WhatsApp</p>
+        </div>
+
+        <p-divider></p-divider>
+
+        <!-- Vacancy Details Card -->
+        <p-card class="vacancy-detail-card my-4">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <h2 class="text-2xl font-bold" style="color: var(--primary-color)">
+              {{ vacancieTitle || vacancyData.title }}
+            </h2>
+            <p-tag value="{{ vacancyData.status }}" severity="success"></p-tag>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex align-items-start gap-3">
+              <i class="pi pi-building text-primary text-xl"></i>
+              <div>
+                <span class="text-sm text-gray-500 block">Empresa</span>
+                <p class="font-semibold">{{ vacancyData.company }}</p>
+              </div>
+            </div>
+
+            <div class="flex align-items-start gap-3">
+              <i class="pi pi-map-marker text-primary text-xl"></i>
+              <div>
+                <span class="text-sm text-gray-500 block">Ubicación</span>
+                <p class="font-semibold">{{ vacancyData.location }}</p>
+              </div>
+            </div>
+
+            <div class="flex align-items-start gap-3">
+              <i class="pi pi-briefcase text-primary text-xl"></i>
+              <div>
+                <span class="text-sm text-gray-500 block">Experiencia requerida</span>
+                <p class="font-semibold">{{ vacancyData.experience }}</p>
+              </div>
+            </div>
+          </div>
+        </p-card>
+
+        <!-- Required Info Card -->
+        <p-card class="required-info-card my-4">
+          <div class="flex align-items-center gap-2 mb-3">
+            <i class="pi pi-info-circle text-primary text-xl"></i>
+            <h3 class="font-bold text-lg">Información Requerida</h3>
+          </div>
+
+          <p class="text-gray-700 mb-3">Durante el proceso por WhatsApp se te solicitará la siguiente información:</p>
+
+          <div class="space-y-2">
+            @for (info of vacancyData.requiredInfo; track info) {
+              <div class="flex align-items-center gap-2">
+                <i class="pi pi-check-circle text-green-600"></i>
+                <span class="text-sm">{{ info }}</span>
+              </div>
+            }
+          </div>
+        </p-card>
       </div>
     </div>
-    <div class="chatboot mt-8 text-center">
-      <p-divider />
-      <p class="px-5 my-7">Crear tu CV nunca ha sido mas facil.. ahora desde cualquier lugar con nuestro ChatBoot</p>
-      <p-button label="Crear tu CV con nuestro ChatBoot" severity="success" (onClick)="goToChatboot()" />
+
+    <!-- Right Column: WhatsApp Application -->
+    <div class="whatsapp-section p-8">
+      <div class="whatsapp-container">
+        <!-- WhatsApp Header -->
+        <div class="whatsapp-header">
+          <div class="flex align-items-center gap-3">
+            <i class="pi pi-whatsapp text-4xl"></i>
+            <div>
+              <h2 class="text-2xl font-bold mb-1">Aplicar vía WhatsApp</h2>
+              <p class="text-sm opacity-90">Proceso 100% automatizado</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- WhatsApp Messages Simulation -->
+        <div class="whatsapp-messages">
+          <!-- Bot Message -->
+          <div class="message bot-message">
+            <div class="message-bubble">
+              <p class="font-semibold mb-2">👋 ¡Hola!</p>
+              <p class="mb-2">
+                Bienvenido(a) al proceso de selección de <strong>{{ vacancyData.company }}</strong> para la vacante de
+                <strong>{{ vacancieTitle || vacancyData.title }}</strong
+                >.
+              </p>
+              <p class="text-sm">
+                Nuestro asistente virtual te guiará paso a paso para completar tu aplicación. El proceso toma
+                aproximadamente 5 minutos.
+              </p>
+            </div>
+          </div>
+
+          <!-- User Message Example -->
+          <div class="message user-message">
+            <div class="message-bubble">
+              <p>Quiero aplicar a esta vacante 🚀</p>
+            </div>
+          </div>
+
+          <!-- Bot Response -->
+          <div class="message bot-message">
+            <div class="message-bubble">
+              <p class="text-sm">
+                ✅ ¡Perfecto! Para continuar, necesitaremos que proporciones tu información personal y profesional.
+                ¿Estás listo para comenzar?
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <!-- QR Code Section -->
+        <div class="qr-section text-center">
+          <h3 class="font-bold text-lg mb-3">Escanea el código QR</h3>
+          <p class="text-gray-600 mb-4 text-sm">
+            Abre la cámara de tu celular y escanea el código para iniciar el chat
+          </p>
+
+          <div class="qr-code-container">
+            @if (qrCodeValue()) {
+              <qrcode
+                [qrdata]="qrCodeValue()"
+                [width]="220"
+                [errorCorrectionLevel]="'M'"
+                [colorDark]="'#25D366'"
+                [colorLight]="'#ffffff'"
+                cssClass="qr-code-image">
+              </qrcode>
+            }
+          </div>
+
+          <p class="text-xs text-gray-500 mt-3">O también puedes hacer clic en el botón de abajo</p>
+        </div>
+
+        <p-divider></p-divider>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button
+            pButton
+            type="button"
+            label="Abrir WhatsApp Web"
+            icon="pi pi-external-link"
+            class="p-button-outlined w-full mb-3 bg-white hover:bg-gray-200"
+            severity="success"
+            (click)="goToChatboot()"></button>
+
+          <button
+            pButton
+            type="button"
+            label="Iniciar Chat en WhatsApp"
+            icon="pi pi-whatsapp"
+            class="w-full whatsapp-button"
+            (click)="goToChatboot()"></button>
+        </div>
+
+        <!-- Help Text -->
+        <div class="help-text text-center mt-4 flex gap-2 justify-center">
+          <i class="pi pi-shield text-gray-200 mr-2"></i>
+          <p class="text-xs text-gray-200">
+            Tu información está protegida y será utilizada únicamente para este proceso de selección
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
