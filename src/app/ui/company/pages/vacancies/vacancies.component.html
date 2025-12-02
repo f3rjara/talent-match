@@ -1,7 +1,47 @@
 <div class="vacancies p-8">
-  <div class="flex justify-content-between align-items-center">
-    <h2>Mis ofertas laborales</h2>
-    <button pButton type="button" label="Agregar vacante" class="p-button-primary" (click)="openModal()"></button>
+  <!-- Toast para notificaciones -->
+  <p-toast>
+    <ng-template let-message pTemplate="message">
+      <div class="toast-content">
+        <i [class]="'pi ' + (message.icon || 'pi-info-circle')"></i>
+        <div class="toast-text">
+          <div class="toast-summary">{{ message.summary }}</div>
+          <div class="toast-detail">{{ message.detail }}</div>
+        </div>
+        <button
+          *ngIf="message.key === 'deleteToast'"
+          pButton
+          type="button"
+          label="Deshacer"
+          class="p-button-sm p-button-warning"
+          (click)="undoDelete()"></button>
+      </div>
+    </ng-template>
+  </p-toast>
+
+  <!-- Dialog de confirmación -->
+  <p-confirmDialog></p-confirmDialog>
+
+  <div class="vacancies-header">
+    <div class="title-section">
+      <h1 class="main-title">Mis Ofertas Laborales</h1>
+      <p class="subtitle">Gestiona y publica tus vacantes disponibles</p>
+      <div class="counter-badge">
+        <i class="pi pi-briefcase"></i>
+        <span class="counter-text">
+          <strong>{{ filteredVacanciesCount }}</strong> de <strong>{{ totalVacancies }}</strong> vacantes
+        </span>
+      </div>
+    </div>
+    <div class="action-section">
+      <button
+        pButton
+        type="button"
+        label="Nueva Vacante"
+        icon="pi pi-plus"
+        class="p-button-lg add-vacancy-btn"
+        (click)="openModal()"></button>
+    </div>
   </div>
 
   <div class="filters grid gap-4">
@@ -71,6 +111,13 @@
           icon="pi pi-pencil"
           class="p-button-sm p-button-outlined p-button-warning"
           (click)="editVacancy(vacancy)"></button>
+        <button
+          pButton
+          type="button"
+          label="Eliminar"
+          icon="pi pi-trash"
+          class="p-button-sm p-button-outlined p-button-danger"
+          (click)="deleteVacancy(vacancy)"></button>
       </div>
     </div>
   </div>

@@ -2,19 +2,42 @@ import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { VacancyService } from './services/vacancy.service';
 import { VacancyFormComponent } from './components/vacancy-form/vacancy-form.component';
 import { Vacancy } from './models/vacancy.interface';
 
 @Component({
   selector: 'app-vacancies',
-  imports: [CommonModule, FormsModule, ButtonModule, CardModule, DialogModule, DropdownModule, VacancyFormComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonModule,
+    CardModule,
+    DialogModule,
+    DropdownModule,
+    VacancyFormComponent,
+    ToastModule,
+    ConfirmDialogModule
+  ],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './vacancies.component.html',
   styleUrls: ['./vacancies.component.scss'],
+  animations: [
+    trigger('fadeOut', [
+      state('visible', style({ opacity: 1, transform: 'translateX(0)' })),
+      state('hidden', style({ opacity: 0, transform: 'translateX(-100px)' })),
+      transition('visible => hidden', animate('300ms ease-out'))
+    ])
+  ]
 })
 export class VacanciesComponent implements OnInit {
   vacancies: any;
@@ -59,14 +82,33 @@ export class VacanciesComponent implements OnInit {
   editingVacancy: Vacancy | null = null;
   showEditModal: boolean = false;
 
+  // Propiedades para el sistema undo/deshacer
+  deletedVacancy: Vacancy | null = null;
+  deletedVacancyIndex: number = -1;
+  undoTimeout: any = null;
+
+  // Estado de animación para cada vacante
+  vacancyStates: Map<string, string> = new Map();
+
   constructor(
     private router: Router,
     private vacancyService: VacancyService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
     this.getVacancies();
+  }
+
+  // Getters para contador de vacantes
+  get totalVacancies(): number {
+    return this.vacancies ? this.vacancies.length : 0;
+  }
+
+  get filteredVacanciesCount(): number {
+    return this.filteredVacancies ? this.filteredVacancies.length : 0;
   }
 
   getVacancies() {
@@ -171,9 +213,12 @@ export class VacanciesComponent implements OnInit {
 
     // Validar que las propiedades se hayan capturado correctamente
     if (!titulo || !experiencia || !ubicacion || !disponibilidad) {
-      alert(
-        'No se pudieron identificar todas las propiedades. Por favor, hable en el formato: "Título experiencia X años ubicación Y disponibilidad Z".'
-      );
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Formato incorrecto',
+        detail: 'Por favor, hable en el formato: "Título experiencia X años ubicación Y disponibilidad Z".',
+        life: 5000
+      });
       return;
     }
 
@@ -186,20 +231,32 @@ export class VacanciesComponent implements OnInit {
     };
 
     // Agregar la nueva vacante al array
-    // this.vacancies.push(newVacancy);
-    // this.closeModal();
-    this.createVacancy(newVacancy);
+    this.vacancies.push(newVacancy);
+    this.closeModal();
+    //this.createVacancy(newVacancy);
   }
 
   createVacancy(vacancy: any) {
     this.vacancyService.createVacancy(vacancy).subscribe({
-      next: (result) => {
+      next: (_result: any) => {
         this.getVacancies();
         this.closeModal();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Vacante creada',
+          detail: `La vacante "${vacancy.titulo}" ha sido creada exitosamente.`,
+          life: 3000
+        });
       },
-      error: (error) => {
+      error: (_error: any) => {
         this.vacancies.push(vacancy);
         this.closeModal();
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Vacante agregada localmente',
+          detail: `La vacante "${vacancy.titulo}" ha sido agregada (sin conexión).`,
+          life: 3000
+        });
       },
     });
   }
@@ -226,6 +283,12 @@ export class VacanciesComponent implements OnInit {
         next: (_result: any) => {
           this.getVacancies();
           this.closeEditModal();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Vacante actualizada',
+            detail: `La vacante "${updatedVacancy.titulo}" ha sido actualizada exitosamente.`,
+            life: 3000
+          });
         },
         error: (_error: any) => {
           // Si falla, actualizar localmente
@@ -235,6 +298,12 @@ export class VacanciesComponent implements OnInit {
             this.applyFilters();
           }
           this.closeEditModal();
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Actualización local',
+            detail: 'La vacante se actualizó localmente (sin conexión).',
+            life: 3000
+          });
         },
       });
     } else {
@@ -245,11 +314,122 @@ export class VacanciesComponent implements OnInit {
         this.applyFilters();
       }
       this.closeEditModal();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Vacante actualizada',
+        detail: `La vacante "${updatedVacancy.titulo}" ha sido actualizada.`,
+        life: 3000
+      });
     }
   }
 
   closeEditModal(): void {
     this.showEditModal = false;
     this.editingVacancy = null;
+  }
+
+  deleteVacancy(vacancy: any): void {
+    this.confirmationService.confirm({
+      message: `¿Estás seguro de que deseas eliminar la vacante "${vacancy.titulo}"?`,
+      header: 'Confirmar Eliminación',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí, eliminar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        // Guardar información para undo
+        const index = this.vacancies.findIndex((v: any) => 
+          v.id ? v.id === vacancy.id : v.titulo === vacancy.titulo
+        );
+        this.deletedVacancy = { ...vacancy };
+        this.deletedVacancyIndex = index;
+
+        // Eliminar de la vista inmediatamente
+        if (index !== -1) {
+          this.vacancies.splice(index, 1);
+          this.applyFilters();
+        }
+
+        // Mostrar toast con opción de deshacer
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Vacante eliminada',
+          detail: `"${vacancy.titulo}" ha sido eliminada. Tienes 5 segundos para deshacer.`,
+          sticky: true,
+          key: 'deleteToast',
+          icon: 'pi pi-trash',
+          data: { vacancy }
+        });
+
+        // Configurar timeout para confirmar eliminación
+        this.undoTimeout = setTimeout(() => {
+          this.confirmDelete();
+        }, 5000);
+      }
+    });
+  }
+
+  undoDelete(): void {
+    if (this.deletedVacancy && this.deletedVacancyIndex !== -1) {
+      // Cancelar timeout
+      if (this.undoTimeout) {
+        clearTimeout(this.undoTimeout);
+        this.undoTimeout = null;
+      }
+
+      // Restaurar vacante
+      this.vacancies.splice(this.deletedVacancyIndex, 0, this.deletedVacancy);
+      this.applyFilters();
+
+      // Limpiar toast
+      this.messageService.clear('deleteToast');
+
+      // Mostrar confirmación
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Eliminación cancelada',
+        detail: `La vacante "${this.deletedVacancy.titulo}" ha sido restaurada.`,
+        life: 3000
+      });
+
+      // Limpiar variables
+      this.deletedVacancy = null;
+      this.deletedVacancyIndex = -1;
+    }
+  }
+
+  confirmDelete(): void {
+    if (this.deletedVacancy) {
+      // Limpiar toast
+      this.messageService.clear('deleteToast');
+
+      // Si tiene ID, eliminar del servidor
+      if (this.deletedVacancy.id) {
+        this.vacancyService.deleteVacancy(this.deletedVacancy.id).subscribe({
+          next: (_result: any) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Eliminación confirmada',
+              detail: `La vacante "${this.deletedVacancy?.titulo}" ha sido eliminada permanentemente.`,
+              life: 3000
+            });
+          },
+          error: (_error: any) => {
+            // Ya fue eliminada localmente, solo mostrar mensaje
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Eliminación local',
+              detail: 'La vacante fue eliminada localmente (sin conexión).',
+              life: 3000
+            });
+          },
+        });
+      }
+
+      // Limpiar variables
+      this.deletedVacancy = null;
+      this.deletedVacancyIndex = -1;
+      this.undoTimeout = null;
+    }
   }
 }
