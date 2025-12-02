@@ -26,7 +26,7 @@ const PRIME_COMPONENTS = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileComponent {
-  companyData = {
+  companyData: Record<string, string> = {
     name: 'Tech Innovators S.A.S',
     nit: '900.123.456-7',
     email: 'contacto@techinnovators.com',
@@ -38,6 +38,15 @@ export class ProfileComponent {
     employees: '50-100',
     industry: 'Tecnología',
   };
+
+  fields = [
+    { key: 'name', label: 'Nombre de la Empresa', type: 'text', placeholder: 'Nombre de la empresa' },
+    { key: 'nit', label: 'NIT', type: 'text', placeholder: 'NIT' },
+    { key: 'email', label: 'Correo Electrónico', type: 'email', placeholder: 'correo@empresa.com' },
+    { key: 'phone', label: 'Teléfono', type: 'text', placeholder: '+57 300 123 4567' },
+    { key: 'website', label: 'Sitio Web', type: 'text', placeholder: 'www.empresa.com' },
+    { key: 'address', label: 'Dirección', type: 'text', placeholder: 'Dirección completa' },
+  ];
 
   editMode = false;
 

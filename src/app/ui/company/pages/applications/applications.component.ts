@@ -10,6 +10,7 @@ import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
+import { Tooltip } from 'primeng/tooltip';
 
 interface Column {
   field: string;
@@ -18,13 +19,23 @@ interface Column {
 
 @Component({
   selector: 'app-applications',
-  imports: [CommonModule, TableModule, TagModule, ButtonModule, RatingModule, FormsModule, CardModule, DialogModule],
+  imports: [
+    CommonModule,
+    TableModule,
+    TagModule,
+    Tooltip,
+    ButtonModule,
+    RatingModule,
+    FormsModule,
+    CardModule,
+    DialogModule,
+  ],
   templateUrl: './applications.component.html',
   styleUrl: './applications.component.scss',
 })
 export class ApplicationsComponent implements OnInit {
-  titulo: string | null = null;
-  candidates = [
+  titulo: string = 'Filtrados por IA';
+  allCandidates = [
     {
       id: 1,
       name: 'Holguer Andrade',
@@ -54,6 +65,12 @@ export class ApplicationsComponent implements OnInit {
       score: 'No calificado',
     },
   ];
+
+  get candidates(): any[] {
+    return this.allCandidates.filter((c) => !this.isSelected(c));
+  }
+
+  selectedCandidates: any[] = [];
   cols!: Column[];
   modalVisible = false;
   selectedCandidate: any = null;
@@ -62,7 +79,7 @@ export class ApplicationsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this.titulo = params['titulo'] || null;
+      this.titulo = params['titulo'] || 'filtrados por IA';
     });
 
     this.cols = [
@@ -91,5 +108,20 @@ export class ApplicationsComponent implements OnInit {
   viewCandidateDetails(candidate: any): void {
     this.selectedCandidate = candidate;
     this.modalVisible = true;
+  }
+
+  selectCandidate(candidate: any): void {
+    const alreadySelected = this.selectedCandidates.find((c) => c.id === candidate.id);
+    if (!alreadySelected) {
+      this.selectedCandidates.push(candidate);
+    }
+  }
+
+  removeFromSelection(candidate: any): void {
+    this.selectedCandidates = this.selectedCandidates.filter((c) => c.id !== candidate.id);
+  }
+
+  isSelected(candidate: any): boolean {
+    return this.selectedCandidates.some((c) => c.id === candidate.id);
   }
 }
