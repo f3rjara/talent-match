@@ -1,4 +1,4 @@
-<div class="vacancies p-8">
+<div class="vacancies py-8">
   <!-- Toast para notificaciones -->
   <p-toast>
     <ng-template let-message pTemplate="message">
@@ -90,7 +90,7 @@
     </p-card>
   </div> -->
 
-  <div class="vacancy-cards grid">
+  <div class="vacancy-cards grid mt-8">
     <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card col-12">
       <div class="card-header-section">
         <h3>{{ vacancy.title || vacancy.titulo }}</h3>
