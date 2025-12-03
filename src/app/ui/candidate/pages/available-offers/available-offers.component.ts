@@ -9,8 +9,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { ChipModule } from 'primeng/chip';
-import { VacancyService } from './services/vacancy.service';
-import { Vacancy } from '../../../../shared/interfaces/vacancy.interface';
+import { VacancyService } from '@core/services/vacancies/vacancy.service';
+import { Vacancy } from '@core/models/vacancies/vacancy.interface';
 
 @Component({
   selector: 'app-available-offers',
@@ -41,7 +41,6 @@ export class AvailableOffersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadVacancies();
-    this.loadFavorites();
   }
 
   loadVacancies(): void {
@@ -49,18 +48,6 @@ export class AvailableOffersComponent implements OnInit {
     this._vacancyService.getVacancies().subscribe({
       next: (response) => {
         this.vacancies.set(response.vacancies);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      },
-    });
-  }
-
-  loadFavorites(): void {
-    this._vacancyService.getFavorites().subscribe({
-      next: (response) => {
-        this.favorites.set(new Set(response.favorites));
         this.loading.set(false);
       },
       error: () => {
@@ -80,12 +67,6 @@ export class AvailableOffersComponent implements OnInit {
     }
 
     this.favorites.set(currentFavorites);
-
-    this._vacancyService.toggleFavorite(vacancyId).subscribe({
-      error: () => {
-        this.loadFavorites();
-      },
-    });
   }
 
   isFavorite(vacancyId: string): boolean {

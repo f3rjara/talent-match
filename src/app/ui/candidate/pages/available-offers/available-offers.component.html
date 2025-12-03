@@ -36,7 +36,7 @@
     <!-- Vacancies List -->
     @if (!loading() && vacancies().length > 0) {
       <div class="vacancies-list space-y-4">
-        @for (vacancy of vacancies(); track vacancy.id) {
+        @for (vacancy of vacancies(); track vacancy.vacancyId) {
           <p-card class="vacancy-card hover:shadow-lg transition-shadow">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
               <!-- Left Section: Main Info -->
@@ -53,12 +53,14 @@
                   <button
                     pButton
                     type="button"
-                    [icon]="isFavorite(vacancy.id) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                    [icon]="isFavorite(vacancy.vacancyId.toString()) ? 'pi pi-heart-fill' : 'pi pi-heart'"
                     class="p-button-rounded p-button-text"
-                    [class.text-red-500]="isFavorite(vacancy.id)"
-                    [pTooltip]="isFavorite(vacancy.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+                    [class.text-red-500]="isFavorite(vacancy.vacancyId.toString())"
+                    [pTooltip]="
+                      isFavorite(vacancy.vacancyId.toString()) ? 'Quitar de favoritos' : 'Agregar a favoritos'
+                    "
                     tooltipPosition="top"
-                    (click)="toggleFavorite(vacancy.id, $event)"></button>
+                    (click)="toggleFavorite(vacancy.vacancyId.toString(), $event)"></button>
                 </div>
 
                 <!-- Description -->
@@ -181,12 +183,14 @@
           <button
             pButton
             type="button"
-            [icon]="isFavorite(selectedVacancy()!.id) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+            [icon]="isFavorite(selectedVacancy()!.vacancyId.toString()) ? 'pi pi-heart-fill' : 'pi pi-heart'"
             class="p-button-rounded p-button-text"
-            [class.text-red-500]="isFavorite(selectedVacancy()!.id)"
-            [pTooltip]="isFavorite(selectedVacancy()!.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+            [class.text-red-500]="isFavorite(selectedVacancy()!.vacancyId.toString())"
+            [pTooltip]="
+              isFavorite(selectedVacancy()!.vacancyId.toString()) ? 'Quitar de favoritos' : 'Agregar a favoritos'
+            "
             tooltipPosition="top"
-            (click)="toggleFavorite(selectedVacancy()!.id, $event)"></button>
+            (click)="toggleFavorite(selectedVacancy()!.vacancyId.toString(), $event)"></button>
         </div>
 
         <p-divider></p-divider>

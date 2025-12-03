@@ -24,6 +24,8 @@ export interface MatchingCriteria {
 // Interface principal de Vacancy
 export interface Vacancy {
   id?: string;
+  vacancyId: number;
+  tenantId: string;
   title: string;
   experienceRequired: string;
   location: string;
@@ -31,10 +33,18 @@ export interface Vacancy {
   description: string;
   matchingCriteria: MatchingCriteria;
   status: 'draft' | 'published' | 'closed';
-  
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+
   // Campos legacy para compatibilidad (pueden removerse después)
   titulo?: string;
   experiencia?: string;
   ubicacion?: string;
   disponibilidad?: string;
+}
+
+export interface VacancyResponse {
+  vacancies: Vacancy[];
+  total: number;
 }

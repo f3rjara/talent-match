@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-trailing-spaces */
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute } from '@angular/router';
@@ -11,6 +11,10 @@ import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { Tooltip } from 'primeng/tooltip';
+import { SelectModule } from 'primeng/select';
+import { SkeletonModule } from 'primeng/skeleton';
+import { VacancyService } from '../../../../core/services/vacancies/vacancy.service';
+import { Vacancy } from '@shared/interfaces/vacancy.interface';
 
 interface Column {
   field: string;
@@ -29,12 +33,25 @@ interface Column {
     FormsModule,
     CardModule,
     DialogModule,
+    SelectModule,
+    SkeletonModule,
   ],
   templateUrl: './applications.component.html',
   styleUrl: './applications.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApplicationsComponent implements OnInit {
+  private readonly _route = inject(ActivatedRoute);
+  private readonly _vacancyService = inject(VacancyService);
+
   titulo: string = 'Filtrados por IA';
+
+  // Signals para manejo reactivo del estado
+  vacancies = signal<Vacancy[]>([]);
+  selectedVacancy = signal<Vacancy | null>(null);
+  loading = signal<boolean>(true);
+
+  // Mock data de candidatos (temporal)
   allCandidates = [
     {
       id: 1,
@@ -75,10 +92,8 @@ export class ApplicationsComponent implements OnInit {
   modalVisible = false;
   selectedCandidate: any = null;
 
-  constructor(private route: ActivatedRoute) {}
-
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
+    this._route.queryParams.subscribe((params) => {
       this.titulo = params['titulo'] || 'filtrados por IA';
     });
 
@@ -90,6 +105,39 @@ export class ApplicationsComponent implements OnInit {
       { field: 'score', header: 'Observación' },
       { field: 'actions', header: 'Acciones' },
     ];
+
+    this.loadVacancies();
+  }
+
+  loadVacancies(): void {
+    this.loading.set(true);
+    this._vacancyService.getVacancies().subscribe({
+      next: (response) => {
+        this.vacancies.set(response.vacancies || []);
+        // Si hay vacantes, seleccionar la primera por defecto
+        if (response.vacancies && response.vacancies.length > 0) {
+          this.selectedVacancy.set(response.vacancies[0]);
+        }
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+      },
+    });
+  }
+
+  onVacancyChange(vacancy: Vacancy): void {
+    this.selectedVacancy.set(vacancy);
+    // Aquí se cargarán los candidatos específicos de esta vacante cuando esté implementado
+  }
+
+  getStatusLabel(status: string): string {
+    const labelMap: Record<string, string> = {
+      open: 'Publicada',
+      closed: 'Cerrada',
+      paused: 'Pausada',
+    };
+    return labelMap[status] || status;
   }
 
   getScoreClass(score: string): string {

@@ -5,11 +5,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule} from 'primeng/inputtext';
+import { InputTextModule } from 'primeng/inputtext';
 import { InputTextarea } from 'primeng/inputtextarea';
 import { ChipsModule } from 'primeng/chips';
 import { TabViewModule } from 'primeng/tabview';
-import { Vacancy } from '../../models/vacancy.interface';
+import { Vacancy } from '../../../../../../core/models/vacancies/vacancy.interface';
 
 @Component({
   selector: 'app-vacancy-form',
@@ -24,10 +24,10 @@ import { Vacancy } from '../../models/vacancy.interface';
     InputTextModule,
     InputTextarea,
     ChipsModule,
-    TabViewModule
+    TabViewModule,
   ],
   templateUrl: './vacancy-form.component.html',
-  styleUrls: ['./vacancy-form.component.scss']
+  styleUrls: ['./vacancy-form.component.scss'],
 })
 export class VacancyFormComponent implements OnInit, OnChanges {
   @Input() vacancy: Vacancy | null = null;
@@ -40,7 +40,7 @@ export class VacancyFormComponent implements OnInit, OnChanges {
   statusOptions = [
     { label: 'Borrador', value: 'draft' },
     { label: 'Publicada', value: 'published' },
-    { label: 'Cerrada', value: 'closed' }
+    { label: 'Cerrada', value: 'closed' },
   ];
 
   // Arrays para chips
@@ -71,7 +71,7 @@ export class VacancyFormComponent implements OnInit, OnChanges {
       status: ['draft'],
       technicalSkillsWeight: [0.4, [Validators.min(0), Validators.max(1)]],
       behavioralWeight: [0.3, [Validators.min(0), Validators.max(1)]],
-      cognitiveWeight: [0.3, [Validators.min(0), Validators.max(1)]]
+      cognitiveWeight: [0.3, [Validators.min(0), Validators.max(1)]],
     });
 
     if (this.vacancy) {
@@ -88,7 +88,7 @@ export class VacancyFormComponent implements OnInit, OnChanges {
         location: this.vacancy.location || this.vacancy.ubicacion || '',
         availability: this.vacancy.availability || this.vacancy.disponibilidad || '',
         description: this.vacancy.description || '',
-        status: this.vacancy.status || 'draft'
+        status: this.vacancy.status || 'draft',
       });
 
       // Poblar skills de matchingCriteria si existen
@@ -101,7 +101,7 @@ export class VacancyFormComponent implements OnInit, OnChanges {
         this.vacancyForm.patchValue({
           technicalSkillsWeight: this.vacancy.matchingCriteria.technicalSkills?.weight || 0.4,
           behavioralWeight: this.vacancy.matchingCriteria.behavioralCompetencies?.weight || 0.3,
-          cognitiveWeight: this.vacancy.matchingCriteria.cognitiveSkills?.weight || 0.3
+          cognitiveWeight: this.vacancy.matchingCriteria.cognitiveSkills?.weight || 0.3,
         });
       }
     }
@@ -113,11 +113,12 @@ export class VacancyFormComponent implements OnInit, OnChanges {
       experienceRequired: '3+ years with Angular and Node.js',
       location: 'Remote',
       availability: 'Immediate',
-      description: 'We are looking for a skilled Full Stack Developer to join our dynamic team. You will be working on cutting-edge technologies and building scalable applications.',
+      description:
+        'We are looking for a skilled Full Stack Developer to join our dynamic team. You will be working on cutting-edge technologies and building scalable applications.',
       status: 'published',
       technicalSkillsWeight: 0.5,
       behavioralWeight: 0.3,
-      cognitiveWeight: 0.2
+      cognitiveWeight: 0.2,
     });
     this.requiredTechnicalSkills = ['Angular', 'TypeScript', 'Node.js'];
     this.preferredTechnicalSkills = ['MongoDB', 'AWS', 'Docker'];
@@ -128,7 +129,7 @@ export class VacancyFormComponent implements OnInit, OnChanges {
   save(): void {
     if (this.vacancyForm.valid) {
       const formValue = this.vacancyForm.value;
-      
+
       const updatedVacancy: Vacancy = {
         ...this.vacancy,
         id: this.vacancy?.id,
@@ -142,19 +143,19 @@ export class VacancyFormComponent implements OnInit, OnChanges {
           technicalSkills: {
             required: this.requiredTechnicalSkills,
             preferred: this.preferredTechnicalSkills,
-            weight: formValue.technicalSkillsWeight
+            weight: formValue.technicalSkillsWeight,
           },
           behavioralCompetencies: {
             required: this.behavioralCompetencies,
-            weight: formValue.behavioralWeight
+            weight: formValue.behavioralWeight,
           },
           cognitiveSkills: {
             required: this.cognitiveSkills,
-            weight: formValue.cognitiveWeight
-          }
-        }
+            weight: formValue.cognitiveWeight,
+          },
+        },
       };
-      
+
       this.onSave.emit(updatedVacancy);
       this.resetForm();
     } else {
@@ -172,7 +173,7 @@ export class VacancyFormComponent implements OnInit, OnChanges {
       status: 'draft',
       technicalSkillsWeight: 0.4,
       behavioralWeight: 0.3,
-      cognitiveWeight: 0.3
+      cognitiveWeight: 0.3,
     });
     this.requiredTechnicalSkills = [];
     this.preferredTechnicalSkills = [];
@@ -181,7 +182,7 @@ export class VacancyFormComponent implements OnInit, OnChanges {
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(key => {
+    Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
       control?.markAsTouched();
     });
