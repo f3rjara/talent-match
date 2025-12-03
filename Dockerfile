@@ -23,7 +23,7 @@ RUN apk add --no-cache curl
 RUN rm -rf /etc/nginx/conf.d/*
 
 # Copy built application to nginx
-COPY --from=build /app/dist/talent-match /usr/share/nginx/html
+COPY --from=build /app/public/browser /usr/share/nginx/html
 
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
