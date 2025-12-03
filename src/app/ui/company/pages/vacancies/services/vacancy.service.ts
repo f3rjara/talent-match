@@ -7,7 +7,7 @@ import { environment } from '@src/environments/environment';
   providedIn: 'root',
 })
 export class VacancyService {
-  private readonly API_URL = environment.VACANCY_API_URL;
+  private readonly API_URL = environment.VACANCIES_API_URL;
 
   constructor(private http: HttpClient) {}
 
