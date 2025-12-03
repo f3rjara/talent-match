@@ -1,4 +1,4 @@
-const BASE_URL = 'https://flow-m-Publi-MjNq3yo7kk3C-127344816.us-west-2.elb.amazonaws.com';
+const BASE_URL = 'http://flow-m-Publi-T7BPn7QTJReJ-426941098.us-west-2.elb.amazonaws.com';
 export const environment = {
   production: false,
   BASE_URL,
