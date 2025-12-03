@@ -11,10 +11,10 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
-import { VacancyService } from './services/vacancy.service';
+import { VacancyService } from '../../../../core/services/vacancies/vacancy.service';
 import { VacancyFormComponent } from './components/vacancy-form/vacancy-form.component';
 import { VacancyDetailDialogComponent } from './components/vacancy-detail-dialog/vacancy-detail-dialog.component';
-import { Vacancy } from './models/vacancy.interface';
+import { Vacancy } from '../../../../core/models/vacancies/vacancy.interface';
 
 @Component({
   selector: 'app-vacancies',

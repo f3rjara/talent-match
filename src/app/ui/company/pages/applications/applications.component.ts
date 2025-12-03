@@ -13,7 +13,7 @@ import { DialogModule } from 'primeng/dialog';
 import { Tooltip } from 'primeng/tooltip';
 import { SelectModule } from 'primeng/select';
 import { SkeletonModule } from 'primeng/skeleton';
-import { VacancyService } from '../vacancies/services/vacancy.service';
+import { VacancyService } from '../../../../core/services/vacancies/vacancy.service';
 import { Vacancy } from '@shared/interfaces/vacancy.interface';
 
 interface Column {
