@@ -1,0 +1,10 @@
+:host {
+  display: block;
+
+  .p-input-component ::ng-deep {
+    div,
+    input {
+      width: 100%;
+    }
+  }
+}

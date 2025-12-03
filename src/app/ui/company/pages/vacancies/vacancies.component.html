@@ -1,0 +1,224 @@
+<div class="vacancies py-8">
+  <!-- Toast para notificaciones -->
+  <p-toast>
+    <ng-template let-message pTemplate="message">
+      <div class="toast-content">
+        <i [class]="'pi ' + (message.icon || 'pi-info-circle')"></i>
+        <div class="toast-text">
+          <div class="toast-summary">{{ message.summary }}</div>
+          <div class="toast-detail">{{ message.detail }}</div>
+        </div>
+        <button
+          *ngIf="message.key === 'deleteToast'"
+          pButton
+          type="button"
+          label="Deshacer"
+          class="p-button-sm p-button-warning"
+          (click)="undoDelete()"></button>
+      </div>
+    </ng-template>
+  </p-toast>
+
+  <!-- Dialog de confirmación -->
+  <p-confirmDialog></p-confirmDialog>
+
+  <div class="vacancies-header">
+    <div class="title-section">
+      <h1 class="main-title">Mis Ofertas Laborales</h1>
+      <p class="subtitle">Gestiona y publica tus vacantes disponibles</p>
+      <div class="counter-badge">
+        <i class="pi pi-briefcase"></i>
+        <span class="counter-text">
+          <strong>{{ filteredVacanciesCount }}</strong> de <strong>{{ totalVacancies }}</strong> vacantes
+        </span>
+      </div>
+    </div>
+    <div class="action-section">
+      <button
+        pButton
+        type="button"
+        label="Nueva Vacante"
+        icon="pi pi-plus"
+        class="p-button-lg add-vacancy-btn"
+        (click)="openModal()"></button>
+    </div>
+  </div>
+
+  <div class="filters grid gap-4">
+    <div class="filter-item col lg:col-2">
+      <label for="experienciaFilter">Experiencia:</label>
+      <p-dropdown
+        id="experienciaFilter"
+        [options]="experienciaOptions"
+        [(ngModel)]="filters.experiencia"
+        placeholder="Todas"
+        (onChange)="applyFilters()">
+      </p-dropdown>
+    </div>
+    <div class="filter-item col lg:col-2">
+      <label for="ubicacionFilter">Ubicación:</label>
+      <p-dropdown
+        id="ubicacionFilter"
+        [options]="ubicacionOptions"
+        [(ngModel)]="filters.ubicacion"
+        placeholder="Todas"
+        (onChange)="applyFilters()">
+      </p-dropdown>
+    </div>
+    <div class="filter-item col lg:col-2">
+      <label for="disponibilidadFilter">Disponibilidad:</label>
+      <p-dropdown
+        id="disponibilidadFilter"
+        [options]="disponibilidadOptions"
+        [(ngModel)]="filters.disponibilidad"
+        placeholder="Todas"
+        (onChange)="applyFilters()">
+      </p-dropdown>
+    </div>
+  </div>
+
+  <div class="vacancy-cards grid">
+    <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card col-12">
+      <div class="card-header-section">
+        <h3>{{ vacancy.title || vacancy.titulo }}</h3>
+        <span class="status-badge" [ngClass]="'status-' + (vacancy.status || 'draft')">
+          {{ vacancy.status === 'draft' ? 'Borrador' : vacancy.status === 'published' ? 'Publicada' : 'Cerrada' }}
+        </span>
+      </div>
+      <p><strong>Experiencia:</strong> {{ vacancy.experienceRequired || vacancy.experiencia }}</p>
+      <p><strong>Ubicación:</strong> {{ vacancy.location || vacancy.ubicacion }}</p>
+      <p><strong>Disponibilidad:</strong> {{ vacancy.availability || vacancy.disponibilidad }}</p>
+      <div class="vacancy-actions">
+        <button
+          pButton
+          type="button"
+          label="Ver Detalle"
+          icon="pi pi-eye"
+          class="p-button-sm p-button-outlined"
+          (click)="viewVacancyDetail(vacancy)"></button>
+        <button
+          pButton
+          type="button"
+          label="Editar"
+          icon="pi pi-pencil"
+          class="p-button-sm p-button-outlined p-button-warning"
+          (click)="editVacancy(vacancy)"></button>
+        <button
+          pButton
+          type="button"
+          label="Eliminar"
+          icon="pi pi-trash"
+          class="p-button-sm p-button-outlined p-button-danger"
+          (click)="deleteVacancy(vacancy)"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <p-dialog
+    header="Creación Rápida de Vacante"
+    [(visible)]="modalVisible"
+    (onHide)="closeModal()"
+    [closable]="true"
+    [style]="{ width: '50vw' }">
+    <div class="modal-content">
+      <div class="instructions-container mb-4">
+        <div class="p-3 mb-3 surface-ground border-round">
+          <p class="mt-0 mb-2 font-bold text-primary">¿Qué información puedo incluir?</p>
+          <p class="mb-3">Menciona los datos que tengas disponibles. Solo el <strong>Título</strong> es obligatorio.</p>
+
+          <div class="mb-3">
+            <p class="text-sm font-bold mb-2">Campos básicos:</p>
+            <ul class="format-list mb-2 pl-3 text-sm">
+              <li class="mb-1"><strong>Título</strong> - Menciónalo al inicio (Obligatorio)</li>
+              <li class="mb-1"><strong>experiencia</strong> - Ej: "experiencia 5 años"</li>
+              <li class="mb-1"><strong>ubicación</strong> - Ej: "ubicación Bogotá"</li>
+              <li class="mb-1"><strong>disponibilidad</strong> - Ej: "disponibilidad inmediata"</li>
+            </ul>
+          </div>
+
+          <div class="mb-3">
+            <p class="text-sm font-bold mb-2">Campos avanzados (opcionales):</p>
+            <ul class="format-list mb-2 pl-3 text-sm">
+              <li class="mb-1"><strong>descripción</strong> - Texto libre sobre la vacante</li>
+              <li class="mb-1"><strong>skills</strong> o <strong>habilidades</strong> - Lista separada por espacios</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="examples-container">
+          <div class="example-box p-3 border-1 surface-border border-round mb-2">
+            <p class="text-sm text-600 m-0 mb-1">Ejemplo básico:</p>
+            <p class="font-italic m-0 text-900 text-sm">
+              "Desarrollador Frontend <strong>experiencia</strong> 3 años <strong>ubicación</strong> remoto
+              <strong>disponibilidad</strong> tiempo completo"
+            </p>
+          </div>
+
+          <div class="example-box p-3 border-1 surface-border border-round mb-2">
+            <p class="text-sm text-600 m-0 mb-1">Ejemplo con descripción:</p>
+            <p class="font-italic m-0 text-900 text-sm">
+              "Analista de Datos <strong>experiencia</strong> 2 años <strong>descripción</strong> Buscamos analista para
+              proyectos de BI <strong>ubicación</strong> Medellín"
+            </p>
+          </div>
+
+          <div class="example-box p-3 border-1 surface-border border-round">
+            <p class="text-sm text-600 m-0 mb-1">Ejemplo completo con skills:</p>
+            <p class="font-italic m-0 text-900 text-sm">
+              "DevOps Engineer <strong>experiencia</strong> 4 años <strong>skills</strong> Docker Kubernetes AWS
+              <strong>descripción</strong> Ingeniero para automatización de infraestructura
+              <strong>disponibilidad</strong> inmediata"
+            </p>
+          </div>
+        </div>
+
+        <div class="info-note flex align-items-center p-2 text-sm text-600 bg-blue-50 border-round mt-3">
+          <i class="pi pi-lightbulb mr-2 text-blue-600"></i>
+          <span>
+            <strong>Tip:</strong> Puedes mencionar los campos en cualquier orden. Los que no menciones se podrán agregar
+            después editando la vacante.
+          </span>
+        </div>
+      </div>
+
+      <button
+        pButton
+        type="button"
+        label="Iniciar grabación"
+        (click)="startRecording()"
+        class="p-button-success"
+        [disabled]="isRecording"></button>
+
+      <button
+        pButton
+        type="button"
+        label="Detener grabación"
+        (click)="stopRecording()"
+        class="p-button-danger"
+        *ngIf="isRecording"></button>
+
+      <p *ngIf="transcription"><strong>Transcripción: </strong>"{{ transcription }}"</p>
+
+      <button
+        pButton
+        type="button"
+        label="Guardar vacante"
+        (click)="saveVacancy()"
+        class="p-button-primary"
+        [disabled]="!transcription"></button>
+    </div>
+  </p-dialog>
+
+  <!-- Formulario de Edición -->
+  <app-vacancy-form
+    [vacancy]="editingVacancy"
+    [isVisible]="showEditModal"
+    (onSave)="handleSaveVacancy($event)"
+    (onCancel)="closeEditModal()">
+  </app-vacancy-form>
+
+  <!-- Diálogo de Detalles -->
+  <app-vacancy-detail-dialog [vacancy]="selectedVacancy" [isVisible]="showDetailDialog" (onClose)="closeDetailDialog()">
+  </app-vacancy-detail-dialog>
+</div>
