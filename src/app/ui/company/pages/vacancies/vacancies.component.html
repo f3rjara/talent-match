@@ -44,75 +44,121 @@
     </div>
   </div>
 
-  <div class="filters grid gap-4">
-    <div class="filter-item col lg:col-2">
-      <label for="experienciaFilter">Experiencia:</label>
-      <p-dropdown
-        id="experienciaFilter"
-        [options]="experienciaOptions"
-        [(ngModel)]="filters.experiencia"
-        placeholder="Todas"
-        (onChange)="applyFilters()">
-      </p-dropdown>
+  @if (isLoading) {
+    <div class="loading-state text-center py-6 surface-card border-round shadow-1 mx-auto" style="max-width: 600px">
+      <div class="mb-4">
+        <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+      </div>
+      <h2 class="text-2xl font-bold mb-2 text-900">Cargando vacantes...</h2>
+      <p class="text-600">Por favor, espera un momento.</p>
     </div>
-    <div class="filter-item col lg:col-2">
-      <label for="ubicacionFilter">Ubicación:</label>
-      <p-dropdown
-        id="ubicacionFilter"
-        [options]="ubicacionOptions"
-        [(ngModel)]="filters.ubicacion"
-        placeholder="Todas"
-        (onChange)="applyFilters()">
-      </p-dropdown>
-    </div>
-    <div class="filter-item col lg:col-2">
-      <label for="disponibilidadFilter">Disponibilidad:</label>
-      <p-dropdown
-        id="disponibilidadFilter"
-        [options]="disponibilidadOptions"
-        [(ngModel)]="filters.disponibilidad"
-        placeholder="Todas"
-        (onChange)="applyFilters()">
-      </p-dropdown>
-    </div>
-  </div>
+  }
 
-  <div class="vacancy-cards grid">
-    <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card col-12">
-      <div class="card-header-section">
-        <h3>{{ vacancy.title || vacancy.titulo }}</h3>
-        <span class="status-badge" [ngClass]="'status-' + (vacancy.status || 'draft')">
-          {{ vacancy.status === 'draft' ? 'Borrador' : vacancy.status === 'published' ? 'Publicada' : 'Cerrada' }}
-        </span>
+  @if (!isLoading && totalVacancies === 0) {
+    <div class="empty-state text-center py-6 surface-card border-round shadow-1 mx-auto" style="max-width: 600px">
+      <div class="mb-4">
+        <div class="inline-flex items-center justify-center bg-primary-50 rounded w-16 h-16 rounded-full">
+          <i class="pi pi-briefcase text-4xl text-primary"></i>
+        </div>
       </div>
-      <p><strong>Experiencia:</strong> {{ vacancy.experienceRequired || vacancy.experiencia }}</p>
-      <p><strong>Ubicación:</strong> {{ vacancy.location || vacancy.ubicacion }}</p>
-      <p><strong>Disponibilidad:</strong> {{ vacancy.availability || vacancy.disponibilidad }}</p>
-      <div class="vacancy-actions">
+      <h2 class="text-2xl font-bold mb-2 text-900">¡Aún no has publicado vacantes!</h2>
+      <p class="text-600 mb-5 px-4 line-height-3">
+        Es el momento perfecto para encontrar el talento que tu empresa necesita. Gestiona y publica tus vacantes
+        disponibles para comenzar a recibir postulaciones de los mejores candidatos.
+      </p>
+      <div class="flex justify-center gap-3">
         <button
           pButton
           type="button"
-          label="Ver Detalle"
-          icon="pi pi-eye"
-          class="p-button-sm p-button-outlined"
-          (click)="viewVacancyDetail(vacancy)"></button>
+          label="Crear mi primera vacante"
+          icon="pi pi-plus"
+          class="p-button-raised"
+          (click)="openModal()"></button>
         <button
           pButton
           type="button"
-          label="Editar"
-          icon="pi pi-pencil"
-          class="p-button-sm p-button-outlined p-button-warning"
-          (click)="editVacancy(vacancy)"></button>
-        <button
-          pButton
-          type="button"
-          label="Eliminar"
-          icon="pi pi-trash"
-          class="p-button-sm p-button-outlined p-button-danger"
-          (click)="deleteVacancy(vacancy)"></button>
+          label="Comprobar de nuevo"
+          icon="pi pi-refresh"
+          class="p-button-outlined p-button-secondary"
+          [disabled]="isLoading"
+          (click)="getVacancies()"></button>
       </div>
     </div>
-  </div>
+  }
+
+  @if (!isLoading && totalVacancies > 0) {
+    <div class="filters grid gap-4">
+      <div class="filter-item col lg:col-2">
+        <label for="experienciaFilter">Experiencia:</label>
+        <p-dropdown
+          id="experienciaFilter"
+          [options]="experienciaOptions"
+          [(ngModel)]="filters.experiencia"
+          placeholder="Todas"
+          (onChange)="applyFilters()">
+        </p-dropdown>
+      </div>
+      <div class="filter-item col lg:col-2">
+        <label for="ubicacionFilter">Ubicación:</label>
+        <p-dropdown
+          id="ubicacionFilter"
+          [options]="ubicacionOptions"
+          [(ngModel)]="filters.ubicacion"
+          placeholder="Todas"
+          (onChange)="applyFilters()">
+        </p-dropdown>
+      </div>
+      <div class="filter-item col lg:col-2">
+        <label for="disponibilidadFilter">Disponibilidad:</label>
+        <p-dropdown
+          id="disponibilidadFilter"
+          [options]="disponibilidadOptions"
+          [(ngModel)]="filters.disponibilidad"
+          placeholder="Todas"
+          (onChange)="applyFilters()">
+        </p-dropdown>
+      </div>
+    </div>
+  }
+
+  @if (!isLoading) {
+    <div class="vacancy-cards grid">
+      <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card col-12">
+        <div class="card-header-section">
+          <h3>{{ vacancy.title || vacancy.titulo }}</h3>
+          <span class="status-badge" [ngClass]="'status-' + (vacancy.status || 'draft')">
+            {{ vacancy.status === 'draft' ? 'Borrador' : vacancy.status === 'published' ? 'Publicada' : 'Cerrada' }}
+          </span>
+        </div>
+        <p><strong>Experiencia:</strong> {{ vacancy.experienceRequired || vacancy.experiencia }}</p>
+        <p><strong>Ubicación:</strong> {{ vacancy.location || vacancy.ubicacion }}</p>
+        <p><strong>Disponibilidad:</strong> {{ vacancy.availability || vacancy.disponibilidad }}</p>
+        <div class="vacancy-actions">
+          <button
+            pButton
+            type="button"
+            label="Ver Detalle"
+            icon="pi pi-eye"
+            class="p-button-sm p-button-outlined"
+            (click)="viewVacancyDetail(vacancy)"></button>
+          <button
+            pButton
+            type="button"
+            label="Editar"
+            icon="pi pi-pencil"
+            class="p-button-sm p-button-outlined p-button-warning"
+            (click)="editVacancy(vacancy)"></button>
+          <button
+            pButton
+            type="button"
+            label="Eliminar"
+            icon="pi pi-trash"
+            class="p-button-sm p-button-outlined p-button-danger"
+            (click)="deleteVacancy(vacancy)"></button>
+        </div>
+      </div>
+    </div>
+  }
 
   <!-- Modal -->
   <p-dialog

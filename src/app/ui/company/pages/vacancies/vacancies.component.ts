@@ -28,7 +28,7 @@ import { Vacancy } from './models/vacancy.interface';
     VacancyFormComponent,
     VacancyDetailDialogComponent,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './vacancies.component.html',
@@ -37,85 +37,88 @@ import { Vacancy } from './models/vacancy.interface';
     trigger('fadeOut', [
       state('visible', style({ opacity: 1, transform: 'translateX(0)' })),
       state('hidden', style({ opacity: 0, transform: 'translateX(-100px)' })),
-      transition('visible => hidden', animate('300ms ease-out'))
-    ])
-  ]
+      transition('visible => hidden', animate('300ms ease-out')),
+    ]),
+  ],
 })
 export class VacanciesComponent implements OnInit {
   vacancies: any;
   vacanciesMock: Vacancy[] = [
     {
       id: 'mock-1',
-      title: "Senior Software Engineer",
-      experienceRequired: "5 years in software development",
-      location: "Remote / Pasto, Nariño",
-      availability: "Full-time, immediate start",
-      description: "Buscamos un Ingeniero de Software Senior con amplia experiencia en desarrollo web full-stack. El candidato ideal tendrá sólidos conocimientos en JavaScript/TypeScript, frameworks modernos como React y Node.js, y experiencia liderando equipos técnicos.",
+      title: 'Senior Software Engineer',
+      experienceRequired: '5 years in software development',
+      location: 'Remote / Pasto, Nariño',
+      availability: 'Full-time, immediate start',
+      description:
+        'Buscamos un Ingeniero de Software Senior con amplia experiencia en desarrollo web full-stack. El candidato ideal tendrá sólidos conocimientos en JavaScript/TypeScript, frameworks modernos como React y Node.js, y experiencia liderando equipos técnicos.',
       matchingCriteria: {
         technicalSkills: {
-          required: ["JavaScript", "TypeScript", "Node.js", "Git"],
-          preferred: ["React", "NestJS", "MongoDB", "Docker", "AWS"],
-          weight: 0.4
+          required: ['JavaScript', 'TypeScript', 'Node.js', 'Git'],
+          preferred: ['React', 'NestJS', 'MongoDB', 'Docker', 'AWS'],
+          weight: 0.4,
         },
         behavioralCompetencies: {
-          required: ["Leadership", "Communication", "Teamwork", "Problem Solving"],
-          weight: 0.3
+          required: ['Leadership', 'Communication', 'Teamwork', 'Problem Solving'],
+          weight: 0.3,
         },
         cognitiveSkills: {
-          required: ["Problem Solving", "Analytical Thinking", "Creativity", "Critical Thinking"],
-          weight: 0.3
-        }
+          required: ['Problem Solving', 'Analytical Thinking', 'Creativity', 'Critical Thinking'],
+          weight: 0.3,
+        },
       },
-      status: "published"
+      status: 'published',
     },
     {
       id: 'mock-2',
-      title: "Practicante de Contabilidad",
-      experienceRequired: "Estudiante de últimos semestres de Contaduría Pública",
-      location: "Pasto, Nariño",
-      availability: "Tiempo completo (prácticas universitarias)",
-      description: "Buscamos un estudiante de Contaduría Pública en últimos semestres para realizar prácticas profesionales en nuestro departamento contable. El practicante apoyará en conciliaciones bancarias, depuración de cuentas y preparación de informes financieros.",
+      title: 'Practicante de Contabilidad',
+      experienceRequired: 'Estudiante de últimos semestres de Contaduría Pública',
+      location: 'Pasto, Nariño',
+      availability: 'Tiempo completo (prácticas universitarias)',
+      description:
+        'Buscamos un estudiante de Contaduría Pública en últimos semestres para realizar prácticas profesionales en nuestro departamento contable. El practicante apoyará en conciliaciones bancarias, depuración de cuentas y preparación de informes financieros.',
       matchingCriteria: {
         technicalSkills: {
-          required: ["Contabilidad general", "Manejo de Excel", "Normativa NIIF"],
-          preferred: ["Manejo de software contable", "Análisis financiero", "Power BI"],
-          weight: 0.4
+          required: ['Contabilidad general', 'Manejo de Excel', 'Normativa NIIF'],
+          preferred: ['Manejo de software contable', 'Análisis financiero', 'Power BI'],
+          weight: 0.4,
         },
         behavioralCompetencies: {
-          required: ["Responsabilidad", "Orden y precisión", "Integridad", "Proactividad"],
-          weight: 0.3
+          required: ['Responsabilidad', 'Orden y precisión', 'Integridad', 'Proactividad'],
+          weight: 0.3,
         },
         cognitiveSkills: {
-          required: ["Pensamiento numérico", "Atención al detalle", "Capacidad analítica", "Organización"],
-          weight: 0.3
-        }
+          required: ['Pensamiento numérico', 'Atención al detalle', 'Capacidad analítica', 'Organización'],
+          weight: 0.3,
+        },
       },
-      status: "published"
+      status: 'published',
     },
     {
       id: 'mock-3',
-      title: "Diseñador UX/UI",
-      experienceRequired: "3+ años en diseño de interfaces",
-      location: "Híbrido - Pasto, Nariño",
-      availability: "Tiempo completo",
-      description: "Buscamos un Diseñador UX/UI creativo y orientado al usuario para nuestro equipo de producto. Serás responsable de diseñar experiencias intuitivas y atractivas para nuestras aplicaciones web y móviles.",
+      title: 'Diseñador UX/UI',
+      experienceRequired: '3+ años en diseño de interfaces',
+      location: 'Híbrido - Pasto, Nariño',
+      availability: 'Tiempo completo',
+      description:
+        'Buscamos un Diseñador UX/UI creativo y orientado al usuario para nuestro equipo de producto. Serás responsable de diseñar experiencias intuitivas y atractivas para nuestras aplicaciones web y móviles.',
       matchingCriteria: {
         technicalSkills: {
-          required: ["Figma", "Adobe XD", "Prototipado", "Design Systems"],
-          preferred: ["HTML/CSS", "After Effects", "Illustrator"],
-          weight: 0.4
+          required: ['Figma', 'Adobe XD', 'Prototipado', 'Design Systems'],
+          preferred: ['HTML/CSS', 'After Effects', 'Illustrator'],
+          weight: 0.4,
         },
         behavioralCompetencies: {
-          required: ["Creatividad", "Comunicación", "Empatía", "Colaboración"],
-          weight: 0.3
+          required: ['Creatividad', 'Comunicación', 'Empatía', 'Colaboración'],
+          weight: 0.3,
         },
         cognitiveSkills: {
-          required: ["Pensamiento visual", "Resolución de problemas", "Atención al detalle"],
-          weight: 0.3
-        }
+          required: ['Pensamiento visual', 'Resolución de problemas', 'Atención al detalle'],
+          weight: 0.3,
+        },
       },
-      status: "draft"
-    }
+      status: 'draft',
+    },
   ];
   modalVisible = false;
   isRecording = false;
@@ -162,6 +165,9 @@ export class VacanciesComponent implements OnInit {
   // Estado de animación para cada vacante
   vacancyStates: Map<string, string> = new Map();
 
+  // Estado de carga
+  isLoading: boolean = false;
+
   constructor(
     private router: Router,
     private vacancyService: VacancyService,
@@ -185,6 +191,7 @@ export class VacanciesComponent implements OnInit {
   }
 
   getVacancies() {
+    this.isLoading = true;
     this.vacancyService.getVacancies().subscribe({
       next: (response) => {
         console.log('📦 API Response:', response);
@@ -202,6 +209,7 @@ export class VacanciesComponent implements OnInit {
         }
         this.filteredVacancies = [...this.vacancies];
         console.log('✅ Vacantes cargadas:', this.vacancies);
+        this.isLoading = false;
       },
       error: (error) => {
         console.warn('⚠️ Error al cargar vacantes desde API, usando mock data:', error);
@@ -213,6 +221,7 @@ export class VacanciesComponent implements OnInit {
         this.filteredVacancies = [...this.vacancies];
         console.log('✅ Vacantes mock cargadas:', this.vacancies);
         console.log('✅ Total de vacantes:', this.vacancies.length);
+        this.isLoading = false;
       },
     });
   }
@@ -285,17 +294,25 @@ export class VacanciesComponent implements OnInit {
     console.log('📝 Transcripción recibida:', lowerCaseTranscription);
 
     // Lista de todas las palabras clave
-    const keywords = ['experiencia', 'ubicación', 'ubicacion', 'disponibilidad', 'descripción', 'descripcion', 'skills', 'habilidades'];
-    
+    const keywords = [
+      'experiencia',
+      'ubicación',
+      'ubicacion',
+      'disponibilidad',
+      'descripción',
+      'descripcion',
+      'skills',
+      'habilidades',
+    ];
+
     // Extraer título (todo antes de la primera palabra clave)
     const tituloEndIndex = Math.min(
-      ...keywords
-        .map((key) => lowerCaseTranscription.indexOf(key))
-        .filter((index) => index > -1)
+      ...keywords.map((key) => lowerCaseTranscription.indexOf(key)).filter((index) => index > -1)
     );
-    const titulo = tituloEndIndex > 0 
-      ? this.capitalize(lowerCaseTranscription.slice(0, tituloEndIndex).trim()) 
-      : this.capitalize(lowerCaseTranscription.trim());
+    const titulo =
+      tituloEndIndex > 0
+        ? this.capitalize(lowerCaseTranscription.slice(0, tituloEndIndex).trim())
+        : this.capitalize(lowerCaseTranscription.trim());
 
     // Validar título obligatorio
     if (!titulo) {
@@ -303,21 +320,44 @@ export class VacanciesComponent implements OnInit {
         severity: 'warn',
         summary: 'Título requerido',
         detail: 'Por favor, menciona al menos el título del cargo.',
-        life: 5000
+        life: 5000,
       });
       return;
     }
 
     // Extraer campos opcionales con regex mejorado
-    const experiencia = this.extractField(lowerCaseTranscription, /experiencia\s+([^,]+?)(?=\s+(?:ubicaci[oó]n|disponibilidad|descripci[oó]n|skills|habilidades)|$)/i) || '';
-    const ubicacion = this.extractField(lowerCaseTranscription, /ubicaci[oó]n\s+([^,]+?)(?=\s+(?:experiencia|disponibilidad|descripci[oó]n|skills|habilidades)|$)/i) || '';
-    const disponibilidad = this.extractField(lowerCaseTranscription, /disponibilidad\s+([^,]+?)(?=\s+(?:experiencia|ubicaci[oó]n|descripci[oó]n|skills|habilidades)|$)/i) || '';
-    const descripcion = this.extractField(lowerCaseTranscription, /descripci[oó]n\s+([^,]+?)(?=\s+(?:experiencia|ubicaci[oó]n|disponibilidad|skills|habilidades)|$)/i) || '';
-    
+    const experiencia =
+      this.extractField(
+        lowerCaseTranscription,
+        /experiencia\s+([^,]+?)(?=\s+(?:ubicaci[oó]n|disponibilidad|descripci[oó]n|skills|habilidades)|$)/i
+      ) || '';
+    const ubicacion =
+      this.extractField(
+        lowerCaseTranscription,
+        /ubicaci[oó]n\s+([^,]+?)(?=\s+(?:experiencia|disponibilidad|descripci[oó]n|skills|habilidades)|$)/i
+      ) || '';
+    const disponibilidad =
+      this.extractField(
+        lowerCaseTranscription,
+        /disponibilidad\s+([^,]+?)(?=\s+(?:experiencia|ubicaci[oó]n|descripci[oó]n|skills|habilidades)|$)/i
+      ) || '';
+    const descripcion =
+      this.extractField(
+        lowerCaseTranscription,
+        /descripci[oó]n\s+([^,]+?)(?=\s+(?:experiencia|ubicaci[oó]n|disponibilidad|skills|habilidades)|$)/i
+      ) || '';
+
     // Extraer skills (separadas por espacios, no por comas)
-    const skillsMatch = lowerCaseTranscription.match(/(skills|habilidades):?\s+(.+?)(?=\s+(?:experiencia|ubicaci[oó]n|disponibilidad|descripci[oó]n)|$)/i);
+    const skillsMatch = lowerCaseTranscription.match(
+      /(skills|habilidades):?\s+(.+?)(?=\s+(?:experiencia|ubicaci[oó]n|disponibilidad|descripci[oó]n)|$)/i
+    );
     const skillsText = skillsMatch ? skillsMatch[2].trim() : '';
-    const skillsArray = skillsText ? skillsText.split(/\s+/).map(s => s.trim()).filter(s => s) : [];
+    const skillsArray = skillsText
+      ? skillsText
+          .split(/\s+/)
+          .map((s) => s.trim())
+          .filter((s) => s)
+      : [];
 
     // Crear objeto de vacante
     const newVacancy: any = {
@@ -328,14 +368,14 @@ export class VacanciesComponent implements OnInit {
       description: descripcion || `Vacante para ${titulo}.`,
       status: 'draft',
       matchingCriteria: {
-        technicalSkills: { 
-          required: skillsArray, 
-          preferred: [], 
-          weight: 0.4 
+        technicalSkills: {
+          required: skillsArray,
+          preferred: [],
+          weight: 0.4,
         },
         behavioralCompetencies: { required: [], weight: 0.3 },
-        cognitiveSkills: { required: [], weight: 0.3 }
-      }
+        cognitiveSkills: { required: [], weight: 0.3 },
+      },
     };
 
     // Preparar lista de campos capturados para el toast
@@ -353,7 +393,7 @@ export class VacanciesComponent implements OnInit {
       severity: 'info',
       summary: 'Campos detectados',
       detail: capturedFields.join(', '),
-      life: 3000
+      life: 3000,
     });
 
     // Crear la vacante
@@ -373,37 +413,37 @@ export class VacanciesComponent implements OnInit {
     this.vacancyService.createVacancy(vacancy).subscribe({
       next: (_result: any) => {
         console.log('✅ Respuesta de creación (Voz) desde API:', _result);
-        
+
         // Si la API devuelve el objeto con ID, usarlo.
         // Si no, usar el objeto local con un ID temporal.
-        const createdVacancy = (_result && _result.id) ? _result : { ...vacancy, id: 'voice-' + Date.now() };
-        
+        const createdVacancy = _result && _result.id ? _result : { ...vacancy, id: 'voice-' + Date.now() };
+
         this.vacancies.push(createdVacancy);
         this.vacancies = [...this.vacancies]; // Forzar cambio de referencia
         this.filteredVacancies = [...this.vacancies];
-        
+
         this.closeModal();
         this.messageService.add({
           severity: 'success',
           summary: 'Vacante creada',
           detail: `La vacante "${vacancy.title}" ha sido creada exitosamente.`,
-          life: 3000
+          life: 3000,
         });
       },
       error: (_error: any) => {
         // Fallback local
         const createdVacancy = { ...vacancy, id: 'voice-local-' + Date.now() };
-        
+
         this.vacancies.push(createdVacancy);
         this.vacancies = [...this.vacancies];
         this.filteredVacancies = [...this.vacancies];
-        
+
         this.closeModal();
         this.messageService.add({
           severity: 'info',
           summary: 'Vacante agregada localmente',
           detail: `La vacante "${vacancy.title}" ha sido agregada (sin conexión).`,
-          life: 3000
+          life: 3000,
         });
       },
     });
@@ -437,7 +477,7 @@ export class VacanciesComponent implements OnInit {
 
   handleSaveVacancy(updatedVacancy: Vacancy): void {
     console.log('📝 handleSaveVacancy llamado con:', updatedVacancy);
-    
+
     if (updatedVacancy.id) {
       // Editando vacante existente
       console.log('✏️ Editando vacante existente con ID:', updatedVacancy.id);
@@ -455,7 +495,7 @@ export class VacanciesComponent implements OnInit {
             severity: 'success',
             summary: 'Éxito',
             detail: `La vacante "${updatedVacancy.title}" ha sido actualizada correctamente.`,
-            life: 3000
+            life: 3000,
           });
         },
         error: (_error: any) => {
@@ -470,7 +510,7 @@ export class VacanciesComponent implements OnInit {
             severity: 'warn',
             summary: 'Actualización local',
             detail: `La vacante "${updatedVacancy.title}" ha sido actualizada localmente (sin conexión).`,
-            life: 3000
+            life: 3000,
           });
         },
       });
@@ -478,50 +518,51 @@ export class VacanciesComponent implements OnInit {
       // Creando nueva vacante
       console.log('➕ Creando nueva vacante');
       console.log('📊 Estado antes de agregar - Total vacantes:', this.vacancies?.length || 0);
-      
+
       this.vacancyService.createVacancy(updatedVacancy).subscribe({
         next: (_response: any) => {
           console.log('✅ Respuesta de creación desde API:', _response);
-          
+
           // Si la API devuelve el objeto con ID, usarlo.
           // Si no, usar el objeto local con un ID temporal para asegurar que se muestre.
-          const createdVacancy = (_response && _response.id) ? _response : { ...updatedVacancy, id: 'local-' + Date.now() };
-          
+          const createdVacancy =
+            _response && _response.id ? _response : { ...updatedVacancy, id: 'local-' + Date.now() };
+
           this.vacancies.push(createdVacancy);
           this.vacancies = [...this.vacancies]; // Forzar cambio de referencia
           this.filteredVacancies = [...this.vacancies];
-          
+
           this.closeEditModal();
           this.messageService.add({
             severity: 'success',
             summary: 'Éxito',
             detail: `La vacante "${updatedVacancy.title}" ha sido creada correctamente.`,
-            life: 3000
+            life: 3000,
           });
         },
         error: (_error: any) => {
           console.warn('⚠️ Error al crear en API, agregando localmente:', _error);
-          
+
           // Generar ID temporal para manejo local
-          const newVacancyWithId = { 
-            ...updatedVacancy, 
-            id: 'local-' + Date.now() 
+          const newVacancyWithId = {
+            ...updatedVacancy,
+            id: 'local-' + Date.now(),
           };
-          
+
           this.vacancies.push(newVacancyWithId);
           // Forzar actualización de referencia para detección de cambios
           this.vacancies = [...this.vacancies];
           this.filteredVacancies = [...this.vacancies];
-          
+
           console.log('✅ Vacante agregada localmente con ID:', newVacancyWithId.id);
           console.log('📊 Estado después de agregar - Total vacantes:', this.vacancies.length);
-          
+
           this.closeEditModal();
           this.messageService.add({
             severity: 'info',
             summary: 'Vacante agregada localmente',
             detail: `La vacante "${updatedVacancy.title}" ha sido agregada (sin conexión).`,
-            life: 3000
+            life: 3000,
           });
         },
       });
@@ -543,8 +584,8 @@ export class VacanciesComponent implements OnInit {
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
         // Guardar información para undo
-        const index = this.vacancies.findIndex((v: any) => 
-          v.id ? v.id === vacancy.id : (v.title === vacancy.title || v.titulo === vacancy.titulo)
+        const index = this.vacancies.findIndex((v: any) =>
+          v.id ? v.id === vacancy.id : v.title === vacancy.title || v.titulo === vacancy.titulo
         );
         this.deletedVacancy = { ...vacancy };
         this.deletedVacancyIndex = index;
@@ -563,14 +604,14 @@ export class VacanciesComponent implements OnInit {
           sticky: true,
           key: 'deleteToast',
           icon: 'pi pi-trash',
-          data: { vacancy }
+          data: { vacancy },
         });
 
         // Configurar timeout para confirmar eliminación
         this.undoTimeout = setTimeout(() => {
           this.confirmDelete();
         }, 5000);
-      }
+      },
     });
   }
 
@@ -594,7 +635,7 @@ export class VacanciesComponent implements OnInit {
         severity: 'success',
         summary: 'Eliminación cancelada',
         detail: `La vacante "${this.deletedVacancy.title || this.deletedVacancy.titulo}" ha sido restaurada.`,
-        life: 3000
+        life: 3000,
       });
 
       // Limpiar variables
@@ -616,7 +657,7 @@ export class VacanciesComponent implements OnInit {
               severity: 'success',
               summary: 'Eliminación confirmada',
               detail: `La vacante "${this.deletedVacancy?.title || this.deletedVacancy?.titulo}" ha sido eliminada permanentemente.`,
-              life: 3000
+              life: 3000,
             });
           },
           error: (_error: any) => {
@@ -625,7 +666,7 @@ export class VacanciesComponent implements OnInit {
               severity: 'info',
               summary: 'Eliminación local',
               detail: 'La vacante fue eliminada localmente (sin conexión).',
-              life: 3000
+              life: 3000,
             });
           },
         });
