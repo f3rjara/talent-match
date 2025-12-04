@@ -35,20 +35,6 @@ RUN mkdir -p /var/cache/nginx/client_temp && \
     mkdir -p /var/cache/nginx/uwsgi_temp && \
     mkdir -p /var/cache/nginx/scgi_temp
 
-# Create non-root user
-RUN addgroup -g 1001 -S nginx-user && \
-    adduser -S nginx-user -u 1001 -G nginx-user
-
-# Set proper permissions
-RUN chown -R nginx-user:nginx-user /usr/share/nginx/html && \
-    chown -R nginx-user:nginx-user /var/cache/nginx && \
-    chown -R nginx-user:nginx-user /var/log/nginx && \
-    touch /var/run/nginx.pid && \
-    chown -R nginx-user:nginx-user /var/run/nginx.pid
-
-# Switch to non-root user
-USER nginx-user
-
 # Expose ports
 EXPOSE 8080
 
