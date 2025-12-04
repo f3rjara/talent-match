@@ -133,6 +133,8 @@ export class VacancyFormComponent implements OnInit, OnChanges {
       const updatedVacancy: Vacancy = {
         ...this.vacancy,
         id: this.vacancy?.id,
+        vacancyId: this.vacancy?.vacancyId || 0, // Will be assigned by backend if new
+        tenantId: this.vacancy?.tenantId || '', // Will be assigned by backend if new
         title: formValue.title,
         experienceRequired: formValue.experienceRequired,
         location: formValue.location,

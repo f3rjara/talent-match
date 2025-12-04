@@ -14,7 +14,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { SelectModule } from 'primeng/select';
 import { SkeletonModule } from 'primeng/skeleton';
 import { VacancyService } from '../../../../core/services/vacancies/vacancy.service';
-import { Vacancy } from '@shared/interfaces/vacancy.interface';
+import { Vacancy } from '@src/app/core/models/vacancies/vacancy.interface';
 
 interface Column {
   field: string;
