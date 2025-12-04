@@ -137,7 +137,8 @@ export class ApplicationsComponent implements OnInit {
             name: c.contactInformation.name || 'Pendiente registrar',
             phone: c.contactInformation.phone,
             email: c.contactInformation.email || 'No registrado',
-            score: c.applications.scores?.technicalSkills.score || 'Parcialmente calificado',
+            score: c.applications[0]?.scores?.technicalSkills.score || 'Calificación en evaluación',
+            applicationsScore: c.applications[0]?.scores || [],
           }));
         }
         this.loading.set(false);

@@ -196,55 +196,85 @@
 
       <!-- Modal para mostrar los detalles -->
       <p-dialog
-        header="Recomendación para candidato"
+        header="Evaluación y Recomendaciones"
         [(visible)]="modalVisible"
-        [style]="{ width: '40vw' }"
+        [style]="{ width: '50vw' }"
         [modal]="true"
         [closable]="true">
         <div *ngIf="selectedCandidate">
-          @if (selectedCandidate.score === 'Altamente calificado') {
-            <h2 class="mb-4 text-xl font-bold">{{ selectedCandidate.name }}</h2>
-            <p>
-              Este candidato está clasificado como
-              <strong>{{ selectedCandidate.score }}</strong
-              >. Nuestra recomendación es considerarlo altamente para roles desafiantes.
-            </p>
-            <h3 class="my-2 font-semibold">Razones:</h3>
-            <ul class="list-disc ml-6">
-              <li>Tiene una trayectoria destacada en su campo de experiencia.</li>
-              <li>Demuestra habilidades técnicas sobresalientes.</li>
-              <li>Ha recibido evaluaciones positivas en proyectos previos.</li>
-            </ul>
-          }
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-primary mb-2">{{ selectedCandidate.name }}</h2>
+            <div class="flex items-center gap-2 mb-4">
+              <span class="text-sm text-slate-600">Calificación general:</span>
+              <span [ngClass]="getScoreClass(selectedCandidate.score)" class="font-semibold px-3 py-1 rounded">
+                {{ selectedCandidate.score }}
+              </span>
+            </div>
+          </div>
 
-          @if (selectedCandidate.score === 'Parcialmente calificado') {
-            <h2 class="mb-4 text-xl font-bold">{{ selectedCandidate.name }}</h2>
-            <p>
-              Este candidato está clasificado como
-              <strong>{{ selectedCandidate.score }}</strong
-              >. El candidato tiene habilidades y experiencia que lo hacen adecuado para roles de nivel intermedio.
-            </p>
-            <h3 class="my-2 font-semibold">Razones:</h3>
-            <ul class="list-disc ml-6">
-              <li>Ha demostrado conocimientos básicos en el área.</li>
-              <li>Tiene potencial para desarrollarse en roles más avanzados.</li>
-              <li>Su historial muestra un desempeño constante en proyectos anteriores.</li>
-            </ul>
-          }
+          @if (selectedCandidate.applicationsScore) {
+            <div class="space-y-6">
+              <!-- Habilidades Técnicas -->
+              @if (selectedCandidate.applicationsScore.technicalSkills) {
+                <div class="border-l-4 border-blue-500 pl-4 py-2">
+                  <div class="flex items-center gap-2 mb-2">
+                    <i class="pi pi-code text-blue-600"></i>
+                    <h3 class="font-bold text-lg text-slate-800">Habilidades Técnicas</h3>
+                    <span
+                      [ngClass]="getScoreClass(selectedCandidate.applicationsScore.technicalSkills.score)"
+                      class="text-xs px-2 py-1 rounded ml-auto">
+                      {{ selectedCandidate.applicationsScore.technicalSkills.score }}
+                    </span>
+                  </div>
+                  <p class="text-slate-700 text-sm leading-relaxed">
+                    {{ selectedCandidate.applicationsScore.technicalSkills.feedback }}
+                  </p>
+                </div>
+              }
 
-          @if (selectedCandidate.score === 'No calificado') {
-            <h2 class="mb-4 text-xl font-bold">{{ selectedCandidate.name }}</h2>
-            <p>
-              Este candidato está clasificado como
-              <strong>{{ selectedCandidate.score }}</strong
-              >. El candidato no cumple con los requisitos necesarios para el rol actual.
-            </p>
-            <h3 class="my-2 font-semibold">Razones:</h3>
-            <ul class="list-disc ml-6">
-              <li>Carece de la experiencia o habilidades técnicas necesarias.</li>
-              <li>Su perfil no coincide con los requerimientos específicos del rol.</li>
-              <li>Podría requerir un proceso de capacitación extensivo.</li>
-            </ul>
+              <!-- Competencias Conductuales -->
+              @if (selectedCandidate.applicationsScore.behavioralCompetencies) {
+                <div class="border-l-4 border-green-500 pl-4 py-2">
+                  <div class="flex items-center gap-2 mb-2">
+                    <i class="pi pi-users text-green-600"></i>
+                    <h3 class="font-bold text-lg text-slate-800">Competencias Conductuales</h3>
+                    <span
+                      [ngClass]="getScoreClass(selectedCandidate.applicationsScore.behavioralCompetencies.score)"
+                      class="text-xs px-2 py-1 rounded ml-auto">
+                      {{ selectedCandidate.applicationsScore.behavioralCompetencies.score }}
+                    </span>
+                  </div>
+                  <p class="text-slate-700 text-sm leading-relaxed">
+                    {{ selectedCandidate.applicationsScore.behavioralCompetencies.feedback }}
+                  </p>
+                </div>
+              }
+
+              <!-- Habilidades Cognitivas -->
+              @if (selectedCandidate.applicationsScore.cognitiveSkills) {
+                <div class="border-l-4 border-purple-500 pl-4 py-2">
+                  <div class="flex items-center gap-2 mb-2">
+                    <i class="pi pi-brain text-purple-600"></i>
+                    <h3 class="font-bold text-lg text-slate-800">Habilidades Cognitivas</h3>
+                    <span
+                      [ngClass]="getScoreClass(selectedCandidate.applicationsScore.cognitiveSkills.score)"
+                      class="text-xs px-2 py-1 rounded ml-auto">
+                      {{ selectedCandidate.applicationsScore.cognitiveSkills.score }}
+                    </span>
+                  </div>
+                  <p class="text-slate-700 text-sm leading-relaxed">
+                    {{ selectedCandidate.applicationsScore.cognitiveSkills.feedback }}
+                  </p>
+                </div>
+              }
+            </div>
+          } @else {
+            <p-card styleClass="bg-yellow-50 border-l-4 border-yellow-500">
+              <div class="flex items-center gap-3">
+                <i class="pi pi-info-circle text-yellow-600 text-xl"></i>
+                <p class="text-yellow-800 text-sm">No hay evaluación detallada disponible para este candidato.</p>
+              </div>
+            </p-card>
           }
         </div>
       </p-dialog>
