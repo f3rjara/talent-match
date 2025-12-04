@@ -98,53 +98,64 @@
       </p-card>
 
       <h2 class="text-2xl font-bold text-primary mb-6">Candidatos {{ titulo }}</h2>
-
-      <p-card styleClass="shadow-lg mb-6">
-        <p-table [value]="candidates" [tableStyle]="{ 'min-width': '50rem' }">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Candidato</th>
-              <th>Teléfono</th>
-              <th>Email</th>
-              <th>Calificación</th>
-              <th>Acciones</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-candidate>
-            <tr>
-              <td>{{ candidate.name }}</td>
-              <td>{{ candidate.phone }}</td>
-              <td>{{ candidate.email }}</td>
-              <td>
-                <span [ngClass]="getScoreClass(candidate.score)" class="font-light px-4 py-2 rounded">
-                  {{ candidate.score }}
-                </span>
-              </td>
-              <td class="flex gap-2">
-                <p-button
-                  icon="pi pi-eye"
-                  severity="success"
-                  [outlined]="true"
-                  (click)="viewCandidateDetails(candidate)"
-                  pTooltip="Ver detalles" />
-                @if (!isSelected(candidate)) {
+      @if (candidates.length > 0) {
+        <p-card styleClass="shadow-lg mb-6">
+          <p-table [value]="candidates" [tableStyle]="{ 'min-width': '50rem' }">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Candidato</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Calificación</th>
+                <th>Acciones</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-candidate>
+              <tr>
+                <td>{{ candidate.name }}</td>
+                <td>{{ candidate.phone }}</td>
+                <td>{{ candidate.email }}</td>
+                <td>
+                  <span [ngClass]="getScoreClass(candidate.score)" class="font-light px-4 py-2 rounded">
+                    {{ candidate.score }}
+                  </span>
+                </td>
+                <td class="flex gap-2">
                   <p-button
-                    icon="pi pi-check-circle"
-                    severity="info"
-                    (click)="selectCandidate(candidate)"
-                    pTooltip="Considerar para selección final" />
-                } @else {
-                  <p-button
-                    icon="pi pi-times-circle"
-                    severity="danger"
-                    (click)="removeFromSelection(candidate)"
-                    pTooltip="Remover de selección" />
-                }
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-card>
+                    icon="pi pi-eye"
+                    severity="success"
+                    [outlined]="true"
+                    (click)="viewCandidateDetails(candidate)"
+                    pTooltip="Ver detalles" />
+                  @if (!isSelected(candidate)) {
+                    <p-button
+                      icon="pi pi-check-circle"
+                      severity="info"
+                      (click)="selectCandidate(candidate)"
+                      pTooltip="Considerar para selección final" />
+                  } @else {
+                    <p-button
+                      icon="pi pi-times-circle"
+                      severity="danger"
+                      (click)="removeFromSelection(candidate)"
+                      pTooltip="Remover de selección" />
+                  }
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-card>
+      } @else {
+        <p-card styleClass="bg-yellow-50 border-l-4 border-yellow-500">
+          <div class="flex items-center gap-3">
+            <i class="pi pi-info-circle text-yellow-600 text-2xl"></i>
+            <div>
+              <p class="font-semibold text-yellow-800">No hay candidatos postulados</p>
+              <p class="text-yellow-700 text-sm">Promociona tu vacante para empezar a recibir postulaciones.</p>
+            </div>
+          </div>
+        </p-card>
+      }
 
       @if (selectedCandidates.length > 0) {
         <h2 class="text-2xl font-bold text-primary mb-4">Candidatos Seleccionados para Entrevista</h2>

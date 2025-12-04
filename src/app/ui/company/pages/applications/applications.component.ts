@@ -53,34 +53,34 @@ export class ApplicationsComponent implements OnInit {
 
   // Mock data de candidatos (temporal)
   allCandidates = [
-    {
-      id: 1,
-      name: 'Holguer Andrade',
-      phone: '315 474 3845',
-      email: 'holguer@gmail.com',
-      score: 'Altamente calificado',
-    },
-    {
-      id: 2,
-      name: 'Fernando Jaramillo',
-      phone: '315 656 1234',
-      email: 'fernando@gmail.com',
-      score: 'Altamente calificado',
-    },
-    {
-      id: 3,
-      name: 'Elkyn Enriquez',
-      phone: '312 876 8927',
-      email: 'elkyn@gmail.com',
-      score: 'Parcialmente calificado',
-    },
-    {
-      id: 4,
-      name: 'Luis Narvaez',
-      phone: '310 675 9182',
-      email: 'luis@gmail.com',
-      score: 'No calificado',
-    },
+    // {
+    //   id: 1,
+    //   name: 'Holguer Andrade',
+    //   phone: '315 474 3845',
+    //   email: 'holguer@gmail.com',
+    //   score: 'Altamente calificado',
+    // },
+    // {
+    //   id: 2,
+    //   name: 'Fernando Jaramillo',
+    //   phone: '315 656 1234',
+    //   email: 'fernando@gmail.com',
+    //   score: 'Altamente calificado',
+    // },
+    // {
+    //   id: 3,
+    //   name: 'Elkyn Enriquez',
+    //   phone: '312 876 8927',
+    //   email: 'elkyn@gmail.com',
+    //   score: 'Parcialmente calificado',
+    // },
+    // {
+    //   id: 4,
+    //   name: 'Luis Narvaez',
+    //   phone: '310 675 9182',
+    //   email: 'luis@gmail.com',
+    //   score: 'No calificado',
+    // },
   ];
 
   get candidates(): any[] {
@@ -116,7 +116,7 @@ export class ApplicationsComponent implements OnInit {
         this.vacancies.set(response.vacancies || []);
         // Si hay vacantes, seleccionar la primera por defecto
         if (response.vacancies && response.vacancies.length > 0) {
-          this.selectedVacancy.set(response.vacancies[0]);
+          this.onVacancyChange(response.vacancies[0]);
         }
         this.loading.set(false);
       },
@@ -127,8 +127,26 @@ export class ApplicationsComponent implements OnInit {
   }
 
   onVacancyChange(vacancy: Vacancy): void {
-    this.selectedVacancy.set(vacancy);
-    // Aquí se cargarán los candidatos específicos de esta vacante cuando esté implementado
+    this.loading.set(true);
+    this._vacancyService.getVacancyById(vacancy.vacancyId!).subscribe({
+      next: (response) => {
+        if (response) {
+          this.selectedVacancy.set(response.vacancy);
+          this.allCandidates = response.candidates.map((c: any) => ({
+            id: c.candidateId,
+            name: c.contactInformation.name || 'Pendiente registrar',
+            phone: c.contactInformation.phone,
+            email: c.contactInformation.email || 'No registrado',
+            score: c.applications.scores?.technicalSkills.score || 'Parcialmente calificado',
+          }));
+        }
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.selectedVacancy.set(vacancy);
+      },
+    });
   }
 
   getStatusLabel(status: string): string {

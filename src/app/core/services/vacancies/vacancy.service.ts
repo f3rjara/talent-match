@@ -15,6 +15,10 @@ export class VacancyService {
     return this.http.get(this.API_URL, { params: { page: '1', limit: '100' } });
   }
 
+  getVacancyById(id:number): Observable<any> {
+    return this.http.get(`${this.API_URL}/${id}`);
+  }
+
   createVacancy(data: any): Observable<any> {
     return this.http.post(this.API_URL, data);
   }
