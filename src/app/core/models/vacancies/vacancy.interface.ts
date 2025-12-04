@@ -33,9 +33,9 @@ export interface Vacancy {
   description: string;
   matchingCriteria: MatchingCriteria;
   status: 'draft' | 'published' | 'closed';
-  createdBy: string;
-  createdAt: string;
-  updatedAt: string;
+  createdBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
 
   // Campos legacy para compatibilidad (pueden removerse después)
   titulo?: string;
